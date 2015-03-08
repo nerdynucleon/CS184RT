@@ -1,6 +1,11 @@
 #include <geometry.hpp>
 #include <camera.hpp>
 
+
+void parseInput(int argc, char** argv){
+
+}
+
 int main(int argc, char** argv){
   /* Iterate over all pixels */
   for(int i = 0; i < pixelsWide; i++){
