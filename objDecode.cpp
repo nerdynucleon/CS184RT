@@ -1,18 +1,12 @@
-struct Object {
-	float* v; //vertices
-	uint n_v;
-	float* vt; //texture mappings
-	uint n_vt;	
-	float* vn; //normals (not necessarily unit)
-	uint n_vn;
-	float* vp; //parameter space vertices
-	uint n_vp;
-	float* f; //faces
-	uint n_f;
-};
+#include <stdio>
+#include <fstream>
+#include <vector>
 
-Object* decodeObj(String filename){
-	Object decoded = new Object;
+
+OBJ* decodeObj(char* filename){
+	fopen(filename);
+	OBJ decoded = new OBJ;
+	ifstream std::in(filename);
 	
 
 	return &decoded;
