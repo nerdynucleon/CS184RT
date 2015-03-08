@@ -1,6 +1,11 @@
 class triangle{};
 class sphere{};
-class diffGeom{};
+
+class diffGeom{
+  vec3 pos;
+  vec3 normal;
+  BRDF *brdf;
+};
 
 class vec3{
   public:
