@@ -1,8 +1,6 @@
 #ifndef COLOR_H
 #define COLOR_H
 
-/* forward declarations of classes */
-
 class RGB{
   public:
     float r; float g; float b;

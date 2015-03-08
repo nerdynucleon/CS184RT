@@ -16,8 +16,6 @@ class vec3{
     float x; float y; float z;
 };
 
-class sphere{};
-
 class Light{
   vec3 pos;
   RGB intensity;
@@ -34,26 +32,32 @@ class diffGeom{
 
 /* vector defined by the start and end locations */
 class ray{
-  vec3 pos;
-  vec3 dir;
-  float t_min;
-  float t_max;
   public:
     ray(vec3, vec3, float, float);
+    vec3 pos;
+    vec3 dir;
+    float t_min;
+    float t_max;
 };
 
 /* Parent class for scene geoemetry */
 class sceneObject{
   public:
-    diffGeom *intersect(ray);
+    virtual diffGeom *intersect(ray) = 0;
 };
 
-class triangle{
+class triangle: public sceneObject {
   vec3 *v1; vec3 *v2; vec3 *v3;
   vec3 *n1; vec3 *n2; vec3 *n3;
   BRDF *brdf;
   public:
+    diffGeom *intersect(ray);
     triangle(vec3,vec3,vec3,BRDF*);
     triangle(vec3,vec3,vec3,vec3,vec3,vec3,BRDF*);
 };
+class sphere: public diffGeom{
+  public:
+    diffGeom *intersect(ray);
+};
+
 #endif
