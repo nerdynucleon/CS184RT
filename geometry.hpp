@@ -67,12 +67,13 @@ class triangle: public sceneObject {
     triangle(vec3,vec3,vec3,vec3,vec3,vec3,BRDF*);
 };
 class sphere: public diffGeom{
-  vec3 center;
-  float radius;
+
   public:
     sphere(float, float, float, float);
     sphere(vec3, float);
     diffGeom *intersect(ray);
+    vec3 center;
+    float radius;
 };
 
 #endif
