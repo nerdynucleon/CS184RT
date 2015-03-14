@@ -43,6 +43,16 @@ vec3::vec3(float xin, float yin, float zin){
   x = xin; y = yin; z = zin;
 }
 
+/* Calculate the distance between two positions */
+float dist(vec3 v1, vec3 v2){
+  return sqrt(pow(v1.x - v2.x,2) + pow(v1.y - v2.y,2) + pow(v1.z - v2.z,2));
+}
+
+vec3 norm2(vec3 v1){
+  float length = sqrt(v1.x*v1.x + v1.y*v1.y + v1.z*v1.z);
+  return vec3(v1.x/length, v1.y/length, v1.z/length);
+}
+
 /* Construct a ray */
 ray::ray(vec3 pin, vec3 din, float t_minimum, float t_maximum){
   pos = pin;
