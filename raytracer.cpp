@@ -8,6 +8,7 @@
 #include "scene.hpp"
 #endif
 #include "lodepng.h"
+#include <cmath>
 
 #define RECURSIVE_DEPTH 10
 #define EPS 0.1;
@@ -33,10 +34,50 @@ int main(int argc, char** argv){
   lodepng::save_file(png, outputFilename);
 }
 
+/* NOTE: Need to expand Light to -> directional, point, ambient subclasses */
+RGB shading(diffGeom dg, Light* l, ray eyeRay){
+  BRDF *brdf = dg.brdf;
+  float r = 0; float g = 0; float b = 0;
+  r += l->intensity.r * brdf->ka->r;
+  g += l->intensity.g * brdf->ka->g;
+  b += l->intensity.b * brdf->ka->b;
 
+  /* Diffuse */
+  vec3 lvec = (l->pos - dg.pos);
+  float dotln = (dg.normal)*(lvec); 
+  float mdotln = fmax(dotln, 0);
+  if (brdf->kd->r > 0) {
+    r += (brdf->kd->r) * (l->intensity.r) * mdotln;
+  }
+  if (brdf->kd->g > 0) {
+    g += (brdf->kd->g) * (l->intensity.g) * mdotln;
+  }
+  if (brdf->kd->b > 0) { 
+    b += (brdf->kd->b) * (l->intensity.b) * mdotln;
+  }
 
-RGB shading(diffGeom dg, Light* l){
-  
+  vec3 reflection = lvec * -1;
+  vec3 scalednorm = (dg.normal) * (2 * dotln);
+  reflection = reflection + scalednorm;
+  /* Normalize */
+  float mag = sqrt(reflection.x * reflection.x + reflection.y * reflection.y + reflection.z * reflection.z);
+  reflection = reflection * (1 / mag);
+
+  /* Viewer ray */
+  vec3 viewer = (dg->pos) - (eyeRay->pos);
+  /* Specular */
+  float dotvr = pow(fmax( * reflection, 0), brdf->s);
+  if (brdf->ks->r > 0) {
+    r += (brdf->ks->r) * (l->intensity.r) * dotvr;
+  }
+  if (brdf->ks->g > 0) {
+    g += (brdf->ks->g) * (l->intensity.g) * dotvr;
+  }
+  if (brdf->ks->b > 0) {
+    b += (brdf->ks->b) * (l->intensity.b) * dotvr;
+  }
+
+  return RGB(r, g, b);
 }
 
 
@@ -52,7 +93,7 @@ RGB recursiveRT(Ray r, int depth, color c){
         Light* l = s.lights[i];
         ray shadowRay = ray(dg.pos,(l->pos - dg.pos), EPS, dist(l->pos,dg.pos));
         if(!s.trace(shadowRay, NULL)){
-          c += shading(dg);
+          c += shading(dg, l, r);
         }
       }
       /* Calculate Reflection Rays
