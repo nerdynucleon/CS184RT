@@ -4,6 +4,8 @@ camera: camera.cpp camera.hpp
 	gcc -c camera.hpp camera.cpp
 geometry: geometry.cpp geometry.hpp
 	gcc -c geometry.hpp geometry.cpp
+scene: scene.hpp scene.cpp
+	gcc -c scene.hpp scene.cpp
 objDecode: objDecode.cpp objDecode.hpp
 	gcc -c objDecode.cpp objDecode.hpp
 objTest:

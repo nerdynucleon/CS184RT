@@ -8,9 +8,9 @@ class RGB{
 };
 
 class BRDF{
-  RGB *ka; RGB *kd; RGB *ks;
+  RGB *ka; RGB *kd; RGB *ks; RGB *kr;
   float s; /* exponent of specular term */ 
   public:
-    BRDF(RGB*,RGB*,RGB*,float);
+    BRDF(RGB*,RGB*,RGB*,RGB*,float);
 };
 #endif

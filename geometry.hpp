@@ -12,10 +12,13 @@ class vec3{
     vec3();
     vec3 operator+(vec3);
     vec3 operator*(float);
+    float operator*(vec3);
     vec3 operator-(vec3);
+    vec3 operator-();
     float x; float y; float z;
 };
 
+/* Positional Light */
 class Light{
   vec3 pos;
   RGB intensity;
@@ -24,10 +27,12 @@ class Light{
     Light(RGB*, float, float, float);
 };
 
+/* Returned from a ray object intersection*/
 class diffGeom{
-  vec3 pos;
-  vec3 normal;
-  BRDF *brdf;
+  public:
+    vec3 pos;
+    vec3 normal;
+    BRDF *brdf;
 };
 
 /* vector defined by the start and end locations */
@@ -46,6 +51,7 @@ class sceneObject{
     virtual diffGeom *intersect(ray) = 0;
 };
 
+/* Geometry Primitive */
 class triangle: public sceneObject {
   vec3 *v1; vec3 *v2; vec3 *v3;
   vec3 *n1; vec3 *n2; vec3 *n3;
@@ -56,7 +62,11 @@ class triangle: public sceneObject {
     triangle(vec3,vec3,vec3,vec3,vec3,vec3,BRDF*);
 };
 class sphere: public diffGeom{
+  vec3 center;
+  float radius;
   public:
+    sphere(float, float, float, float);
+    sphere(vec3, float);
     diffGeom *intersect(ray);
 };
 
