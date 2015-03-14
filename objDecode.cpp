@@ -65,32 +65,33 @@ void storeVertex(OBJ* decoded, std::vector<std::string> tokens, int type) {
 
 void storeFace(OBJ* decoded, std::vector<std::string> tokens) {
 	if (tokens.size() <= 1) { return; }
-	triangle f;
-	vec3 v;
+	vec3 v; vec3 v1; vec3 v2; vec3 v3; vec3 n1; vec3 n2; vec3 n3;
+	bool normals = false;
 	for (int i = 1; i < tokens.size(); i++) {
 		if (tokens[i].compare(" ") == 0) { continue; }
 		if (tokens[i].compare("#") == 0) { break; }
 		size_t find = tokens[i].find('/');
 		if (find == std::string::npos) {
 			v = decoded->v[decoded->v.size() - std::stoi(tokens[i])];
-			if (i == 1) { f.v1 = v; }
-			if (i == 2) { f.v2 = v; }
-			if (i == 3) { f.v3 = v; }
+			if (i == 1) { v1 = v; }
+			if (i == 2) { v2 = v; }
+			if (i == 3) { v3 = v; }
 			//f.v.push_back(v);
 			//f.type = FACE_V;
 		}
 		else if ((find != std::string::npos) && (tokens[i].substr(find, find+1).compare("/") == 0)) {
 			std::vector<std::string> subtokens = split(tokens[i], char(47));
 			v = decoded->v[decoded->v.size() - std::stoi(subtokens[0])];
-			if (i == 1) { f.v1 = v; }
-			if (i == 2) { f.v2 = v; }
-			if (i == 3) { f.v3 = v; }
+			if (i == 1) { v1 = v; }
+			if (i == 2) { v2 = v; }
+			if (i == 3) { v3 = v; }
 			//f.v.push_back(v);
 			//f.type = FACE_VN;
 			v = decoded->vt[decoded->v.size() - std::stoi(subtokens[2])];
-			if (i == 1) { f.n1 = v; }
-			if (i == 2) { f.n2 = v; }
-			if (i == 3) { f.n3 = v; }
+			if (i == 1) { n1 = v; }
+			if (i == 2) { n2 = v; }
+			if (i == 3) { n3 = v; }
+			normals = true;
 			//f.vn.push_back(v);
 		}
 		/* VERTEX TEXTURE PNTS
@@ -108,6 +109,10 @@ void storeFace(OBJ* decoded, std::vector<std::string> tokens) {
 				f.vn.push_back(v); f.type = FACE_VVTN;
 			}
 		} */
+	}
+	triangle f = triangle(v1, v2, v3, NULL);
+	if (normals) {
+		f.n1 = &n1; f.n2 = &n2; f.n3 = &n3;
 	}
 	decoded->faces.push_back(f);
 }

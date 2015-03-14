@@ -59,10 +59,10 @@ class sceneObject{
 
 /* Geometry Primitive */
 class triangle: public sceneObject {
-  vec3 *v1; vec3 *v2; vec3 *v3;
-  vec3 *n1; vec3 *n2; vec3 *n3;
-  BRDF *brdf;
   public:
+    vec3 *v1; vec3 *v2; vec3 *v3;
+    vec3 *n1; vec3 *n2; vec3 *n3;
+    BRDF *brdf;
     diffGeom *intersect(ray);
     triangle(vec3,vec3,vec3,BRDF*);
     triangle(vec3,vec3,vec3,vec3,vec3,vec3,BRDF*);
