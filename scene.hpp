@@ -12,9 +12,9 @@
 #endif
 
 class Scene{
-  std::vector<sceneObject*> objects;
-  std::vector<Light*> lights;
   public:
+  	std::vector<sceneObject*> objects;
+  	std::vector<Light*> lights;
     Scene();
     void trace(ray, diffGeom*);
     void add(sceneObject*);

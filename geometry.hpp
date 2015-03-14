@@ -4,6 +4,8 @@
 #ifndef COLOR_H
 #include "color.hpp"
 #endif
+#include <cstdlib>
+#include <iostream>
 
 /* Used as a point in space or as a direction */
 class vec3{
@@ -16,13 +18,16 @@ class vec3{
     vec3 operator-(vec3);
     vec3 operator-();
     float x; float y; float z;
+
+    /* Debug */
+    void print() { std::cout << "vec3: ( " << x << " , " << y << " , " << z << " )" << std::endl; }
 };
 
 /* Positional Light */
 class Light{
-  vec3 pos;
-  RGB intensity;
   public:
+    vec3 pos;
+    RGB intensity;
     Light(float, float, float, float, float, float);
     Light(RGB*, float, float, float);
 };

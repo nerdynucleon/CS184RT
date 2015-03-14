@@ -48,14 +48,14 @@ std::vector<std::string> split(const std::string &s, char delim) {
 
 void storeVertex(OBJ* decoded, std::vector<std::string> tokens, int type) {
 	if (tokens.size() <= 1) { return; }
-	Vertex v;
-	v.dimension = 0;
+	vec3 v;
+	int dimension = 0;
 	for (int i = 1; i < tokens.size(); i++) {
 		if (tokens[i].compare(" ") == 0) { continue; }
-		if ((tokens[i].compare("#") == 0) || (v.dimension == 3)) { break; }
-		if (v.dimension == 0) { v.x = std::stof(tokens[i]); v.dimension += 1; }
-		else if (v.dimension == 1) { v.y = std::stof(tokens[i]); v.dimension += 1; }
-		else if (v.dimension == 2) { v.z = std::stof(tokens[i]); v.dimension += 1; }
+		if ((tokens[i].compare("#") == 0) || (dimension == 3)) { break; }
+		if (dimension == 0) { v.x = std::stof(tokens[i]); dimension += 1; }
+		else if (dimension == 1) { v.y = std::stof(tokens[i]); dimension += 1; }
+		else if (dimension == 2) { v.z = std::stof(tokens[i]); dimension += 1; }
 	}
 	if (type == VERTEX_DEFAULT) { decoded->v.push_back(v); }
 	else if (type == VERTEX_NORMAL)  { decoded->vn.push_back(v); }
@@ -66,7 +66,7 @@ void storeVertex(OBJ* decoded, std::vector<std::string> tokens, int type) {
 void storeFace(OBJ* decoded, std::vector<std::string> tokens) {
 	if (tokens.size() <= 1) { return; }
 	Face f;
-	Vertex v;
+	vec3 v;
 	for (int i = 1; i < tokens.size(); i++) {
 		if (tokens[i].compare(" ") == 0) { continue; }
 		if (tokens[i].compare("#") == 0) { break; }
@@ -142,7 +142,7 @@ void OBJ::printFaces() {
 }
 
 int main(int argc, char** argv){
-	OBJ* abc = OBJ::decodeObj("sample/cube.obj");
+	OBJ* abc = OBJ::decodeObj("sample/sphere.obj");
 	//abc->printVertices();
 	abc->printFaces();
 	return 0;

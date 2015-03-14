@@ -1,35 +1,23 @@
 #include <vector>
 #include <cstdlib>
+#ifndef GEOMETRY_H
+#include "geometry.hpp"
+#endif
 
-class Vertex {
+/*class vec3 {
 public:
 	int dimension;
 	float x; float y; float z;
 
-	void print() { std::cout << "Vertex: ( " << x << " , " << y << " , " << z << " )" << std::endl; }
-};
-
-/* class VertexTexture {
-public:
-	float u; float v; float w;
-};
-
-class VertexNormal {
-public:
-	float x; float y; float z;
-};
-
-class VertexParameter {
-public:
-	float u; float v; float w;
-}; */
+	void print() { std::cout << "vec3: ( " << x << " , " << y << " , " << z << " )" << std::endl; }
+};*/
 
 class Face {
 public:
 	int type;
-	std::vector<Vertex> v;
-	std::vector<Vertex> vt;
-	std::vector<Vertex> vn;
+	std::vector<vec3> v;
+	std::vector<vec3> vt;
+	std::vector<vec3> vn;
 	void print() {
 		std::cout << "Face: " << std::endl;
 		for (int i = 0; i < v.size(); i++) {
@@ -46,10 +34,10 @@ public:
 
 class OBJ {
 public:
-	std::vector<Vertex> v; 
-	std::vector<Vertex> vt;
-	std::vector<Vertex> vn;
-	std::vector<Vertex> vp;
+	std::vector<vec3> v; 
+	std::vector<vec3> vt;
+	std::vector<vec3> vn;
+	std::vector<vec3> vp;
 	std::vector<Face> faces;
 
 	static OBJ* decodeObj(std::string filename);
