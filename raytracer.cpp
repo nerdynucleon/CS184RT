@@ -7,6 +7,7 @@
 #ifndef SCENE_H
 #include "scene.hpp"
 #endif
+#include "lodepng.h"
 
 #define RECURSIVE_DEPTH 10
 #define EPS 0.1;
@@ -26,8 +27,10 @@ void parseInput(int argc, char** argv){
 int main(int argc, char** argv){
   parseInput(argc, argv);
   imageRGBA = (unsigned char *) malloc(sizeof(unsigned char) * 4 * pixelsHigh * pixelsWide);
-  generateImage(outputFilename, imageRGBA, pixelsWide, pixelsHigh);
-
+  generateImage();
+  std::vector<unsigned char> png;
+  lodepng::encode(png, imageRGBA, pixelsWide, pixelsHigh);
+  lodepng::save_file(png, outputFilename);
 }
 
 /* Function used to recursively trace rays */
@@ -60,8 +63,7 @@ void generateImage(){
     for(int i = 0; i < pixelsWide; j++){
       /* Generate eye ray from pixel sample and initialize pixel color */
       Ray eyeray = s.cam.getRay((i+0.5)/pixelsWide, (j+0.5)/pixelsHigh);
-      RGB pixelColor = RGB(0,0,0);
-      recursiveRT(eyeray, RECURSIVE_DEPTH, pixelColor);
+      RGB pixelColor = recursiveRT(eyeray, RECURSIVE_DEPTH, pixelColor);
     }
   }
 }
