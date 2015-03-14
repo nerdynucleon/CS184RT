@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
+#ifndef OBJ_DECODE_H
 #include "objDecode.hpp"
+#endif
 
 /* http://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring */
 #include <algorithm> 

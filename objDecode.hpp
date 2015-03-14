@@ -1,8 +1,11 @@
-#include <vector>
-#include <cstdlib>
 #ifndef GEOMETRY_H
 #include "geometry.hpp"
 #endif
+#ifndef OBJ_DECODE_H
+#define OBJ_DECODE_H
+#include <vector>
+#include <cstdlib>
+
 
 /*class vec3 {
 public:
@@ -44,3 +47,4 @@ public:
 	void printVertices();
 	void printFaces();
 };
+#endif
