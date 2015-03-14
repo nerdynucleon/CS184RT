@@ -83,6 +83,7 @@ diffGeom* triangle::intersect(ray r){
   float k = v1->y - r.pos.y;
   float l = v1->z - r.pos.z;
   float M = a*(e*i - h*f) + b*(g*f - d*i) + c*(d*h - e*g);
+  /* check divide by zero condition */ 
   if(M == 0.0){
     return NULL;
   }
@@ -92,7 +93,9 @@ diffGeom* triangle::intersect(ray r){
   if(gamma < 0 || gamma > 1) return NULL;
   float beta = (j*(e*i - h*f) + k*(g*f - d*i) + l*(d*h - e*g))/M;
   if(beta < 0 || beta > 1) return NULL;
-
+  /* Interpolate Triangle Normals */
+  vec3 norm = v1*(1 - gamma - beta) + v2*beta + v3*gamma;
+  return new diffGeom(r.pos + t*r.dir, norm2(norm), brdf);
 }
 
 sphere::sphere(float x, float y, float z, float radiusIn){
@@ -114,9 +117,11 @@ diffGeom* sphere::intersect(ray r){
   t2 += det;
   t2 /= r.dir*r.dir;
   t1 /= r.dir*r.dir;
-  if(t1 > r.t_min){
-     
+  if(t1 > r.t_min && t1 < r.t_max){
+    return new diffGeom(r.pos + t1*r.dir, norm2(r.pos + t1*r.dir - center), brdf);
+  } else if (t2 > r.t_min && t2 < r.t_max) {
+    return new diffGeom(r.pos + t2*r.dir, norm2(r.pos + t2*r.dir - center), brdf);
+  } else {
+    return NULL;
   }
-
-
 }
