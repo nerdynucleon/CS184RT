@@ -33,6 +33,13 @@ int main(int argc, char** argv){
   lodepng::save_file(png, outputFilename);
 }
 
+
+
+RGB shading(diffGeom dg, Light* l){
+  
+}
+
+
 /* Function used to recursively trace rays */
 RGB recursiveRT(Ray r, int depth, color c){
   if(depth == 0){
