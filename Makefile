@@ -1,4 +1,4 @@
-all: camera geometry color objDecode
+all: camera geometry color
 	gcc raytracer.cpp -o main
 camera: camera.cpp camera.hpp
 	gcc -c camera.hpp camera.cpp
