@@ -8,6 +8,7 @@
 #include <vector>
 #define VECTOR_H
 #endif
+#include <cfloat>
 
 void Scene::add(Light *l){
   lights.push_back(l);
@@ -15,4 +16,17 @@ void Scene::add(Light *l){
 
 void Scene::add(sceneObject *obj){
   objects.push_back(obj);
+}
+
+diffGeom* Scene::trace(ray r, diffGeom *dg){
+  *dg = NULL;
+  float t_max = FLT_MAX;
+  diffGeom* temp;
+  for(int i = 0; i < objects.size(); i++){
+    sceneObject* o = objects[i];
+    temp=(*o).trace(r, &t_max);
+    if(temp){
+      *dg = temp; 
+    }
+ } 
 }
