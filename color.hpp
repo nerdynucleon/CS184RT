@@ -4,6 +4,7 @@
 class RGB{
   public:
     float r; float g; float b;
+    RGB operator+=(RGB);
     RGB(float, float, float);
 };
 

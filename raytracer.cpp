@@ -34,12 +34,12 @@ int main(int argc, char** argv){
 }
 
 /* Function used to recursively trace rays */
-color recursiveRT(Ray r, int depth, color c){
+RGB recursiveRT(Ray r, int depth, color c){
   if(depth == 0){
     return;
   } else {
     diffGeom dg;
-    if(scene.trace(r, &dg)){
+    if(s.trace(r, &dg)){
       /* Calculate Contribution from Light Sources */
       for(int i = 0; i < s.lights.size(); i++){
         Light* l = s.lights[i];
@@ -55,6 +55,7 @@ color recursiveRT(Ray r, int depth, color c){
       */
     }
   }
+  return c;
 }
 
 void generateImage(){
@@ -63,7 +64,7 @@ void generateImage(){
     for(int i = 0; i < pixelsWide; j++){
       /* Generate eye ray from pixel sample and initialize pixel color */
       Ray eyeray = s.cam.getRay((i+0.5)/pixelsWide, (j+0.5)/pixelsHigh);
-      RGB pixelColor = recursiveRT(eyeray, RECURSIVE_DEPTH, pixelColor);
+      RGB pixelColor = recursiveRT(eyeray, RECURSIVE_DEPTH, RGB(0,0,0));
     }
   }
 }
