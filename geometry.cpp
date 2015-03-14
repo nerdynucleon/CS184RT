@@ -53,6 +53,14 @@ vec3 norm2(vec3 v1){
   return vec3(v1.x/length, v1.y/length, v1.z/length);
 }
 
+/* Construct differential geometry */
+diffGeom::diffGeom(vec3 p, vec3 n, BRDF *in){
+  pos = p;
+  normal = n;
+  brdf = in;
+}
+
+
 /* Construct a ray */
 ray::ray(vec3 pin, vec3 din, float t_minimum, float t_maximum){
   pos = pin;
@@ -69,6 +77,7 @@ Light::Light(RGB *colorIn, float x, float y, float z):
   intensity(colorIn->r, colorIn->g, colorIn->b), pos(x,y,z){
 }
 
+/* Ray triangle intersection */
 diffGeom* triangle::intersect(ray r){
   float a = v1->x - v2->x;
   float b = v1->y - v2->y;
@@ -94,8 +103,8 @@ diffGeom* triangle::intersect(ray r){
   float beta = (j*(e*i - h*f) + k*(g*f - d*i) + l*(d*h - e*g))/M;
   if(beta < 0 || beta > 1) return NULL;
   /* Interpolate Triangle Normals */
-  vec3 norm = v1*(1 - gamma - beta) + v2*beta + v3*gamma;
-  return new diffGeom(r.pos + t*r.dir, norm2(norm), brdf);
+  vec3 norm = (*v1)*(1 - gamma - beta) + (*v2)*beta + (*v3)*gamma;
+  return new diffGeom(r.pos + r.dir*t, norm2(norm), brdf);
 }
 
 sphere::sphere(float x, float y, float z, float radiusIn){
@@ -112,15 +121,15 @@ diffGeom* sphere::intersect(ray r){
   if(r.dir * r.dir == 0) return NULL;
   float t1 = -r.dir*(r.pos-center);
   float t2 = t1;
-  float det = sqrt(pow(r.dir*(r.pos-center),2) - r.dir*r.dir*pow((pos-center)*(pos-center) - radius*radius,2));
+  float det = sqrt(pow(r.dir*(r.pos-center),2) - r.dir*r.dir*pow((r.pos-center)*(r.pos-center) - radius*radius,2));
   t1 -= det;
   t2 += det;
   t2 /= r.dir*r.dir;
   t1 /= r.dir*r.dir;
   if(t1 > r.t_min && t1 < r.t_max){
-    return new diffGeom(r.pos + t1*r.dir, norm2(r.pos + t1*r.dir - center), brdf);
+    return new diffGeom(r.pos + r.dir*t1, norm2(r.pos + r.dir*t1 - center), brdf);
   } else if (t2 > r.t_min && t2 < r.t_max) {
-    return new diffGeom(r.pos + t2*r.dir, norm2(r.pos + t2*r.dir - center), brdf);
+    return new diffGeom(r.pos + r.dir*t2, norm2(r.pos + r.dir*t2 - center), brdf);
   } else {
     return NULL;
   }

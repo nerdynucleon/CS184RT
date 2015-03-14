@@ -35,6 +35,7 @@ class Light{
 /* Returned from a ray object intersection*/
 class diffGeom{
   public:
+    diffGeom(vec3, vec3, BRDF*);
     vec3 pos;
     vec3 normal;
     BRDF *brdf;
@@ -66,14 +67,15 @@ class triangle: public sceneObject {
     triangle(vec3,vec3,vec3,BRDF*);
     triangle(vec3,vec3,vec3,vec3,vec3,vec3,BRDF*);
 };
-class sphere: public diffGeom{
 
+class sphere: public sceneObject {
   public:
     sphere(float, float, float, float);
     sphere(vec3, float);
     diffGeom *intersect(ray);
     vec3 center;
     float radius;
+    BRDF *brdf;
 };
 
 #endif
