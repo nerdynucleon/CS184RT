@@ -7,6 +7,8 @@
 #include <cstdlib>
 #include <iostream>
 
+
+
 /* Used as a point in space or as a direction */
 class vec3{
   public:
@@ -23,6 +25,9 @@ class vec3{
     void print() { std::cout << "vec3: ( " << x << " , " << y << " , " << z << " )" << std::endl; }
 };
 
+float dist(vec3, vec3);
+vec3 norm2(vec3);
+
 /* Positional Light */
 class Light{
   public:
@@ -36,6 +41,7 @@ class Light{
 class diffGeom{
   public:
     diffGeom(vec3, vec3, BRDF*);
+    diffGeom();
     vec3 pos;
     vec3 normal;
     BRDF *brdf;
@@ -54,7 +60,7 @@ class ray{
 /* Parent class for scene geoemetry */
 class sceneObject{
   public:
-    virtual diffGeom* intersect(ray,float*) = 0;
+    virtual bool intersect(ray,float*,diffGeom*) = 0;
 };
 
 /* Geometry Primitive */
@@ -63,16 +69,16 @@ class triangle: public sceneObject {
     vec3 *v1; vec3 *v2; vec3 *v3;
     vec3 *n1; vec3 *n2; vec3 *n3;
     BRDF *brdf;
-    diffGeom* intersect(ray,float*);
+    bool intersect(ray,float*,diffGeom*);
     triangle(vec3,vec3,vec3,BRDF*);
     triangle(vec3,vec3,vec3,vec3,vec3,vec3,BRDF*);
 };
 
 class sphere: public sceneObject {
   public:
-    sphere(float, float, float, float*);
+    sphere(float, float, float, float);
     sphere(vec3, float);
-    diffGeom* intersect(ray,float);
+    bool intersect(ray,float*,diffGeom*);
     vec3 center;
     float radius;
     BRDF *brdf;
