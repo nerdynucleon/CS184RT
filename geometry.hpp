@@ -54,7 +54,7 @@ class ray{
 /* Parent class for scene geoemetry */
 class sceneObject{
   public:
-    virtual diffGeom *intersect(ray) = 0;
+    virtual diffGeom* intersect(ray,float*) = 0;
 };
 
 /* Geometry Primitive */
@@ -63,16 +63,16 @@ class triangle: public sceneObject {
     vec3 *v1; vec3 *v2; vec3 *v3;
     vec3 *n1; vec3 *n2; vec3 *n3;
     BRDF *brdf;
-    diffGeom *intersect(ray);
+    diffGeom* intersect(ray,float*);
     triangle(vec3,vec3,vec3,BRDF*);
     triangle(vec3,vec3,vec3,vec3,vec3,vec3,BRDF*);
 };
 
 class sphere: public sceneObject {
   public:
-    sphere(float, float, float, float);
+    sphere(float, float, float, float*);
     sphere(vec3, float);
-    diffGeom *intersect(ray);
+    diffGeom* intersect(ray,float);
     vec3 center;
     float radius;
     BRDF *brdf;
