@@ -11,6 +11,11 @@
 #define RECURSIVE_DEPTH 10
 #define EPS 0.1;
 
+
+unsigned char imageRGBA*;
+int pixelsWide;
+int pixelsHigh;
+char* outputFilename;
 Scene s;
 
 /* Parse commands line inputs */
@@ -20,12 +25,33 @@ void parseInput(int argc, char** argv){
 
 int main(int argc, char** argv){
   parseInput(argc, argv);
-  generateImage();
+  imageRGBA = (unsigned char *) malloc(sizeof(unsigned char) * 4 * pixelsHigh * pixelsWide);
+  generateImage(outputFilename, imageRGBA, pixelsWide, pixelsHigh);
+
 }
 
 /* Function used to recursively trace rays */
 color recursiveRT(Ray r, int depth, color c){
-  diffGeom dg; s.trace(eyeray, &dg);
+  if(depth == 0){
+    return;
+  } else {
+    diffGeom dg;
+    if(scene.trace(r, &dg)){
+      /* Calculate Contribution from Light Sources */
+      for(int i = 0; i < s.lights.size(); i++){
+        Light* l = s.lights[i];
+        Ray shadowRay = ray(dg.pos,(l->pos - dg.pos), EPS, dist(l->pos,dg.pos));
+        if(!s.trace(shadowRay, NULL)){
+          c += shading(dg);
+        }
+      }
+      /* Calculate Reflection Rays
+      if(dg.kr > 0){
+
+      }
+      */
+    }
+  }
 }
 
 void generateImage(){
@@ -36,12 +62,6 @@ void generateImage(){
       Ray eyeray = s.cam.getRay((i+0.5)/pixelsWide, (j+0.5)/pixelsHigh);
       RGB pixelColor = RGB(0,0,0);
       recursiveRT(eyeray, RECURSIVE_DEPTH, pixelColor);
-      
-      if(dg != NULL){
-
-      } else {
-
-      }
     }
   }
 }
