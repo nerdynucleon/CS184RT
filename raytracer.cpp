@@ -66,7 +66,7 @@ RGB shading(diffGeom dg, Light* l, ray eyeRay){
   /* Viewer ray */
   vec3 viewer = (dg->pos) - (eyeRay->pos);
   /* Specular */
-  float dotvr = pow(fmax( * reflection, 0), brdf->s);
+  float dotvr = pow(fmax(viewer * reflection, 0), brdf->s);
   if (brdf->ks->r > 0) {
     r += (brdf->ks->r) * (l->intensity.r) * dotvr;
   }

@@ -12,7 +12,7 @@ public:
 	void print() { std::cout << "vec3: ( " << x << " , " << y << " , " << z << " )" << std::endl; }
 };*/
 
-class Face {
+/* class Face {
 public:
 	int type;
 	std::vector<vec3> v;
@@ -30,7 +30,7 @@ public:
 			vn[i].print();
 		}
 	};
-};
+}; */
 
 class OBJ {
 public:
@@ -38,7 +38,7 @@ public:
 	std::vector<vec3> vt;
 	std::vector<vec3> vn;
 	std::vector<vec3> vp;
-	std::vector<Face> faces;
+	std::vector<triangle> faces;
 
 	static OBJ* decodeObj(std::string filename);
 	void printVertices();

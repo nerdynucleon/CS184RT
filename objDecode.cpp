@@ -65,7 +65,7 @@ void storeVertex(OBJ* decoded, std::vector<std::string> tokens, int type) {
 
 void storeFace(OBJ* decoded, std::vector<std::string> tokens) {
 	if (tokens.size() <= 1) { return; }
-	Face f;
+	triangle f;
 	vec3 v;
 	for (int i = 1; i < tokens.size(); i++) {
 		if (tokens[i].compare(" ") == 0) { continue; }
@@ -73,22 +73,31 @@ void storeFace(OBJ* decoded, std::vector<std::string> tokens) {
 		size_t find = tokens[i].find('/');
 		if (find == std::string::npos) {
 			v = decoded->v[decoded->v.size() - std::stoi(tokens[i])];
-			f.v.push_back(v);
-			f.type = FACE_V;
+			if (i == 1) { f.v1 = v; }
+			if (i == 2) { f.v2 = v; }
+			if (i == 3) { f.v3 = v; }
+			//f.v.push_back(v);
+			//f.type = FACE_V;
 		}
 		else if ((find != std::string::npos) && (tokens[i].substr(find, find+1).compare("/") == 0)) {
 			std::vector<std::string> subtokens = split(tokens[i], char(47));
 			v = decoded->v[decoded->v.size() - std::stoi(subtokens[0])];
-			f.v.push_back(v);
-			f.type = FACE_VN;
+			if (i == 1) { f.v1 = v; }
+			if (i == 2) { f.v2 = v; }
+			if (i == 3) { f.v3 = v; }
+			//f.v.push_back(v);
+			//f.type = FACE_VN;
 			v = decoded->vt[decoded->v.size() - std::stoi(subtokens[2])];
-			f.vn.push_back(v);
+			if (i == 1) { f.n1 = v; }
+			if (i == 2) { f.n2 = v; }
+			if (i == 3) { f.n3 = v; }
+			//f.vn.push_back(v);
 		}
+		/* VERTEX TEXTURE PNTS
 		else if (find != std::string::npos) {
 			std::vector<std::string> subtokens = split(tokens[i], char(47));
 			v = decoded->v[decoded->v.size() - std::stoi(subtokens[0])];
 			f.v.push_back(v);
-			v.print(); // debug
 			f.type = FACE_V;
 			if (subtokens.size() >= 2) {
 				v = decoded->vt[decoded->v.size() - std::stoi(subtokens[1])];
@@ -98,7 +107,7 @@ void storeFace(OBJ* decoded, std::vector<std::string> tokens) {
 				v = decoded->vt[decoded->v.size() - std::stoi(subtokens[2])];
 				f.vn.push_back(v); f.type = FACE_VVTN;
 			}
-		}
+		} */
 	}
 	decoded->faces.push_back(f);
 }
@@ -134,16 +143,17 @@ void OBJ::printVertices() {
 }
 
 void OBJ::printFaces() {
-	if (faces.size() > 0) {
+	// Not supported atm
+	/* if (faces.size() > 0) {
 		for (int i = 0; i < faces.size(); i++) {
 			faces[i].print();
 		}
-	}
+	} */
 }
 
 int main(int argc, char** argv){
 	OBJ* abc = OBJ::decodeObj("sample/sphere.obj");
 	//abc->printVertices();
-	abc->printFaces();
+	//abc->printFaces();
 	return 0;
 }
