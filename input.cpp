@@ -54,7 +54,7 @@ void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 }
 
 void parseCam(std::vector<std::string> tokens, Scene *s) {
-	float data[12];
+	float data[20];
 	int depth = 0;
 	for (std::vector<std::string>::size_type i = 0; i != tokens.size(); i++) {
 		if (tokens[i].compare(" ") != 0) { 
