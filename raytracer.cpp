@@ -89,7 +89,6 @@ RGB recursiveRT(ray r, int depth, RGB c){
       }
       /* Calculate Reflection Rays
       if(dg.kr > 0){
-
       }
       */
     }
