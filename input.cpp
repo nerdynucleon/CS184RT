@@ -43,7 +43,7 @@ void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
 		if (tokens[i].compare("") != 0) { 
 			//if (depth > )
-			data[i] = std::stof(tokens[i]);
+			data[depth] = std::stof(tokens[i]);
 			depth += 1;
 		}
 	}
@@ -72,7 +72,7 @@ void parsePointLight(std::vector<std::string> tokens, Scene *s) {
 	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
 		if (tokens[i].compare("") != 0) { 
 			if (depth != 6) {
-				data[i] = std::stof(tokens[i]);
+				data[depth] = std::stof(tokens[i]);
 			} else {
 				falloff = std::stoi(tokens[i]);
 			}
@@ -90,7 +90,7 @@ void parseDirectional(std::vector<std::string> tokens, Scene *s) {
 	int depth = 0;
 	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
 		if (tokens[i].compare("") != 0) { 
-			data[i] = std::stof(tokens[i]);
+			data[depth] = std::stof(tokens[i]);
 			depth += 1;
 		}
 	} 
@@ -105,7 +105,7 @@ void parseAmbientLight(std::vector<std::string> tokens, Scene *s) {
 	int depth = 0;
 	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
 		if (tokens[i].compare("") != 0) { 
-			data[i] = std::stof(tokens[i]);
+			data[depth] = std::stof(tokens[i]);
 			depth += 1;
 		}
 	} 
@@ -119,7 +119,7 @@ void parseTriangle(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	int depth = 0;
 	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
 		if (tokens[i].compare("") != 0) { 
-			data[i] = std::stof(tokens[i]);
+			data[depth] = std::stof(tokens[i]);
 			depth += 1;
 		}
 	} 
@@ -154,8 +154,8 @@ void parseScale(std::vector<std::string> tokens, Scene *s) {
 BRDF* parseMat(std::vector<std::string> tokens, Scene *s) {
 	float data[13]; int depth = 0;
 	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
-		if (tokens[i].compare(" ") != 0) { 
-			data[i] = std::stof(tokens[i]);
+		if (tokens[i].compare("") != 0) { 
+			data[depth] = std::stof(tokens[i]);
 			depth += 1;
 		}
 	}
