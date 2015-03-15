@@ -12,6 +12,7 @@
 #include <string>
 #include <sstream>
 #include <cstdio>
+#include <iterator>
 
 /* TODO: 
 	• If a line has extra parameters then those parameters should be ignored and a warning message
@@ -21,23 +22,15 @@ should be printed to stderr
 unsupported feature and the program should then ignore the line. 
 */
 
-/* http://stackoverflow.com/questions/236129/split-a-string-in-c */
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-    std::stringstream ss(s);
-    std::string item;
-    while (std::getline(ss, item, delim)) {
-        elems.push_back(item);
-    }
-    return elems;
+std::vector<std::string> split(const std::string &str, char delimiter) {
+	std::vector <std::string> tokens;
+	std::stringstream stream(str);
+	std::string temp;
+	while (std::getline(stream, temp, delimiter)) {
+		tokens.push_back(temp);
+	}
+	return tokens;
 }
-
-
-std::vector<std::string> split(const std::string &s, char delim) {
-    std::vector<std::string> elems;
-    split(s, delim, elems);
-    return elems;
-}
-/***/
 
 void argumentError(std::string command, int expected) {
 	std::string err = "Not enough arguments in " + command + ". Expected: " + std::to_string(expected);
@@ -47,8 +40,8 @@ void argumentError(std::string command, int expected) {
 void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	float data[4];
 	int depth = 0;
-	for (std::vector<std::string>::size_type i = 0; i != tokens.size(); i++) {
-		if (tokens[i].compare(" ") != 0) { 
+	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
+		if (tokens[i].compare("") != 0) { 
 			//if (depth > )
 			data[i] = std::stof(tokens[i]);
 			depth += 1;
@@ -61,14 +54,14 @@ void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 }
 
 void parseCam(std::vector<std::string> tokens, Scene *s) {
-	float data[20];
+	float data[15];
 	int depth = 0;
-	for (std::vector<std::string>::size_type i = 0; i != tokens.size(); i++) {
-		if (tokens[i].compare(" ") != 0) { 
-			data[i] = std::stof(tokens[i]);
+	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
+		if (tokens[i].compare("") != 0) {
+			data[depth] = std::stof(tokens[i]);
 			depth += 1;
 		}
-	} 
+	}
 	s->cam = new camera(data);
 	s->cam->print();
 }
@@ -76,8 +69,8 @@ void parseCam(std::vector<std::string> tokens, Scene *s) {
 void parsePointLight(std::vector<std::string> tokens, Scene *s) {
 	float data[6];
 	int falloff = 0; int depth = 0;
-	for (std::vector<std::string>::size_type i = 0; i != tokens.size(); i++) {
-		if (tokens[i].compare(" ") != 0) { 
+	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
+		if (tokens[i].compare("") != 0) { 
 			if (depth != 6) {
 				data[i] = std::stof(tokens[i]);
 			} else {
@@ -95,8 +88,8 @@ void parsePointLight(std::vector<std::string> tokens, Scene *s) {
 void parseDirectional(std::vector<std::string> tokens, Scene *s) {
 	float data[6];
 	int depth = 0;
-	for (std::vector<std::string>::size_type i = 0; i != tokens.size(); i++) {
-		if (tokens[i].compare(" ") != 0) { 
+	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
+		if (tokens[i].compare("") != 0) { 
 			data[i] = std::stof(tokens[i]);
 			depth += 1;
 		}
@@ -110,8 +103,8 @@ void parseDirectional(std::vector<std::string> tokens, Scene *s) {
 void parseAmbientLight(std::vector<std::string> tokens, Scene *s) {
 	float data[3];
 	int depth = 0;
-	for (std::vector<std::string>::size_type i = 0; i != tokens.size(); i++) {
-		if (tokens[i].compare(" ") != 0) { 
+	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
+		if (tokens[i].compare("") != 0) { 
 			data[i] = std::stof(tokens[i]);
 			depth += 1;
 		}
@@ -124,8 +117,8 @@ void parseAmbientLight(std::vector<std::string> tokens, Scene *s) {
 void parseTriangle(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	float data[9];
 	int depth = 0;
-	for (std::vector<std::string>::size_type i = 0; i != tokens.size(); i++) {
-		if (tokens[i].compare(" ") != 0) { 
+	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
+		if (tokens[i].compare("") != 0) { 
 			data[i] = std::stof(tokens[i]);
 			depth += 1;
 		}
@@ -160,7 +153,7 @@ void parseScale(std::vector<std::string> tokens, Scene *s) {
 
 BRDF* parseMat(std::vector<std::string> tokens, Scene *s) {
 	float data[13]; int depth = 0;
-	for (std::vector<std::string>::size_type i = 0; i != tokens.size(); i++) {
+	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
 		if (tokens[i].compare(" ") != 0) { 
 			data[i] = std::stof(tokens[i]);
 			depth += 1;
@@ -178,24 +171,22 @@ void parseInput(int argc, char** argv, Scene *s) {
 	std::string line;
 	BRDF *mat;
 	while (getline(std::cin, line)) {
-		std::vector<std::string> tokens = split(line, char(32));
-		for (std::vector<std::string>::size_type i = 0; i != tokens.size(); i++) {
-			if (tokens[0].compare("cam") == 0) { parseCam(tokens, s); }
-			//else if (tokens[0].compare("mat") == 0) { mat = parseMat(tokens, s); }
-			else if (tokens[0].compare("sph") == 0) { parseSphere(tokens, s, mat); }
-			else if (tokens[0].compare("ltp") == 0) { parsePointLight(tokens, s); }
-			else if (tokens[0].compare("ltd") == 0) { parseDirectional(tokens, s); }
-			else if (tokens[0].compare("lta") == 0) { parseAmbientLight(tokens, s); }
-			else if (tokens[0].compare("tri") == 0) { parseTriangle(tokens, s, mat); }
-			//else if (tokens[0].compare("obj") == 0) { parseObj(tokens, s, mat); }
-			//else if (tokens[0].compare("xft") == 0) { parseTranslation(tokens, s, mat); }
-			//else if (tokens[0].compare("xfr") == 0) { parseRotation(tokens, s, mat); }
-			//else if (tokens[0].compare("xfs") == 0) { parseScale(tokens, s, mat); }
-			else if (tokens[0].compare("xft") == 0) { /* Set curr trans = identity */ }
-		}
+		std::vector<std::string> tokens = split(line, ' ');
+		if (tokens[0].compare("cam") == 0) { parseCam(tokens, s); }
+		//else if (tokens[0].compare("mat") == 0) { mat = parseMat(tokens, s); }
+		else if (tokens[0].compare("sph") == 0) { parseSphere(tokens, s, mat); }
+		else if (tokens[0].compare("ltp") == 0) { parsePointLight(tokens, s); }
+		else if (tokens[0].compare("ltd") == 0) { parseDirectional(tokens, s); }
+		else if (tokens[0].compare("lta") == 0) { parseAmbientLight(tokens, s); }
+		else if (tokens[0].compare("tri") == 0) { parseTriangle(tokens, s, mat); }
+		//else if (tokens[0].compare("obj") == 0) { parseObj(tokens, s, mat); }
+		//else if (tokens[0].compare("xft") == 0) { parseTranslation(tokens, s, mat); }
+		//else if (tokens[0].compare("xfr") == 0) { parseRotation(tokens, s, mat); }
+		//else if (tokens[0].compare("xfs") == 0) { parseScale(tokens, s, mat); }
+		else if (tokens[0].compare("xft") == 0) { /* Set curr trans = identity */  }
 	}
 	printf("here\n");
-}
+} 
 
 /* class Scene{
   public:
