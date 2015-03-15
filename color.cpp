@@ -18,6 +18,24 @@ RGB::RGB(){
   b = 0;
 }
 
+unsigned char RGB::convert(int color){
+  float c;
+  if(color == RED){
+    c = r;
+  } else if (color == GREEN){
+    c = g;
+  } else if (color == BLUE){
+    c = b;
+  }
+  if(c < 0){
+    return 0;
+  } else if (c > 1){
+    return 255;
+  } else {
+    return (unsigned char) c * 255;
+  }
+}
+
 void RGB::print() {
   std::cout << "RGB: {" << r << ", " << g << ", " << b << "}" << std::endl;
 }

@@ -10,6 +10,9 @@
 #include "lodepng.h"
 #include <cmath>
 #include "input.hpp"
+#ifndef COLOR_H
+#include "color.hpp"
+#endif
 
 #ifndef CFLOAT_H
 #include <cfloat>
@@ -19,7 +22,7 @@
 #define EPS 0.1
 
 
-std::vector<unsigned char> imageRGBA;
+unsigned char* imageRGBA;
 int pixelsWide = 1000;
 int pixelsHigh = 500;
 const char* outputFilename;
@@ -108,9 +111,9 @@ void generateImage(){
       /* Generate eye ray from pixel sample and initialize pixel color */
       ray eyeray = s.cam->getRay((i+0.5)/pixelsWide, (j+0.5)/pixelsHigh);
       RGB pixelColor = recursiveRT(eyeray, RECURSIVE_DEPTH, RGB(0,0,0));
-      imageRGBA[(pixelsWide * j + i)*4] = pixelColor.r;
-      imageRGBA[(pixelsWide * j + i)*4 + 1] = pixelColor.g;
-      imageRGBA[(pixelsWide * j + i)*4 + 2] = pixelColor.b;
+      imageRGBA[(pixelsWide * j + i)*4] = pixelColor.convert(RED);
+      imageRGBA[(pixelsWide * j + i)*4 + 1] = pixelColor.convert(GREEN);
+      imageRGBA[(pixelsWide * j + i)*4 + 2] = pixelColor.convert(BLUE);
       imageRGBA[(pixelsWide * j + i)*4 + 3] = 255;
     }
   }
@@ -118,10 +121,11 @@ void generateImage(){
 
 int main(int argc, char** argv){
   parseInput(argc, argv, &s);
+  imageRGBA = (unsigned char*) malloc(pixelsWide * pixelsHigh * 4 * sizeof(unsigned char));
   generateImage();
   std::vector<unsigned char> png;
   outputFilename = "output.png";
-  if (lodepng::encode(png, imageRGBA, pixelsWide, pixelsHigh)) {
+  if (!lodepng::encode(png, imageRGBA, pixelsWide, pixelsHigh)) {
     lodepng::save_file(png, outputFilename);
   } else {
     fprintf(stderr, "Failed to encode file.\n");

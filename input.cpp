@@ -199,5 +199,4 @@ void parseInput(int argc, char** argv, Scene *s) {
 		//else if (tokens[0].compare("xfs") == 0) { parseScale(tokens, s, mat); }
 		else if (tokens[0].compare("xfz") == 0) { /* Set curr trans = identity */  }
 	}
-	printf("here\n");
 } 

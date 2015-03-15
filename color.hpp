@@ -2,6 +2,10 @@
 #define COLOR_H
 #include <iostream>
 
+#define RED 0
+#define GREEN 1
+#define BLUE 2
+
 class RGB{
   public:
     float r; float g; float b;
@@ -11,6 +15,7 @@ class RGB{
     RGB(float, float, float);
     RGB();
     void print();
+    unsigned char convert(int);
 };
 
 class BRDF{ 

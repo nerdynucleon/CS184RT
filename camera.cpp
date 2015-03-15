@@ -6,7 +6,10 @@
 #include "camera.hpp"
 #define CAMERA_H
 #endif
+#ifndef CFLOAT_H
 #include <cfloat>
+#define CFLOAT_H
+#endif
 
 camera::camera(float input[]){
   vec3 lr = vec3(input[6], input[7], input[8]);
@@ -24,8 +27,8 @@ ray camera::getRay(float u, float v){
 }
 
 void camera::print(){
-  printf("eye: %f %f %f",eye->x, eye->y, eye->z);
-  printf("view: %f %f %f",view->x, view->y, view->z);
+  printf("eye: %f %f %f\n",eye->x, eye->y, eye->z);
+  printf("view: %f %f %f\n",view->x, view->y, view->z);
   printf("up: %f %f %f", up->x, up->y, up->z);
   printf("right: %f %f %f", right->x, right->y, right->z);
 }

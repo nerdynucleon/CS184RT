@@ -51,6 +51,10 @@ vec3::vec3(float xin, float yin, float zin){
   x = xin; y = yin; z = zin;
 }
 
+void vec3::print(){
+  printf("%f %f %f\n",x,y,z);
+}
+
 /* Calculate the distance between two positions */
 float dist(vec3 v1, vec3 v2){
   return sqrt(pow(v1.x - v2.x,2) + pow(v1.y - v2.y,2) + pow(v1.z - v2.z,2));
@@ -79,6 +83,13 @@ ray::ray(vec3 pin, vec3 din, float t_minimum, float t_maximum){
   dir = din;
   t_min = t_minimum;
   t_max = t_maximum;
+}
+
+void ray::print(){
+  printf("Ray:\n t_min: %f\n t_max: %f\npos: ",t_min,t_max);
+  pos.print();
+  printf("dir: ");
+  dir.print();
 }
 
 Light::Light(float rIn, float gIn, float bIn, float x, float y, float z):

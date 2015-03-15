@@ -24,9 +24,7 @@ class vec3{
     vec3 operator/(float);
     vec3 reflect(vec3);
     float x; float y; float z;
-
-    /* Debug */
-    void print() { std::cout << "{" << x << ", " << y << ", " << z << "}" << std::endl; }
+    void print();
 };
 
 float dist(vec3, vec3);
@@ -63,6 +61,7 @@ class ray{
     vec3 dir;
     float t_min;
     float t_max;
+    void print();
 };
 
 /* Parent class for scene geoemetry */
