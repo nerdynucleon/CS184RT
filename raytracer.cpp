@@ -19,7 +19,7 @@
 #define EPS 0.1
 
 
-unsigned char* imageRGBA;
+std::vector<unsigned char> imageRGBA;
 int pixelsWide = 1000;
 int pixelsHigh = 500;
 char* outputFilename;
@@ -118,9 +118,11 @@ void generateImage(){
 
 int main(int argc, char** argv){
   parseInput(argc, argv, &s);
-  imageRGBA = (unsigned char *) malloc(sizeof(unsigned char) * 4 * pixelsHigh * pixelsWide);
   generateImage();
   std::vector<unsigned char> png;
-  lodepng::encode(png, imageRGBA, pixelsWide, pixelsHigh);
-  lodepng::save_file(png, outputFilename);
+  if (lodepng::encode(png, imageRGBA, pixelsWide, pixelsHigh)){
+    lodepng::save_file(png, outputFilename);
+  } else {
+    fprintf(stderr, "failed to encode file.\n");
+  }
 }
