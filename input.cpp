@@ -11,6 +11,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <cstdio>
 
 /* TODO: 
 	• If a line has extra parameters then those parameters should be ignored and a warning message
@@ -39,7 +40,8 @@ std::vector<std::string> split(const std::string &s, char delim) {
 /***/
 
 void argumentError(std::string command, int expected) {
-	fprintf(stderr, "Not enough arguments in " + command + ". Expected: " + std::to_string(expected));
+	std::string err = "Not enough arguments in " + command + ". Expected: " + std::to_string(expected);
+	fprintf(stderr, "%s", err.c_str());
 }
 
 void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
