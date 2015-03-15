@@ -4,6 +4,9 @@
 #ifndef CAMERA_H
 #include "camera.hpp"
 #endif
+#ifndef GEOMETRY_H
+#include "geometry.hpp"
+#endif
 #include <iostream>
 #include <fstream>
 #include <string>

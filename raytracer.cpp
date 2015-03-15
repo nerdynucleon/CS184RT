@@ -7,23 +7,19 @@
 #ifndef SCENE_H
 #include "scene.hpp"
 #endif
-#include "lodepng-master/lodepng.h"
+#include "lodepng.h"
 #include <cmath>
+#include "input.hpp"
 
 #define RECURSIVE_DEPTH 10
 #define EPS 0.1
 
 
 unsigned char* imageRGBA;
-int pixelsWide;
-int pixelsHigh;
+int pixelsWide = 1000;
+int pixelsHigh = 500;
 char* outputFilename;
-Scene *s;
-
-/* Parse commands line inputs */
-void parseInput(int argc, char** argv){
-
-}
+Scene s;
 
 /* NOTE: Need to expand Light to -> directional, point, ambient subclasses */
 RGB shading(diffGeom dg, Light* l, ray eyeRay){
@@ -102,12 +98,17 @@ void generateImage(){
       /* Generate eye ray from pixel sample and initialize pixel color */
       ray eyeray = s->cam.getRay((i+0.5)/pixelsWide, (j+0.5)/pixelsHigh);
       RGB pixelColor = recursiveRT(eyeray, RECURSIVE_DEPTH, RGB(0,0,0));
+      imageRGBA[(pixelsWide * j + i)*4] = pixelColor.r;
+      imageRGBA[(pixelsWide * j + i)*4 + 1] = pixelColor.g;
+      imageRGBA[(pixelsWide * j + i)*4 + 2] = pixelColor.b;
+      imageRGBA[(pixelsWide * j + i)*4 + 3] = 0;
     }
   }
 }
 
 int main(int argc, char** argv){
-  parseInput(argc, argv);
+  parseInput(argc, argv, &s);
+  printf("allah akbar\n");
   imageRGBA = (unsigned char *) malloc(sizeof(unsigned char) * 4 * pixelsHigh * pixelsWide);
   generateImage();
   std::vector<unsigned char> png;

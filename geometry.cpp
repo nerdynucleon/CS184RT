@@ -9,6 +9,10 @@
 #define NULL 0
 #endif
 
+#define POINT 0
+#define DIR 1
+#define AMB 2
+
 #include <cmath>
 
 /* Basic operations to perform on Vectors */
@@ -72,11 +76,11 @@ ray::ray(vec3 pin, vec3 din, float t_minimum, float t_maximum){
 }
 
 Light::Light(float rIn, float gIn, float bIn, float x, float y, float z):
-  intensity(rIn, gIn, bIn), pos(x,y,z){
+  intensity(rIn, gIn, bIn), v(x,y,z){
 }
 
 Light::Light(RGB *colorIn, float x, float y, float z):
-  intensity(colorIn->r, colorIn->g, colorIn->b), pos(x,y,z){
+  intensity(colorIn->r, colorIn->g, colorIn->b), v(x,y,z){
 }
 
 /* Ray triangle intersection */

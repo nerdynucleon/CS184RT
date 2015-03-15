@@ -28,10 +28,11 @@ class vec3{
 float dist(vec3, vec3);
 vec3 norm2(vec3);
 
-/* Positional Light */
+/* Light parent class */
 class Light{
   public:
-    vec3 pos;
+    int type;
+    vec3 v;
     RGB intensity;
     Light(float, float, float, float, float, float);
     Light(RGB*, float, float, float);
