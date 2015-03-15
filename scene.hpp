@@ -15,9 +15,8 @@ class Scene{
   public:
   	std::vector<sceneObject*> objects;
   	std::vector<Light*> lights;
-    Scene(float[]);
     bool trace(ray, diffGeom*);
     void add(sceneObject*);
     void add(Light*);
-    camera cam;
+    camera *cam;
 };

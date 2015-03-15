@@ -7,6 +7,9 @@
 #include <cstdlib>
 #include <iostream>
 
+#define POINT 0
+#define DIR 1
+#define AMB 2
 
 
 /* Used as a point in space or as a direction */
@@ -27,6 +30,7 @@ class vec3{
 
 float dist(vec3, vec3);
 vec3 norm2(vec3);
+vec3 cross(vec3,vec3);
 
 /* Light parent class */
 class Light{
@@ -71,8 +75,8 @@ class triangle: public sceneObject {
     vec3 *n1; vec3 *n2; vec3 *n3;
     BRDF *brdf;
     bool intersect(ray,float*,diffGeom*);
-    triangle(vec3,vec3,vec3,BRDF*);
-    triangle(vec3,vec3,vec3,vec3,vec3,vec3,BRDF*);
+    triangle(vec3*,vec3*,vec3*,BRDF*);
+    triangle(vec3*,vec3*,vec3*,vec3*,vec3*,vec3*,BRDF*);
 };
 
 class sphere: public sceneObject {

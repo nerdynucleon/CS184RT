@@ -31,9 +31,9 @@ RGB shading(diffGeom dg, Light* l, ray eyeRay){
   vec3 lvec;
   /* Diffuse */
   if(l->type == POINT){
-    lvec = (l->pos - dg.pos);
+    lvec = (l->v - dg.pos);
   } else if (l->type == DIR){
-    lvec = -(l->pos);
+    lvec = -(l->v);
   } else if(l->type == AMB){
     return RGB(r,g,b);
   }
@@ -78,12 +78,12 @@ RGB shading(diffGeom dg, Light* l, ray eyeRay){
 RGB recursiveRT(ray r, int depth, RGB c){
   if(depth != 0){
     diffGeom dg;
-    if(s->trace(r, &dg)){
+    if(s.trace(r, &dg)){
       /* Calculate Contribution from Light Sources */
-      for(int i = 0; i < s->lights.size(); i++){
-        Light* l = s->lights[i];
-        ray shadowRay = ray(dg.pos, l->pos - dg.pos, EPS, dist(l->pos,dg.pos));
-        if(!s->trace(shadowRay, NULL)){
+      for(int i = 0; i < s.lights.size(); i++){
+        Light* l = s.lights[i];
+        ray shadowRay = ray(dg.pos, l->v - dg.pos, EPS, dist(l->v,dg.pos));
+        if(!s.trace(shadowRay, NULL)){
           c += shading(dg, l, r);
         }
       }
@@ -102,7 +102,7 @@ void generateImage(){
   for(int j = 0; j < pixelsHigh; j++){
     for(int i = 0; i < pixelsWide; i++){
       /* Generate eye ray from pixel sample and initialize pixel color */
-      ray eyeray = s->cam.getRay((i+0.5)/pixelsWide, (j+0.5)/pixelsHigh);
+      ray eyeray = s.cam->getRay((i+0.5)/pixelsWide, (j+0.5)/pixelsHigh);
       RGB pixelColor = recursiveRT(eyeray, RECURSIVE_DEPTH, RGB(0,0,0));
       imageRGBA[(pixelsWide * j + i)*4] = pixelColor.r;
       imageRGBA[(pixelsWide * j + i)*4 + 1] = pixelColor.g;

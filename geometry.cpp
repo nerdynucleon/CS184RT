@@ -9,10 +9,6 @@
 #define NULL 0
 #endif
 
-#define POINT 0
-#define DIR 1
-#define AMB 2
-
 #include <cmath>
 
 /* Basic operations to perform on Vectors */
@@ -129,6 +125,21 @@ sphere::sphere(vec3 v1, float radiusIn){
 }
 
 diffGeom::diffGeom(){ 
+}
+
+/* Cross Product of two vectors */
+vec3 cross(vec3 v1,vec3 v2){
+  
+}
+
+triangle::triangle(vec3* v1in,vec3* v2in,vec3* v3in,BRDF* brdfin){
+  v1 = v1in; v2 = v2in; v3 = v3in; brdf = brdfin;
+  n1 = null; n2 = null; n3 = null;
+}
+
+triangle::triangle(vec3* v1in,vec3* v2in,vec3* v3in,vec3* n1in,vec3* n2in,vec3* n3in,BRDF* brdfin){
+  v1 = v1in; v2 = v2in; v3 = v3in; brdf = brdfin;
+  n1 = n1in; n2 = n2in; n3 = n3in;
 }
 
 bool sphere::intersect(ray r, float *t_min, diffGeom* dg){

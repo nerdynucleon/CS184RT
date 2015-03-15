@@ -13,9 +13,6 @@
 #endif
 #include <cfloat>
 
-Scene::Scene(float camIn[]):
-  cam(camIn){
-}
 
 void Scene::add(Light *l){
   lights.push_back(l);

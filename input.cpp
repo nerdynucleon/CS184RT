@@ -48,7 +48,7 @@ void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 		}
 	}
 	/* Load sphere into scene */
-	sphere obj = sphere(data[0], data[1], data[2], data[3]);
+	sphere* obj = new sphere(data[0], data[1], data[2], data[3]);
 	obj->brdf = mat;
 	s->objects.push_back(obj);
 }
@@ -62,7 +62,7 @@ void parseCam(std::vector<std::string> tokens, Scene *s) {
 			depth += 1;
 		}
 	} 
-	s->cam = camera(data);
+	s->cam = new camera(data);
 }
 
 void parsePointLight(std::vector<std::string> tokens, Scene *s) {
@@ -121,18 +121,18 @@ void parseTriangle(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 		}
 	} 
 	/* Load tri into scene */
-	vec3 v1 = vec3(data[0], data[1], data[2]);
-	vec3 v2 = vec3(data[3], data[4], data[5]);
-	vec3 v3 = vec3(data[6], data[7], data[8]);
-	triangle obj = triangle(v1, v2, v3, mat);
-	obj->brdf = mat;
+	vec3* v1 = new vec3(data[0], data[1], data[2]);
+	vec3* v2 = new vec3(data[3], data[4], data[5]);
+	vec3* v3 = new vec3(data[6], data[7], data[8]);
+	triangle* obj = new triangle(v1, v2, v3, mat);
 	s->objects.push_back(obj);
 }
 
+/*
 void parseObj(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	OBJ* obj = OBJ::decodeObj(tokens[1]);
-	/* PUT OBJ DATA INTO SCENE */
-}
+	PUT OBJ DATA INTO SCENE
+}*/
 
 void parseTranslation(std::vector<std::string> tokens, Scene *s) {
 	/* Transformations should be applied to all OBJ 
@@ -158,16 +158,16 @@ void parseInput(int argc, char** argv, Scene *s) {
 			std::vector<std::string> tokens = split(line, char(32));
 			for (std::vector<std::string>::size_type i = 0; i != tokens.size(); i++) {
 				if (tokens[0].compare("cam") == 0) { parseCam(tokens, s); }
-				else if (tokens[0].compare("mat") == 0) { mat = parseMat(tokens, s); }
+				//else if (tokens[0].compare("mat") == 0) { mat = parseMat(tokens, s); }
 				else if (tokens[0].compare("sph") == 0) { parseSphere(tokens, s, mat); }
 				else if (tokens[0].compare("ltp") == 0) { parsePointLight(tokens, s); }
 				else if (tokens[0].compare("ltd") == 0) { parseDirectional(tokens, s); }
 				else if (tokens[0].compare("lta") == 0) { parseAmbientLight(tokens, s); }
 				else if (tokens[0].compare("tri") == 0) { parseTriangle(tokens, s, mat); }
-				else if (tokens[0].compare("obj") == 0) { parseObj(tokens, s, mat); }
-				else if (tokens[0].compare("xft") == 0) { parseTranslation(tokens, s, mat); }
-				else if (tokens[0].compare("xfr") == 0) { parseRotation(tokens, s, mat); }
-				else if (tokens[0].compare("xfs") == 0) { parseScale(tokens, s, mat); }
+				//else if (tokens[0].compare("obj") == 0) { parseObj(tokens, s, mat); }
+				//else if (tokens[0].compare("xft") == 0) { parseTranslation(tokens, s, mat); }
+				//else if (tokens[0].compare("xfr") == 0) { parseRotation(tokens, s, mat); }
+				//else if (tokens[0].compare("xfs") == 0) { parseScale(tokens, s, mat); }
 				else if (tokens[0].compare("xft") == 0) { /* Set curr trans = identity */ }
 			}
 		}
