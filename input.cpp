@@ -50,7 +50,7 @@ void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	/* Load sphere into scene */
 	sphere* obj = new sphere(data[0], data[1], data[2], data[3]);
 	obj->brdf = mat;
-	s->objects.push_back(obj);
+	s->add(obj);
 }
 
 void parseCam(std::vector<std::string> tokens, Scene *s) {
@@ -77,10 +77,11 @@ void parsePointLight(std::vector<std::string> tokens, Scene *s) {
 			}
 			depth += 1;
 		}
-	} 
-	/* TODO 
-	lights.push_back(PointLight(data[0], data[1], data[2], data[3], data[4], data[5], falloff));
-	*/
+	}
+	Light *light = new Light(data[0], data[1], data[2], data[3], data[4], data[5]);
+	light->type = POINT;
+	light->falloff = falloff;
+	s->add(light);
 }
 
 void parseDirectional(std::vector<std::string> tokens, Scene *s) {
@@ -92,9 +93,10 @@ void parseDirectional(std::vector<std::string> tokens, Scene *s) {
 			depth += 1;
 		}
 	} 
-	/* TODO 
-	lights.push_back(DirectionalLight(data[0], data[1], data[2], data[3], data[4], data[5]));
-	*/
+	Light *light = new Light(data[0], data[1], data[2], data[3], data[4], data[5]);
+	light->type = DIR;
+	light->falloff = 0;
+	s->add(light);
 }
 
 void parseAmbientLight(std::vector<std::string> tokens, Scene *s) {
@@ -106,9 +108,9 @@ void parseAmbientLight(std::vector<std::string> tokens, Scene *s) {
 			depth += 1;
 		}
 	} 
-	/* TODO 
-	lights.push_back(AmbientLight(data[0], data[1], data[2]));
-	*/
+	Light *light = new Light(data[0], data[1], data[2], 0, 0, 0);
+	light->type = AMB;
+	s->add(light);
 }
 
 void parseTriangle(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
@@ -121,16 +123,15 @@ void parseTriangle(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 		}
 	} 
 	/* Load tri into scene */
-	vec3* v1 = new vec3(data[0], data[1], data[2]);
-	vec3* v2 = new vec3(data[3], data[4], data[5]);
-	vec3* v3 = new vec3(data[6], data[7], data[8]);
-	triangle* obj = new triangle(v1, v2, v3, mat);
-	s->objects.push_back(obj);
+	vec3 *v1 = new vec3(data[0], data[1], data[2]);
+	vec3 *v2 = new vec3(data[3], data[4], data[5]);
+	vec3 *v3 = new vec3(data[6], data[7], data[8]);
+	s->add(new triangle(v1, v2, v3, mat));
 }
 
 /*
 void parseObj(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
-	OBJ* obj = OBJ::decodeObj(tokens[1]);
+	OBJ *obj = OBJ::decodeObj(tokens[1]);
 	PUT OBJ DATA INTO SCENE
 }*/
 
@@ -149,6 +150,22 @@ void parseScale(std::vector<std::string> tokens, Scene *s) {
 	   unless reset by xfz */
 }
 
+BRDF* parseMat(std::vector<std::string> tokens, Scene *s) {
+	float data[13]; int depth = 0;
+	for (std::vector<std::string>::size_type i = 0; i != tokens.size(); i++) {
+		if (tokens[i].compare(" ") != 0) { 
+			data[i] = std::stof(tokens[i]);
+			depth += 1;
+		}
+	}
+	RGB *ka = new RGB(data[0], data[1], data[2]);
+	RGB *kd = new RGB(data[3], data[4], data[5]);
+	RGB *ks = new RGB(data[6], data[7], data[8]);
+	RGB *kr = new RGB(data[10], data[11], data[12]);
+	BRDF *mat = new BRDF(ka, kd, ks, kr, data[9]); 
+	return mat;
+}
+
 void parseInput(int argc, char** argv, Scene *s) {
 	std::string line;
 	std::ifstream sceneIn(argv[1]);
@@ -158,7 +175,7 @@ void parseInput(int argc, char** argv, Scene *s) {
 			std::vector<std::string> tokens = split(line, char(32));
 			for (std::vector<std::string>::size_type i = 0; i != tokens.size(); i++) {
 				if (tokens[0].compare("cam") == 0) { parseCam(tokens, s); }
-				//else if (tokens[0].compare("mat") == 0) { mat = parseMat(tokens, s); }
+				else if (tokens[0].compare("mat") == 0) { mat = parseMat(tokens, s); }
 				else if (tokens[0].compare("sph") == 0) { parseSphere(tokens, s, mat); }
 				else if (tokens[0].compare("ltp") == 0) { parsePointLight(tokens, s); }
 				else if (tokens[0].compare("ltd") == 0) { parseDirectional(tokens, s); }

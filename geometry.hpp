@@ -38,6 +38,7 @@ class Light{
     int type;
     vec3 v;
     RGB intensity;
+    int falloff;
     Light(float, float, float, float, float, float);
     Light(RGB*, float, float, float);
 };

@@ -134,7 +134,7 @@ vec3 cross(vec3 v1,vec3 v2){
 
 triangle::triangle(vec3* v1in,vec3* v2in,vec3* v3in,BRDF* brdfin){
   v1 = v1in; v2 = v2in; v3 = v3in; brdf = brdfin;
-  n1 = null; n2 = null; n3 = null;
+  n1 = NULL; n2 = NULL; n3 = NULL;
 }
 
 triangle::triangle(vec3* v1in,vec3* v2in,vec3* v3in,vec3* n1in,vec3* n2in,vec3* n3in,BRDF* brdfin){
