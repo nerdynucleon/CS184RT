@@ -13,5 +13,6 @@ class camera{
   public:
     camera(float[]);
     ray getRay(float,float);
+    void print();
 };
 #endif

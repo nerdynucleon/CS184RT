@@ -22,3 +22,10 @@ ray camera::getRay(float u, float v){
   vec3 dir = ((*view) + (*eye)) + (*up) * v + (*right) * u - (*eye);
   return ray(pos, dir, 1, FLT_MAX);
 }
+
+void camera::print(){
+  printf("eye: %f %f %f",eye->x, eye->y, eye->z);
+  printf("view: %f %f %f",view->x, view->y, view->z);
+  printf("up: %f %f %f", up->x, up->y, up->z);
+  printf("right: %f %f %f", right->x, right->y, right->z);
+}
