@@ -22,7 +22,7 @@
 unsigned char* imageRGBA;
 int pixelsWide = 1000;
 int pixelsHigh = 500;
-char* outputFilename;
+const char* outputFilename;
 Scene s;
 
 /* NOTE: Need to expand Light to -> directional, point, ambient subclasses */
@@ -111,7 +111,7 @@ void generateImage(){
       imageRGBA[(pixelsWide * j + i)*4] = pixelColor.r;
       imageRGBA[(pixelsWide * j + i)*4 + 1] = pixelColor.g;
       imageRGBA[(pixelsWide * j + i)*4 + 2] = pixelColor.b;
-      imageRGBA[(pixelsWide * j + i)*4 + 3] = 0;
+      imageRGBA[(pixelsWide * j + i)*4 + 3] = 255;
     }
   }
 }
@@ -121,6 +121,7 @@ int main(int argc, char** argv){
   imageRGBA = (unsigned char *) malloc(sizeof(unsigned char) * 4 * pixelsHigh * pixelsWide);
   generateImage();
   std::vector<unsigned char> png;
+  outputFilename = "output.png";
   lodepng::encode(png, imageRGBA, pixelsWide, pixelsHigh);
   lodepng::save_file(png, outputFilename);
 }

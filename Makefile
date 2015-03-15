@@ -18,4 +18,4 @@ lodepng.o: lodepng.cpp lodepng.h
 input.o: input.cpp input.hpp
 	g++ -c input.hpp input.cpp
 clean:
-	rm *.o main *.gch
+	rm *.o main *.gch output.png
