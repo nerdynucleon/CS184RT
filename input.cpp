@@ -22,18 +22,20 @@ should be printed to stderr
 unsupported feature and the program should then ignore the line. 
 */
 
-std::vector<std::string> split(const std::string &str, char delimiter) {
+/* Splits a string by whitespace. */
+std::vector<std::string> split(const std::string &str) {
 	std::vector <std::string> tokens;
 	std::stringstream stream(str);
 	std::string temp;
-	while (std::getline(stream, temp, delimiter)) {
+	
+	while (stream >> temp) {
 		tokens.push_back(temp);
 	}
 	return tokens;
 }
 
 void argumentError(std::string command, int expected) {
-	std::string err = "Not enough arguments in " + command + ". Expected: " + std::to_string(expected);
+	std::string err = "Too many arguments in \"" + command + "\". Expected: " + std::to_string(expected) + "\n";
 	fprintf(stderr, "%s", err.c_str());
 }
 
@@ -42,7 +44,7 @@ void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	int depth = 0;
 	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
 		if (tokens[i].compare("") != 0) { 
-			//if (depth > )
+			if (depth == 4) { argumentError("sph", 4); break; }
 			data[depth] = std::stof(tokens[i]);
 			depth += 1;
 		}
@@ -58,12 +60,12 @@ void parseCam(std::vector<std::string> tokens, Scene *s) {
 	int depth = 0;
 	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
 		if (tokens[i].compare("") != 0) {
+			if (depth == 15) { argumentError("cam", 15); break; }
 			data[depth] = std::stof(tokens[i]);
 			depth += 1;
 		}
 	}
 	s->cam = new camera(data);
-	s->cam->print();
 }
 
 void parsePointLight(std::vector<std::string> tokens, Scene *s) {
@@ -71,6 +73,7 @@ void parsePointLight(std::vector<std::string> tokens, Scene *s) {
 	int falloff = 0; int depth = 0;
 	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
 		if (tokens[i].compare("") != 0) { 
+			if (depth == 7) { argumentError("ltp", 7); break; }
 			if (depth != 6) {
 				data[depth] = std::stof(tokens[i]);
 			} else {
@@ -90,6 +93,7 @@ void parseDirectional(std::vector<std::string> tokens, Scene *s) {
 	int depth = 0;
 	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
 		if (tokens[i].compare("") != 0) { 
+			if (depth == 6) { argumentError("ltd", 6); break; }
 			data[depth] = std::stof(tokens[i]);
 			depth += 1;
 		}
@@ -104,7 +108,8 @@ void parseAmbientLight(std::vector<std::string> tokens, Scene *s) {
 	float data[3];
 	int depth = 0;
 	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
-		if (tokens[i].compare("") != 0) { 
+		if (tokens[i].compare("") != 0) {
+			if (depth == 3) { argumentError("lta", 3); break; } 
 			data[depth] = std::stof(tokens[i]);
 			depth += 1;
 		}
@@ -118,6 +123,7 @@ void parseTriangle(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	float data[9];
 	int depth = 0;
 	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
+		if (depth == 9) { argumentError("tri", 9); break; }
 		if (tokens[i].compare("") != 0) { 
 			data[depth] = std::stof(tokens[i]);
 			depth += 1;
@@ -127,7 +133,9 @@ void parseTriangle(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	vec3 *v1 = new vec3(data[0], data[1], data[2]);
 	vec3 *v2 = new vec3(data[3], data[4], data[5]);
 	vec3 *v3 = new vec3(data[6], data[7], data[8]);
-	s->add(new triangle(v1, v2, v3, mat));
+	triangle *tri = new triangle(v1, v2, v3, mat);
+	s->add(tri);
+	tri->print();
 }
 
 /*
@@ -154,6 +162,7 @@ void parseScale(std::vector<std::string> tokens, Scene *s) {
 BRDF* parseMat(std::vector<std::string> tokens, Scene *s) {
 	float data[13]; int depth = 0;
 	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
+		if (depth == 13) { argumentError("mat", 13); break; }
 		if (tokens[i].compare("") != 0) { 
 			data[depth] = std::stof(tokens[i]);
 			depth += 1;
@@ -163,7 +172,8 @@ BRDF* parseMat(std::vector<std::string> tokens, Scene *s) {
 	RGB *kd = new RGB(data[3], data[4], data[5]);
 	RGB *ks = new RGB(data[6], data[7], data[8]);
 	RGB *kr = new RGB(data[10], data[11], data[12]);
-	BRDF *mat = new BRDF(ka, kd, ks, kr, data[9]); 
+	BRDF *mat = new BRDF(ka, kd, ks, kr, data[9]);
+	mat->print(); 
 	return mat;
 }
 
@@ -171,9 +181,10 @@ void parseInput(int argc, char** argv, Scene *s) {
 	std::string line;
 	BRDF *mat;
 	while (getline(std::cin, line)) {
-		std::vector<std::string> tokens = split(line, ' ');
+		std::vector<std::string> tokens = split(line);
+		if (tokens.size() == 0) { continue; }
 		if (tokens[0].compare("cam") == 0) { parseCam(tokens, s); }
-		//else if (tokens[0].compare("mat") == 0) { mat = parseMat(tokens, s); }
+		else if (tokens[0].compare("mat") == 0) { mat = parseMat(tokens, s); }
 		else if (tokens[0].compare("sph") == 0) { parseSphere(tokens, s, mat); }
 		else if (tokens[0].compare("ltp") == 0) { parsePointLight(tokens, s); }
 		else if (tokens[0].compare("ltd") == 0) { parseDirectional(tokens, s); }

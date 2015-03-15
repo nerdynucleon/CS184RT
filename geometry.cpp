@@ -157,6 +157,18 @@ triangle::triangle(vec3* v1in,vec3* v2in,vec3* v3in,vec3* n1in,vec3* n2in,vec3* 
   n1 = n1in; n2 = n2in; n3 = n3in;
 }
 
+void triangle::print() {
+  std::cout << "Triangle (" << this << "):" << std::endl;
+  std::cout << "    "; v1->print();
+  std::cout << "    "; v2->print(); 
+  std::cout << "    "; v3->print();
+  std::cout << "    "; n1->print();
+  if (n2 != NULL) {
+    std::cout << "    "; n2->print(); std::cout << "    "; n3->print();
+  }
+  std::cout << "    BRDF: " << brdf << std::endl;
+}
+
 bool sphere::intersect(ray r, float *t_min, diffGeom* dg){
   if(r.dir * r.dir == 0) return false;
   float t1 = -r.dir*(r.pos-center);

@@ -5,7 +5,6 @@
 #include "color.hpp"
 #endif
 #include <cstdlib>
-#include <iostream>
 
 #define POINT 0
 #define DIR 1
@@ -27,7 +26,7 @@ class vec3{
     float x; float y; float z;
 
     /* Debug */
-    void print() { std::cout << "vec3: ( " << x << " , " << y << " , " << z << " )" << std::endl; }
+    void print() { std::cout << "{" << x << ", " << y << ", " << z << "}" << std::endl; }
 };
 
 float dist(vec3, vec3);
@@ -80,6 +79,7 @@ class triangle: public sceneObject {
     bool intersect(ray,float*,diffGeom*);
     triangle(vec3*,vec3*,vec3*,BRDF*);
     triangle(vec3*,vec3*,vec3*,vec3*,vec3*,vec3*,BRDF*);
+    void print();
 };
 
 class sphere: public sceneObject {
