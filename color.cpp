@@ -18,6 +18,10 @@ RGB::RGB(){
   b = 0;
 }
 
+void RGB::print() {
+  std::cout << "RGB: {" << r << ", " << g << ", " << b << "}" << std::endl;
+}
+
 bool RGB::operator>(float f){
   return ((r > f) && (b > f) && (g > f));
 }
@@ -31,4 +35,13 @@ RGB RGB::operator+=(RGB c1){
 
 BRDF::BRDF(RGB* kaIn,  RGB* kdIn, RGB* ksIn, RGB* krIn, float sIn){
   ka = kaIn; kd = kdIn; ks = ksIn; kr = krIn; s = sIn;
+}
+
+void BRDF::print() {
+  std::cout << "BRDF (" << this << "): " << std::endl;
+  std::cout << "    sp: " << s << std::endl;
+  std::cout << "    ka: "; ka->print();
+  std::cout << "    kd: "; kd->print();
+  std::cout << "    ks: "; ks->print();
+  std::cout << "    kr: "; kr->print();
 }
