@@ -5,7 +5,10 @@ class RGB{
   public:
     float r; float g; float b;
     RGB operator+=(RGB);
+    bool operator>(float);
+    RGB operator*(RGB);
     RGB(float, float, float);
+    RGB();
 };
 
 class BRDF{ 

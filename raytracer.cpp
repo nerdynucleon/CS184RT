@@ -11,6 +11,10 @@
 #include <cmath>
 #include "input.hpp"
 
+#ifndef CFLOAT_H
+#include <cfloat>
+#define CFLOAT_H
+#endif
 #define RECURSIVE_DEPTH 10
 #define EPS 0.1
 
@@ -73,7 +77,6 @@ RGB shading(diffGeom dg, Light* l, ray eyeRay){
   return RGB(r, g, b);
 }
 
-
 /* Function used to recursively trace rays */
 RGB recursiveRT(ray r, int depth, RGB c){
   if(depth != 0){
@@ -87,10 +90,12 @@ RGB recursiveRT(ray r, int depth, RGB c){
           c += shading(dg, l, r);
         }
       }
-      /* Calculate Reflection Rays
-      if(dg.kr > 0){
+      /* Calculate Reflection Rays */
+      if(dg.brdf->kr > 0){
+        ray refl = ray(dg.pos, r.dir.reflect(dg.normal), EPS, FLT_MAX);
+        RGB cr;
+        c += *(dg.brdf->kr) * recursiveRT(refl, depth-1, cr);
       }
-      */
     }
   }
   return c;
