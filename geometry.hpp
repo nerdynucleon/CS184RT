@@ -42,6 +42,7 @@ class Light{
     int falloff;
     Light(float, float, float, float, float, float);
     Light(RGB*, float, float, float);
+    void print();
 };
 
 /* Returned from a ray object intersection*/

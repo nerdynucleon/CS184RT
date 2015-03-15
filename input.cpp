@@ -85,6 +85,7 @@ void parsePointLight(std::vector<std::string> tokens, Scene *s) {
 	Light *light = new Light(data[0], data[1], data[2], data[3], data[4], data[5]);
 	light->type = POINT;
 	light->falloff = falloff;
+	light->print();
 	s->add(light);
 }
 
@@ -101,6 +102,7 @@ void parseDirectional(std::vector<std::string> tokens, Scene *s) {
 	Light *light = new Light(data[0], data[1], data[2], data[3], data[4], data[5]);
 	light->type = DIR;
 	light->falloff = 0;
+	light->print();
 	s->add(light);
 }
 
@@ -116,6 +118,7 @@ void parseAmbientLight(std::vector<std::string> tokens, Scene *s) {
 	} 
 	Light *light = new Light(data[0], data[1], data[2], 0, 0, 0);
 	light->type = AMB;
+	light->print();
 	s->add(light);
 }
 
@@ -194,18 +197,7 @@ void parseInput(int argc, char** argv, Scene *s) {
 		//else if (tokens[0].compare("xft") == 0) { parseTranslation(tokens, s, mat); }
 		//else if (tokens[0].compare("xfr") == 0) { parseRotation(tokens, s, mat); }
 		//else if (tokens[0].compare("xfs") == 0) { parseScale(tokens, s, mat); }
-		else if (tokens[0].compare("xft") == 0) { /* Set curr trans = identity */  }
+		else if (tokens[0].compare("xfz") == 0) { /* Set curr trans = identity */  }
 	}
 	printf("here\n");
 } 
-
-/* class Scene{
-  public:
-  	std::vector<sceneObject*> objects;
-  	std::vector<Light*> lights;
-    Scene();
-    void trace(ray, diffGeom*);
-    void add(sceneObject*);
-    void add(Light*);
-    camera cam;
-}; */

@@ -89,6 +89,21 @@ Light::Light(RGB *colorIn, float x, float y, float z):
   intensity(colorIn->r, colorIn->g, colorIn->b), v(x,y,z){
 }
 
+void Light::print() {
+  std::string prefix = "Point";
+  if (type == 1) { prefix = "Directional"; }
+  else if (type == 2) { prefix = "Ambient"; }
+  std::cout << prefix << " Light (" << this << "): " << std::endl;
+  std::cout << "    "; intensity.print(); 
+  if (type == 0) {
+    std::cout << "    Pos: "; v.print();
+    std::cout << "    Falloff: " << falloff << std::endl;
+  }
+  else if (type == 1) {
+    std::cout << "    Dir: "; v.print();
+  }
+}
+
 /* Ray triangle intersection */
 bool triangle::intersect(ray r, float *t_min,diffGeom* dg){
   float a = v1->x - v2->x;
