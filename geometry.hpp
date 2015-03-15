@@ -22,6 +22,7 @@ class vec3{
     float operator*(vec3);
     vec3 operator-(vec3);
     vec3 operator-();
+    vec3 operator/(float);
     float x; float y; float z;
 
     /* Debug */
