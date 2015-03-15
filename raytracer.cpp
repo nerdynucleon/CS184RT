@@ -28,9 +28,15 @@ RGB shading(diffGeom dg, Light* l, ray eyeRay){
   r += l->intensity.r * brdf->ka->r;
   g += l->intensity.g * brdf->ka->g;
   b += l->intensity.b * brdf->ka->b;
-
+  vec3 lvec;
   /* Diffuse */
-  vec3 lvec = (l->pos - dg.pos);
+  if(l->type == POINT){
+    lvec = (l->pos - dg.pos);
+  } else if (l->type == DIR){
+    lvec = -(l->pos);
+  } else if(l->type == AMB){
+    return RGB(r,g,b);
+  }
   float dotln = (dg.normal)*(lvec); 
   float mdotln = fmax(dotln, 0);
   if (brdf->kd->r > 0) {
@@ -43,7 +49,7 @@ RGB shading(diffGeom dg, Light* l, ray eyeRay){
     b += (brdf->kd->b) * (l->intensity.b) * mdotln;
   }
 
-  vec3 reflection = lvec * -1;
+  vec3 reflection = -lvec;
   vec3 scalednorm = (dg.normal) * (2 * dotln);
   reflection = reflection + scalednorm;
   /* Normalize */
