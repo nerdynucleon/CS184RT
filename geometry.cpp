@@ -124,6 +124,11 @@ bool triangle::intersect(ray r, float *t_min,diffGeom* dg){
   return true;
 }
 
+/* Get reflected vector around normal */
+vec3 vec3::reflect(vec3 n){
+  return (*this) - n*((*this)*2.0f*n/(pow(dist(n,n),2)));
+}
+
 sphere::sphere(float x, float y, float z, float radiusIn){
   radius = radiusIn;
   center = vec3(x,y,z);

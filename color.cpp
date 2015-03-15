@@ -8,6 +8,20 @@ RGB::RGB(float rIn, float gIn, float bIn){
   b = bIn;
 }
 
+RGB RGB::operator*(RGB c1){
+  return RGB(r*c1.r, c1.g*g, c1.b*b);
+}
+
+RGB::RGB(){
+  r = 0;
+  g = 0;
+  b = 0;
+}
+
+bool RGB::operator>(float f){
+  return ((r > f) && (b > f) && (g > f));
+}
+
 RGB RGB::operator+=(RGB c1){
   r += c1.r;
   b += c1.b;
