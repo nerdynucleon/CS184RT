@@ -41,6 +41,11 @@ vec3 vec3::operator-(vec3 v2){
   return vec3(x - v2.x, y - v2.y, z - v2.z);
 }
 
+/* Divide by float */
+vec3 vec3::operator/(float f){
+  return vec3(x/f, y/f, z/f);
+}
+
 /* Vector Constructor */
 vec3::vec3(float xin, float yin, float zin){
   x = xin; y = yin; z = zin;
@@ -54,6 +59,11 @@ float dist(vec3 v1, vec3 v2){
 vec3 norm2(vec3 v1){
   float length = sqrt(v1.x*v1.x + v1.y*v1.y + v1.z*v1.z);
   return vec3(v1.x/length, v1.y/length, v1.z/length);
+}
+
+vec3* norm2pt(vec3 v1){
+  float length = sqrt(v1.x*v1.x + v1.y*v1.y + v1.z*v1.z);
+  return new vec3(v1.x/length, v1.y/length, v1.z/length);
 }
 
 /* Construct differential geometry */
@@ -129,12 +139,12 @@ diffGeom::diffGeom(){
 
 /* Cross Product of two vectors */
 vec3 cross(vec3 v1,vec3 v2){
-  
+  return vec3(v1.y*v2.z - v1.z*v2.y, v1.z*v2.x - v1.x*v2.z, v1.x*v2.y - v1.y*v2.x);
 }
 
 triangle::triangle(vec3* v1in,vec3* v2in,vec3* v3in,BRDF* brdfin){
   v1 = v1in; v2 = v2in; v3 = v3in; brdf = brdfin;
-  n1 = null; n2 = null; n3 = null;
+  n1 = norm2pt(cross(*v1in, *v2in)); n2 = NULL; n3 = NULL;
 }
 
 triangle::triangle(vec3* v1in,vec3* v2in,vec3* v3in,vec3* n1in,vec3* n2in,vec3* n3in,BRDF* brdfin){

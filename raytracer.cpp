@@ -114,7 +114,6 @@ void generateImage(){
 
 int main(int argc, char** argv){
   parseInput(argc, argv, &s);
-  printf("allah akbar\n");
   imageRGBA = (unsigned char *) malloc(sizeof(unsigned char) * 4 * pixelsHigh * pixelsWide);
   generateImage();
   std::vector<unsigned char> png;
