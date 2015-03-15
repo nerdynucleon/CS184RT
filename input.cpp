@@ -38,11 +38,16 @@ std::vector<std::string> split(const std::string &s, char delim) {
 }
 /***/
 
+void argumentError(std::string command, int expected) {
+	fprintf(stderr, "Not enough arguments in " + command + ". Expected: " + std::to_string(expected));
+}
+
 void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	float data[4];
 	int depth = 0;
 	for (std::vector<std::string>::size_type i = 0; i != tokens.size(); i++) {
 		if (tokens[i].compare(" ") != 0) { 
+			//if (depth > )
 			data[i] = std::stof(tokens[i]);
 			depth += 1;
 		}
