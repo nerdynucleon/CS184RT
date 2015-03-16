@@ -90,8 +90,9 @@ RGB recursiveRT(ray r, int depth, RGB c){
       for(int i = 0; i < s.lights.size(); i++){
         Light* l = s.lights[i];
         ray shadowRay = ray(dg.pos, *(l->v) - dg.pos, EPS, dist(*l->v,dg.pos));
-        if(!s.trace(shadowRay, NULL)){
+        if((l->type == AMB) || (!s.trace(shadowRay, NULL))){
           c += shading(dg, l, r);
+          //c.print();
         }
       }
       /* Calculate Reflection Rays */
@@ -112,6 +113,7 @@ void generateImage(){
       /* Generate eye ray from pixel sample and initialize pixel color */
       ray eyeray = s.cam->getRay((i+0.5)/pixelsWide, (j+0.5)/pixelsHigh);
       RGB pixelColor = recursiveRT(eyeray, RECURSIVE_DEPTH, RGB(0,0,0));
+      //std::cout << "(" << i << ", " << j << "): " << int(pixelColor.convert(RED)) << " - " << int(pixelColor.convert(GREEN)) << " - " << int(pixelColor.convert(BLUE)) << std::endl;
       imageRGBA[(pixelsWide * j + i)*4] = pixelColor.convert(RED);
       imageRGBA[(pixelsWide * j + i)*4 + 1] = pixelColor.convert(GREEN);
       imageRGBA[(pixelsWide * j + i)*4 + 2] = pixelColor.convert(BLUE);
