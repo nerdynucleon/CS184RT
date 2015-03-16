@@ -56,7 +56,7 @@ void vec3::print(){
 }
 
 float vec3::length(){
-  return dist(*this,*this);
+  return sqrt(x*x + y*y + z*z);
 }
 
 /* Calculate the distance between two positions */
@@ -149,7 +149,7 @@ bool triangle::intersect(ray r, float *t_min,diffGeom* dg){
   /* Interpolate Triangle Normals */
   vec3 norm = (*v1)*(1 - gamma - beta) + (*v2)*beta + (*v3)*gamma;
   *t_min = t;
-  *dg = diffGeom(r.pos + r.dir*t, normalize(norm), brdf);
+  if(dg != NULL) *dg = diffGeom(r.pos + r.dir*t, normalize(norm), brdf);
   return true;
 }
 

@@ -14,10 +14,11 @@
 camera::camera(float input[]){
   vec3 lr = vec3(input[6], input[7], input[8]);
   vec3 ul = vec3(input[9],input[10],input[11]);
+  vec3 ll = vec3(input[3], input[4], input[5]);
   eye = new vec3(input[0], input[1], input[2]);
-  view = new vec3(eye->x - input[3], eye->y - input[4], eye->z - input[5]);
-  up = new vec3(ul.x - eye->x, ul.y - eye->y, ul.z - eye->z);
-  right = new vec3(lr.x - eye->x, lr.y - eye->y, lr.z - eye->z);
+  view = new vec3(input[3] - eye->x, input[4] - eye->y , input[5] - eye->z);
+  up = new vec3(ul.x - ll.x, ul.y - ll.y, ul.z - ll.z);
+  right = new vec3(lr.x - ll.x, lr.y - ll.y, lr.z - ll.z);
 }
 
 ray camera::getRay(float u, float v){

@@ -82,7 +82,7 @@ RGB shading(diffGeom dg, Light* l, ray eyeRay){
 
 /* Function used to recursively trace rays */
 RGB recursiveRT(ray r, int depth, RGB c){
-  r.print();
+  //r.print();
   if(depth != 0){
     diffGeom dg;
     if(s.trace(r, &dg)){
