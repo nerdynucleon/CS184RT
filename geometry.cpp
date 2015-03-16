@@ -83,7 +83,7 @@ diffGeom::diffGeom(vec3 p, vec3 n, BRDF *in){
 
 /* Construct a ray */
 ray::ray(vec3 pin, vec3 din, float t_minimum, float t_maximum){
-  pos = pin;
+  pos = pin + din*t_minimum; /* Apply epsilon (t_min) to offset the pos */
   dir = din;
   t_min = t_minimum;
   t_max = t_maximum;

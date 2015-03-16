@@ -98,7 +98,7 @@ void parseDirectional(std::vector<std::string> tokens, Scene *s) {
 			depth += 1;
 		}
 	} 
-	Light *light = new Light(data[0], data[1], data[2], data[3], data[4], data[5], DIR, 0);
+	Light *light = new Light(data[0], data[1], data[2], data[3], data[4], data[5], DIR, FALLOFF_NONE);
 	light->print();
 	s->add(light);
 }
@@ -113,7 +113,7 @@ void parseAmbientLight(std::vector<std::string> tokens, Scene *s) {
 			depth += 1;
 		}
 	} 
-	Light *light = new Light(0, 0, 0, data[0], data[1], data[2], AMB, 0);
+	Light *light = new Light(0, 0, 0, data[0], data[1], data[2], AMB, FALLOFF_NONE);
 	light->print();
 	s->add(light);
 }

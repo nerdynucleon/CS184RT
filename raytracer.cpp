@@ -44,8 +44,14 @@ RGB shading(diffGeom dg, Light* l, ray eyeRay){
   } else if(l->type == AMB){
     return RGB(r,g,b);
   }
-  float dotln = (dg.normal)*(lvec); 
+  float dotln = (dg.normal)*(lvec); float falloff;
   float mdotln = fmax(dotln, 0);
+
+  /* Calculate falloff */
+  if (l->falloff == FALLOFF_NONE) { falloff = 1; }
+  else if (l->falloff == FALLOFF_LINEAR) { falloff = 1/(dist(dg.pos, *(l->v))); }
+  else { falloff = 1/pow(dist(dg.pos, *(l->v)), 2); }
+
   if (brdf->kd->r > 0) {
     r += (brdf->kd->r) * (l->intensity->r) * mdotln;
   }
@@ -60,11 +66,10 @@ RGB shading(diffGeom dg, Light* l, ray eyeRay){
   vec3 scalednorm = (dg.normal) * (2 * dotln);
   reflection = reflection + scalednorm;
   /* Normalize */
-  float mag = sqrt(reflection.x * reflection.x + reflection.y * reflection.y + reflection.z * reflection.z);
-  reflection = reflection * (1 / mag);
+  reflection = normalize(reflection);
 
   /* Viewer ray */
-  vec3 viewer = (dg.pos) - (eyeRay.pos);
+  vec3 viewer = normalize((dg.pos) - (eyeRay.pos));
   /* Specular */
   float dotvr = pow(fmax(viewer * reflection, 0), brdf->s);
   if (brdf->ks->r > 0) {
@@ -76,6 +81,7 @@ RGB shading(diffGeom dg, Light* l, ray eyeRay){
   if (brdf->ks->b > 0) {
     b += (brdf->ks->b) * (l->intensity->b) * dotvr;
   }
+  r *= falloff; g *= falloff; b *= falloff;
   return RGB(r, g, b);
 }
 
@@ -112,7 +118,6 @@ void generateImage(){
       /* Generate eye ray from pixel sample and initialize pixel color */
       ray eyeray = s.cam->getRay((i+0.5)/pixelsWide, (j+0.5)/pixelsHigh);
       RGB pixelColor = recursiveRT(eyeray, RECURSIVE_DEPTH, RGB(0,0,0));
-      //std::cout << "(" << i << ", " << j << "): " << int(pixelColor.convert(RED)) << " - " << int(pixelColor.convert(GREEN)) << " - " << int(pixelColor.convert(BLUE)) << std::endl;
       imageRGBA[(pixelsWide * j + i)*4] = pixelColor.convert(RED);
       imageRGBA[(pixelsWide * j + i)*4 + 1] = pixelColor.convert(GREEN);
       imageRGBA[(pixelsWide * j + i)*4 + 2] = pixelColor.convert(BLUE);

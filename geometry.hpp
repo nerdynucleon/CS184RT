@@ -10,6 +10,11 @@
 #define DIR 1
 #define AMB 2
 
+/* Falloff definitions (point lights only) */
+#define FALLOFF_NONE    0
+#define FALLOFF_LINEAR  1
+#define FALLOFF_QUAD    2
+
 
 /* Used as a point in space or as a direction */
 class vec3{
