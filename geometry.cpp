@@ -120,37 +120,36 @@ void Light::print() {
 
 /* Ray triangle intersection */
 bool triangle::intersect(ray r, float *t_min,diffGeom* dg){
-  float a = v1->x - v2->x;
-  float b = v1->y - v2->y;
-  float c = v1->z - v2->z;
-  float d = v1->x - v3->x;
-  float e = v1->y - v3->y;
-  float f = v1->z - v3->z;
-  float g = r.dir.x;
-  float h = r.dir.y;
-  float i = r.dir.z;
-  float j = v1->x - r.pos.x;
-  float k = v1->y - r.pos.y;
-  float l = v1->z - r.pos.z;
-  float M = a*(e*i - h*f) + b*(g*f - d*i) + c*(d*h - e*g);
+  vec3 e1 = *v2 - *v1;
+  vec3 e2 = *v3 - *v1;
+  vec3 p = cross(r.dir,e2);
+  float det = e1 * p;
   /* check divide by zero condition */ 
-  if(M == 0.0){
-    return false;
+  if(det > -0.000001 && det < 0.000001) return false;
+  float inv_det = 1.0f/det;
+  vec3 T = r.pos - (*v1);
+  /* Test u parameter */
+  float u = (T*p) * inv_det;
+  if(u < 0.0 || u > 1.0) return 0;
+  vec3 q =  cross(T, e1);
+  float v = (r.dir*q) * inv_det;
+  //The intersection lies outside of the triangle
+  if(v < 0.f || u + v  > 1.f) return 0;
+  float t = (e2*q) * inv_det; 
+  if(t > 0.000001) { //ray intersection
+    /* Interpolate Triangle Normals
+    IMPLEMENT LATER */
+    if(dg != NULL) *dg = diffGeom(r.pos + r.dir*t, normalize(cross(e1,e2)), brdf);
+    return true;
   }
-  float t = -(f*(a*k - j*b) + e*(j*c - a*l) + d*(b*l - k*c))/M;
-  if(t > (*t_min)){
-    return false;
-  }
-  if(t < r.t_min || t > r.t_max) return false;
-  float gamma = (i*(a*k - j*b) + h*(j*c - a*l) + g*(b*l - k*c))/M;
-  if(gamma < 0 || gamma > 1) return false;
-  float beta = (j*(e*i - h*f) + k*(g*f - d*i) + l*(d*h - e*g))/M;
-  if(beta < 0 || beta > 1) return false;
-  /* Interpolate Triangle Normals */
-  vec3 norm = (*v1)*(1 - gamma - beta) + (*v2)*beta + (*v3)*gamma;
-  *t_min = t;
-  if(dg != NULL) *dg = diffGeom(r.pos + r.dir*t, normalize(norm), brdf);
-  return true;
+  return false;
+}
+
+void diffGeom::print(){
+  printf("Differential Geometry:\n");
+  printf("Point: "); pos.print();
+  printf("Normal: "); normal.print();
+  std::cout << "    BRDF: " << brdf << std::endl;
 }
 
 /* Get reflected vector around normal */

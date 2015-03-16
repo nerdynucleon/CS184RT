@@ -51,6 +51,7 @@ class diffGeom{
     vec3 pos;
     vec3 normal;
     BRDF *brdf;
+    void print();
 };
 
 /* vector defined by the start and end locations */

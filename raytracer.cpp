@@ -76,7 +76,6 @@ RGB shading(diffGeom dg, Light* l, ray eyeRay){
   if (brdf->ks->b > 0) {
     b += (brdf->ks->b) * (l->intensity->b) * dotvr;
   }
-
   return RGB(r, g, b);
 }
 
@@ -89,7 +88,7 @@ RGB recursiveRT(ray r, int depth, RGB c){
       /* Calculate Contribution from Light Sources */
       for(int i = 0; i < s.lights.size(); i++){
         Light* l = s.lights[i];
-        ray shadowRay = ray(dg.pos, *(l->v) - dg.pos, EPS, dist(*l->v,dg.pos));
+        ray shadowRay = ray(dg.pos, normalize(*(l->v) - dg.pos), EPS, dist(*l->v,dg.pos));
         if(!s.trace(shadowRay, NULL)){
           c += shading(dg, l, r);
         }
