@@ -86,7 +86,6 @@ RGB recursiveRT(ray r, int depth, RGB c){
   if(depth != 0){
     diffGeom dg;
     if(s.trace(r, &dg)){
-      printf("interection!\n");
       /* Calculate Contribution from Light Sources */
       for(int i = 0; i < s.lights.size(); i++){
         Light* l = s.lights[i];

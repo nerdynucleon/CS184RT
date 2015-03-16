@@ -209,11 +209,11 @@ bool sphere::intersect(ray r, float *t_min, diffGeom* dg){
   t1 /= r.dir*r.dir;
   if(t1 < (*t_min) && t1 > r.t_min && t1 < r.t_max){
     *t_min = t1;
-    *dg = diffGeom(r.pos + r.dir*t1, normalize(r.pos + r.dir*t1 - center), brdf);
+    if(dg != NULL) *dg = diffGeom(r.pos + r.dir*t1, normalize(r.pos + r.dir*t1 - center), brdf);
     return true;
   } else if (t2 < (*t_min) && t2 > r.t_min && t2 < r.t_max) {
     *t_min = t2;
-    *dg = diffGeom(r.pos + r.dir*t2, normalize(r.pos + r.dir*t2 - center), brdf);
+    if(dg != NULL) *dg = diffGeom(r.pos + r.dir*t2, normalize(r.pos + r.dir*t2 - center), brdf);
     return true;
   }
   return false;
