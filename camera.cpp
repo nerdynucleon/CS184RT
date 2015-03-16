@@ -23,12 +23,13 @@ camera::camera(float input[]){
 ray camera::getRay(float u, float v){
   vec3 pos = *eye;
   vec3 dir = ((*view) + (*eye)) + (*up) * v + (*right) * u - (*eye);
-  return ray(pos, dir, 1, FLT_MAX);
+  return ray(pos, normalize(dir), dir.length(), FLT_MAX);
 }
 
 void camera::print(){
+  printf("Camera:\n");
   printf("eye: %f %f %f\n",eye->x, eye->y, eye->z);
   printf("view: %f %f %f\n",view->x, view->y, view->z);
-  printf("up: %f %f %f", up->x, up->y, up->z);
-  printf("right: %f %f %f", right->x, right->y, right->z);
+  printf("up: %f %f %f\n", up->x, up->y, up->z);
+  printf("right: %f %f %f\n", right->x, right->y, right->z);
 }

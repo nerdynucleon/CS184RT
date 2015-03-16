@@ -25,21 +25,21 @@ class vec3{
     vec3 reflect(vec3);
     float x; float y; float z;
     void print();
+    float length();
 };
 
 float dist(vec3, vec3);
-vec3 norm2(vec3);
+vec3 normalize(vec3);
 vec3 cross(vec3,vec3);
 
 /* Light parent class */
 class Light{
   public:
     int type;
-    vec3 v;
-    RGB intensity;
+    vec3 *v;
+    RGB *intensity;
     int falloff;
-    Light(float, float, float, float, float, float);
-    Light(RGB*, float, float, float);
+    Light(float, float, float, float, float, float, int, int);
     void print();
 };
 

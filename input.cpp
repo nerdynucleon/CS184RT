@@ -66,15 +66,16 @@ void parseCam(std::vector<std::string> tokens, Scene *s) {
 		}
 	}
 	s->cam = new camera(data);
+	s->cam->print();
 }
 
 void parsePointLight(std::vector<std::string> tokens, Scene *s) {
-	float data[6];
+	float data[7];
 	int falloff = 0; int depth = 0;
 	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
 		if (tokens[i].compare("") != 0) { 
-			if (depth == 7) { argumentError("ltp", 7); break; }
-			if (depth != 6) {
+			if (depth == 8) { argumentError("ltp", 8); break; }
+			if (depth != 7) {
 				data[depth] = std::stof(tokens[i]);
 			} else {
 				falloff = std::stoi(tokens[i]);
@@ -82,9 +83,7 @@ void parsePointLight(std::vector<std::string> tokens, Scene *s) {
 			depth += 1;
 		}
 	}
-	Light *light = new Light(data[0], data[1], data[2], data[3], data[4], data[5]);
-	light->type = POINT;
-	light->falloff = falloff;
+	Light *light = new Light(data[0], data[1], data[2], data[3], data[4], data[5], POINT, data[6]);
 	light->print();
 	s->add(light);
 }
@@ -99,9 +98,7 @@ void parseDirectional(std::vector<std::string> tokens, Scene *s) {
 			depth += 1;
 		}
 	} 
-	Light *light = new Light(data[0], data[1], data[2], data[3], data[4], data[5]);
-	light->type = DIR;
-	light->falloff = 0;
+	Light *light = new Light(data[0], data[1], data[2], data[3], data[4], data[5], DIR, 0);
 	light->print();
 	s->add(light);
 }
@@ -116,8 +113,7 @@ void parseAmbientLight(std::vector<std::string> tokens, Scene *s) {
 			depth += 1;
 		}
 	} 
-	Light *light = new Light(data[0], data[1], data[2], 0, 0, 0);
-	light->type = AMB;
+	Light *light = new Light(0, 0, 0, data[0], data[1], data[2], AMB, 0);
 	light->print();
 	s->add(light);
 }

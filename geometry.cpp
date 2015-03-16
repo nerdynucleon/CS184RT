@@ -55,12 +55,16 @@ void vec3::print(){
   printf("%f %f %f\n",x,y,z);
 }
 
+float vec3::length(){
+  return dist(*this,*this);
+}
+
 /* Calculate the distance between two positions */
 float dist(vec3 v1, vec3 v2){
   return sqrt(pow(v1.x - v2.x,2) + pow(v1.y - v2.y,2) + pow(v1.z - v2.z,2));
 }
 
-vec3 norm2(vec3 v1){
+vec3 normalize(vec3 v1){
   float length = sqrt(v1.x*v1.x + v1.y*v1.y + v1.z*v1.z);
   return vec3(v1.x/length, v1.y/length, v1.z/length);
 }
@@ -92,12 +96,11 @@ void ray::print(){
   dir.print();
 }
 
-Light::Light(float rIn, float gIn, float bIn, float x, float y, float z):
-  intensity(rIn, gIn, bIn), v(x,y,z){
-}
-
-Light::Light(RGB *colorIn, float x, float y, float z):
-  intensity(colorIn->r, colorIn->g, colorIn->b), v(x,y,z){
+Light::Light(float x, float y, float z, float rIn, float gIn, float bIn, int typeIn, int falloffIn){
+  intensity = new RGB(rIn, gIn, bIn);
+  v = new vec3(x,y,z);
+  falloff = falloffIn;
+  type = typeIn;
 }
 
 void Light::print() {
@@ -105,13 +108,13 @@ void Light::print() {
   if (type == 1) { prefix = "Directional"; }
   else if (type == 2) { prefix = "Ambient"; }
   std::cout << prefix << " Light (" << this << "): " << std::endl;
-  std::cout << "    "; intensity.print(); 
+  std::cout << "    "; intensity->print(); 
   if (type == 0) {
-    std::cout << "    Pos: "; v.print();
+    std::cout << "    Pos: "; v->print();
     std::cout << "    Falloff: " << falloff << std::endl;
   }
   else if (type == 1) {
-    std::cout << "    Dir: "; v.print();
+    std::cout << "    Dir: "; v->print();
   }
 }
 
@@ -146,7 +149,7 @@ bool triangle::intersect(ray r, float *t_min,diffGeom* dg){
   /* Interpolate Triangle Normals */
   vec3 norm = (*v1)*(1 - gamma - beta) + (*v2)*beta + (*v3)*gamma;
   *t_min = t;
-  *dg = diffGeom(r.pos + r.dir*t, norm2(norm), brdf);
+  *dg = diffGeom(r.pos + r.dir*t, normalize(norm), brdf);
   return true;
 }
 
@@ -206,11 +209,11 @@ bool sphere::intersect(ray r, float *t_min, diffGeom* dg){
   t1 /= r.dir*r.dir;
   if(t1 < (*t_min) && t1 > r.t_min && t1 < r.t_max){
     *t_min = t1;
-    *dg = diffGeom(r.pos + r.dir*t1, norm2(r.pos + r.dir*t1 - center), brdf);
+    *dg = diffGeom(r.pos + r.dir*t1, normalize(r.pos + r.dir*t1 - center), brdf);
     return true;
   } else if (t2 < (*t_min) && t2 > r.t_min && t2 < r.t_max) {
     *t_min = t2;
-    *dg = diffGeom(r.pos + r.dir*t2, norm2(r.pos + r.dir*t2 - center), brdf);
+    *dg = diffGeom(r.pos + r.dir*t2, normalize(r.pos + r.dir*t2 - center), brdf);
     return true;
   }
   return false;
