@@ -27,12 +27,12 @@ unsigned char RGB::convert(int color){
   } else if (color == BLUE){
     c = b;
   }
-  if(c < 0){
+  if(c <= 0){
     return 0;
-  } else if (c > 1){
+  } else if (c >= 1){
     return 255;
   } else {
-    return (unsigned char) c * 255;
+    return (unsigned char) (c * 255);
   }
 }
 
