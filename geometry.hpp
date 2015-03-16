@@ -51,11 +51,12 @@ class Light{
 /* Returned from a ray object intersection*/
 class diffGeom{
   public:
-    diffGeom(vec3, vec3, BRDF*);
+    diffGeom(vec3, vec3, BRDF*, float);
     diffGeom();
     vec3 pos;
     vec3 normal;
     BRDF *brdf;
+    float t;
     void print();
 };
 
@@ -70,10 +71,12 @@ class ray{
     void print();
 };
 
+bool checkIntersection(ray*, float, float);
+
 /* Parent class for scene geoemetry */
 class sceneObject{
   public:
-    virtual bool intersect(ray,float*,diffGeom*) = 0;
+    virtual bool intersect(ray,diffGeom*,float) = 0;
 };
 
 /* Geometry Primitive */
@@ -82,7 +85,7 @@ class triangle: public sceneObject {
     vec3 *v1; vec3 *v2; vec3 *v3;
     vec3 *n1; vec3 *n2; vec3 *n3;
     BRDF *brdf;
-    bool intersect(ray,float*,diffGeom*);
+    bool intersect(ray,diffGeom*,float);
     triangle(vec3*,vec3*,vec3*,BRDF*);
     triangle(vec3*,vec3*,vec3*,vec3*,vec3*,vec3*,BRDF*);
     void print();
@@ -92,7 +95,7 @@ class sphere: public sceneObject {
   public:
     sphere(float, float, float, float);
     sphere(vec3, float);
-    bool intersect(ray,float*,diffGeom*);
+    bool intersect(ray,diffGeom*,float);
     vec3 center;
     float radius;
     BRDF *brdf;

@@ -26,8 +26,10 @@ bool Scene::trace(ray r, diffGeom *dg){
   float t_min = FLT_MAX;
   bool intersected = false;
   for(int i = 0; i < objects.size(); i++){
-    sceneObject* o = objects[i];
-    intersected ^= o->intersect(r, &t_min, dg);
+    if(objects[i]->intersect(r, dg, t_min)){
+      t_min = dg->t;
+      intersected = true;
+    }
   }
   return intersected;
 }

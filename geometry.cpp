@@ -75,15 +75,16 @@ vec3* norm2pt(vec3 v1){
 }
 
 /* Construct differential geometry */
-diffGeom::diffGeom(vec3 p, vec3 n, BRDF *in){
+diffGeom::diffGeom(vec3 p, vec3 n, BRDF *in, float tin){
   pos = p;
   normal = n;
   brdf = in;
+  t = tin;
 }
 
 /* Construct a ray */
 ray::ray(vec3 pin, vec3 din, float t_minimum, float t_maximum){
-  pos = pin + din*t_minimum; /* Apply epsilon (t_min) to offset the pos */
+  pos = pin;
   dir = din;
   t_min = t_minimum;
   t_max = t_maximum;
@@ -118,8 +119,12 @@ void Light::print() {
   }
 }
 
+bool checkIntersection(ray *r, float t_max, float t_calculated){
+  return (t_calculated < t_max) && (t_calculated < r->t_max) && (t_calculated > r->t_min);
+}
+
 /* Ray triangle intersection */
-bool triangle::intersect(ray r, float *t_min,diffGeom* dg){
+bool triangle::intersect(ray r, diffGeom* dg, float t_max){
   vec3 e1 = *v2 - *v1;
   vec3 e2 = *v3 - *v1;
   vec3 p = cross(r.dir,e2);
@@ -136,10 +141,10 @@ bool triangle::intersect(ray r, float *t_min,diffGeom* dg){
   //The intersection lies outside of the triangle
   if(v < 0.f || u + v  > 1.f) return 0;
   float t = (e2*q) * inv_det; 
-  if(t > 0.000001) { //ray intersection
+  if(checkIntersection(&r,t_max,t)) { //ray intersection
     /* Interpolate Triangle Normals
     IMPLEMENT LATER */
-    if(dg != NULL) *dg = diffGeom(r.pos + r.dir*t, normalize(cross(e1,e2)), brdf);
+    if(dg != NULL) *dg = diffGeom(r.pos + r.dir*t, normalize(cross(e1,e2)), brdf, t);
     return true;
   }
   return false;
@@ -197,7 +202,7 @@ void triangle::print() {
   std::cout << "    BRDF: " << brdf << std::endl;
 }
 
-bool sphere::intersect(ray r, float *t_min, diffGeom* dg){
+bool sphere::intersect(ray r, diffGeom* dg, float t_max){
   if(r.dir * r.dir == 0) return false;
   float t1 = -r.dir*(r.pos-center);
   float t2 = t1;
@@ -206,13 +211,11 @@ bool sphere::intersect(ray r, float *t_min, diffGeom* dg){
   t2 += det;
   t2 /= r.dir*r.dir;
   t1 /= r.dir*r.dir;
-  if(t1 < (*t_min) && t1 > r.t_min && t1 < r.t_max){
-    *t_min = t1;
-    if(dg != NULL) *dg = diffGeom(r.pos + r.dir*t1, normalize(r.pos + r.dir*t1 - center), brdf);
+  if(checkIntersection(&r,t_max,t1)){
+    if(dg != NULL) *dg = diffGeom(r.pos + r.dir*t1, normalize(r.pos + r.dir*t1 - center), brdf, t1);
     return true;
-  } else if (t2 < (*t_min) && t2 > r.t_min && t2 < r.t_max) {
-    *t_min = t2;
-    if(dg != NULL) *dg = diffGeom(r.pos + r.dir*t2, normalize(r.pos + r.dir*t2 - center), brdf);
+  } else if (checkIntersection(&r,t_max,t2)) {
+    if(dg != NULL) *dg = diffGeom(r.pos + r.dir*t2, normalize(r.pos + r.dir*t2 - center), brdf, t2);
     return true;
   }
   return false;
