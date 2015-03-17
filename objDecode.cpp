@@ -120,7 +120,7 @@ void storeFace(OBJ* decoded, std::vector<std::string> tokens) {
 }
 
 
-OBJ* OBJ::decodeObj(std::string filename){
+OBJ* OBJ::decodeObj(std::vector<std::string> tokens, Scene* s, BRDF *brdf){
 	OBJ *decoded = new OBJ();
 	std::string line;
 	std::ifstream objIn(filename);

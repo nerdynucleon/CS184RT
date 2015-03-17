@@ -38,3 +38,4 @@ input_g.o: input.cpp input.hpp
 	g++ -g -c input.hpp input.cpp
 clean:
 	rm *.o main *.gch output.png
+	rm -r main.dSYM
