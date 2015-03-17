@@ -99,6 +99,7 @@ class sphere: public sceneObject {
     vec3 center;
     float radius;
     BRDF *brdf;
+    void print();
 };
 
 #endif

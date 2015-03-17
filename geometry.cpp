@@ -85,7 +85,7 @@ diffGeom::diffGeom(vec3 p, vec3 n, BRDF *in, float tin){
 /* Construct a ray */
 ray::ray(vec3 pin, vec3 din, float t_minimum, float t_maximum){
   pos = pin;
-  dir = din;
+  dir = normalize(din);
   t_min = t_minimum;
   t_max = t_maximum;
 }
@@ -144,7 +144,7 @@ bool triangle::intersect(ray r, diffGeom* dg, float t_max){
   if(checkIntersection(&r,t_max,t)) { //ray intersection
     /* Interpolate Triangle Normals
     IMPLEMENT LATER */
-    if(dg != NULL) *dg = diffGeom(r.pos + r.dir*t, normalize(cross(e1,e2)), brdf, t);
+    *dg = diffGeom(r.pos + r.dir*t, normalize(cross(e1,e2)), brdf, t);
     return true;
   }
   return false;
@@ -190,6 +190,13 @@ triangle::triangle(vec3* v1in,vec3* v2in,vec3* v3in,vec3* n1in,vec3* n2in,vec3* 
   n1 = n1in; n2 = n2in; n3 = n3in;
 }
 
+void sphere::print() {
+  std::cout << "Sphere (" << this << "):" << std::endl;
+  std::cout << "    " << "Center: "; center.print();
+  std::cout << "    " << "Radius: " << radius << std::endl;
+  std::cout << "    BRDF: " << brdf << std::endl;
+}
+
 void triangle::print() {
   std::cout << "Triangle (" << this << "):" << std::endl;
   std::cout << "    "; v1->print();
@@ -203,19 +210,17 @@ void triangle::print() {
 }
 
 bool sphere::intersect(ray r, diffGeom* dg, float t_max){
-  if(r.dir * r.dir == 0) return false;
-  float t1 = -r.dir*(r.pos-center);
-  float t2 = t1;
-  float det = sqrt(pow(r.dir*(r.pos-center),2) - r.dir*r.dir*pow((r.pos-center)*(r.pos-center) - radius*radius,2));
-  t1 -= det;
-  t2 += det;
-  t2 /= r.dir*r.dir;
-  t1 /= r.dir*r.dir;
+  float a = r.dir * r.dir;
+  if(a == 0) return false;
+  float b = r.dir*(r.pos - center)*2;
+  float c = (r.pos - center)*(r.pos - center) - radius*radius;
+  float t1 = (-b - sqrt(b*b - 4*a*c))/(2*a);
+  float t2 = (-b + sqrt(b*b - 4*a*c))/(2*a);
   if(checkIntersection(&r,t_max,t1)){
-    if(dg != NULL) *dg = diffGeom(r.pos + r.dir*t1, normalize(r.pos + r.dir*t1 - center), brdf, t1);
+    *dg = diffGeom(r.pos + r.dir*t1, normalize(r.pos + r.dir*t1 - center), brdf, t1);
     return true;
   } else if (checkIntersection(&r,t_max,t2)) {
-    if(dg != NULL) *dg = diffGeom(r.pos + r.dir*t2, normalize(r.pos + r.dir*t2 - center), brdf, t2);
+    *dg = diffGeom(r.pos + r.dir*t2, normalize(r.pos + r.dir*t2 - center), brdf, t2);
     return true;
   }
   return false;

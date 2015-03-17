@@ -53,6 +53,7 @@ void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	sphere* obj = new sphere(data[0], data[1], data[2], data[3]);
 	obj->brdf = mat;
 	s->add(obj);
+	obj->print();
 }
 
 void parseCam(std::vector<std::string> tokens, Scene *s) {

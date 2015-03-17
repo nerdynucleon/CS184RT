@@ -23,12 +23,14 @@ void Scene::add(sceneObject *obj){
 }
 
 bool Scene::trace(ray r, diffGeom *dg){
-  float t_min = FLT_MAX;
+  float t_min = FLT_MAX; diffGeom temp;
   bool intersected = false;
   for(int i = 0; i < objects.size(); i++){
-    if(objects[i]->intersect(r, dg, t_min)){
-      t_min = dg->t;
+    if(objects[i]->intersect(r, &temp, t_min)){
+      t_min = temp.t;
       intersected = true;
+      if(dg != NULL) *dg = temp;
+      else return true;
     }
   }
   return intersected;
