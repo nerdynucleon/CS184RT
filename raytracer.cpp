@@ -23,26 +23,24 @@
 
 
 unsigned char* imageRGBA;
-int pixelsWide = 1000;
-int pixelsHigh = 500;
+int pixelsWide = 800;
+int pixelsHigh = 800;
 const char* outputFilename;
 Scene s;
 
 /* NOTE: Need to expand Light to -> directional, point, ambient subclasses */
 RGB shading(diffGeom dg, Light* l, ray eyeRay){
   BRDF *brdf = dg.brdf;
+  vec3 normal = normalize(dg.normal);
   float r = 0; float g = 0; float b = 0;
-  r += l->intensity->r * brdf->ka->r;
-  g += l->intensity->g * brdf->ka->g;
-  b += l->intensity->b * brdf->ka->b;
   vec3 lvec;
   /* Diffuse */
   if(l->type == POINT){
-    lvec = (*l->v - dg.pos);
+    lvec = normalize(*l->v - dg.pos);
   } else if (l->type == DIR){
-    lvec = -(*l->v);
+    lvec = normalize(-(*l->v));
   } else if(l->type == AMB){
-    return RGB(r,g,b);
+    return RGB(brdf->ka->r * l->intensity->r, brdf->ka->g * l->intensity->g, brdf->ka->b * l->intensity->b);
   }
   float dotln = (dg.normal)*(lvec); float falloff;
   float mdotln = fmax(dotln, 0);
