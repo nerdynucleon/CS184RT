@@ -149,15 +149,17 @@ void OBJ::printVertices() {
 	}
 }
 
+/*
 void OBJ::printFaces() {
 	// Not supported atm
 	/* if (faces.size() > 0) {
 		for (int i = 0; i < faces.size(); i++) {
 			faces[i].print();
 		}
-	} */
-}
+	}
+} */
 
+/* Used to test on example */
 int main(int argc, char** argv){
 	OBJ* abc = OBJ::decodeObj("sample/sphere.obj");
 	//abc->printVertices();

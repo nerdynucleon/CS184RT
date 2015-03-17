@@ -8,11 +8,11 @@
 
 class OBJ {
 public:
-	std::vector<vec3> v; 
-	std::vector<vec3> vt;
-	std::vector<vec3> vn;
-	std::vector<vec3> vp;
-	std::vector<triangle> faces;
+	std::vector<vec3*> v; 
+	std::vector<vec3*> vt;
+	std::vector<vec3*> vn;
+	std::vector<vec3*> vp;
+	std::vector<triangle*> faces;
 
 	static OBJ* decodeObj(std::string filename);
 	void printVertices();

@@ -190,7 +190,7 @@ void parseInput(int argc, char** argv, Scene *s) {
 		else if (tokens[0].compare("ltd") == 0) { parseDirectional(tokens, s); }
 		else if (tokens[0].compare("lta") == 0) { parseAmbientLight(tokens, s); }
 		else if (tokens[0].compare("tri") == 0) { parseTriangle(tokens, s, mat); }
-		else if (tokens[0].compare("obj") == 0) { parseObj(tokens, s, mat); }
+		//else if (tokens[0].compare("obj") == 0) { parseObj(tokens, s, mat); }
 		//else if (tokens[0].compare("xft") == 0) { parseTranslation(tokens, s, mat); }
 		//else if (tokens[0].compare("xfr") == 0) { parseRotation(tokens, s, mat); }
 		//else if (tokens[0].compare("xfs") == 0) { parseScale(tokens, s, mat); }

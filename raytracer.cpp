@@ -118,10 +118,10 @@ void generateImage(){
       /* Generate eye ray from pixel sample and initialize pixel color */
       ray eyeray = s.cam->getRay((i+0.5)/pixelsWide, (j+0.5)/pixelsHigh);
       RGB pixelColor = recursiveRT(eyeray, RECURSIVE_DEPTH, RGB(0,0,0));
-      imageRGBA[(pixelsWide * j + i)*4] = pixelColor.convert(RED);
-      imageRGBA[(pixelsWide * j + i)*4 + 1] = pixelColor.convert(GREEN);
-      imageRGBA[(pixelsWide * j + i)*4 + 2] = pixelColor.convert(BLUE);
-      imageRGBA[(pixelsWide * j + i)*4 + 3] = 255;
+      imageRGBA[(pixelsWide * (pixelsHigh - 1 - j) + i)*4] = pixelColor.convert(RED);
+      imageRGBA[(pixelsWide * (pixelsHigh - 1 - j) + i)*4 + 1] = pixelColor.convert(GREEN);
+      imageRGBA[(pixelsWide * (pixelsHigh - 1 - j) + i)*4 + 2] = pixelColor.convert(BLUE);
+      imageRGBA[(pixelsWide * (pixelsHigh - 1 - j) + i)*4 + 3] = 255;
     }
   }
 }
