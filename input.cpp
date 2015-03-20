@@ -142,33 +142,41 @@ void parseTriangle(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 }
 
 
-void parseObj(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
+void parseObj(std::vector<std::string> tokens) {
 	OBJ *obj = OBJ::decodeObj(tokens[1], s, mat);
 }
 
-void parseTranslation(std::vector<std::string> tokens, Scene *s) {
+void parseTranslation(std::vector<std::string> tokens) {
 	/* Transformations should be applied to all OBJ 
 	   unless reset by xfz */
-}
-
-void parseRotation(std::vector<std::string> tokens, Scene *s) {
-	/* Transformations should be applied to all OBJ 
-	   unless reset by xfz */
-}
-
-void parseScale(std::vector<std::string> tokens, Scene *s) {
-	/* Transformations should be applied to all OBJ 
-	   unless reset by xfz */
-	if(tokens.size() > 4){
-		argumentError("xfz", 9); break;
+	if(tokens.size() != 4 ){
+		argumentError("xft", 9);
 	}
-	xf.push_back(new Transformation())
+	xf.push_back(new Transformation(std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]),TRANSLATE));
 }
 
-void parseReset(std::vector<std::string> tokens, Scene *s) {
+void parseRotation(std::vector<std::string> tokens) {
+	/* Transformations should be applied to all OBJ 
+	   unless reset by xfz */
+	if(tokens.size() != 4 ){
+		argumentError("xfr", 9);
+	}
+	xf.push_back(new Transformation(std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]),ROTATE));
+}
+
+void parseScale(std::vector<std::string> tokens) {
+	/* Transformations should be applied to all OBJ 
+	   unless reset by xfz */
+	if(tokens.size() != 4 ){
+		argumentError("xfs", 9);
+	}
+	xf.push_back(new Transformation(std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]),SCALE));
+}
+
+void parseReset(std::vector<std::string> tokens) {
 	/* Reset Transformations */
 	if(tokens.size() > 1){
-		argumentError("xfz", 9); break;
+		argumentError("xfz", 9);
 	}
 	while(!xf.empty()){
 		free(xf.back());
@@ -209,9 +217,9 @@ void parseInput(int argc, char** argv, Scene *s) {
 		else if (tokens[0].compare("lta") == 0) { parseAmbientLight(tokens, s); }
 		else if (tokens[0].compare("tri") == 0) { parseTriangle(tokens, s, mat); }
 		else if (tokens[0].compare("obj") == 0) { parseObj(tokens, s, mat); }
-		else if (tokens[0].compare("xft") == 0) { parseTranslation(tokens, s, mat); }
-		else if (tokens[0].compare("xfr") == 0) { parseRotation(tokens, s, mat); }
-		else if (tokens[0].compare("xfs") == 0) { parseScale(tokens, s, mat); }
+		else if (tokens[0].compare("xft") == 0) { parseTranslation(tokens); }
+		else if (tokens[0].compare("xfr") == 0) { parseRotation(tokens); }
+		else if (tokens[0].compare("xfs") == 0) { parseScale(tokens); }
 		else if (tokens[0].compare("xfz") == 0) { parseReset(tokens); }
 	}
 } 

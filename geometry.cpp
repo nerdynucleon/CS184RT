@@ -10,8 +10,9 @@
 #endif
 
 #include <cmath>
+#ifndef INPUT_H
 #include "input.hpp"
-
+#endif
 /* Basic operations to perform on Vectors */
 vec3::vec3(){
   x = 0; y = 0; z = 0;
@@ -240,26 +241,35 @@ Transformation::Transformation(float xIn, float yIn, float zIn, int typeIn){
 Transformation::Transformation(){
 }
 
-vec3 apply(vec3 vin){
+vec3* apply(vec3 *vin){
+  if(xf.size() == 0){
+    return vin;
+  }
   Transformation *t;
+  float a = vin->x; float b = vin->y; float c = vin->z;
   for(int i = 0; i < xf.size(); i++){
     t=xf[i];
     float x = t->x; float y = t->y; float z = t->z; float ct = t->ct; float st = t->st;
     if(t->type == TRANSLATE){
       /*Translate vector*/
-      return vec3(vin.x + x, vin.y +y, vin.z + z);
+      a = a + x;
+      b = b + y;
+      c = c + z;
     } else if(t->type == ROTATE){
       /* Exponential Map rotation in radians (length of rotation input) */
-      float a = vin.x;
-      float b = vin.y;
-      float c = vin.z;
       float xout = a*(x*x +((y*y)+(z*z))*ct) + b*(y*x - x*y*ct -z*st) + c*(z*x - x*z*ct + y*st);
       float yout = a*(y*x -x*y*ct+z*st) + b*(y*y+(x*x+z*z)*ct) + c*(y*z-y*z*ct-x*st);
       float zout = a*(z*x -x*z*ct-y*st) + b*(z*y -y*z*ct+x*st) + c*(z*z +(x*x+y*y)*ct);
-      return vec3(xout,yout,zout);
+      a = xout;
+      b = yout;
+      c = zout;
     } else if(t->type == SCALE) {
       /* Scaling */
-      return vec3(vin.x * x, vin.y * y, vin.z * z);
+      a = a * x;
+      b = b * y;
+      c = c * z;
     }
   }
+  free(vin);
+  return new vec3(a,b,c);
 }
