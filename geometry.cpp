@@ -232,6 +232,7 @@ Transformation::Transformation(float xIn, float yIn, float zIn, int typeIn){
   x = xIn; y = yIn; z = zIn; type = typeIn;
   if(type == ROTATE){
     float length = sqrt(x*x + y*y + z*z);
+    length = length * PI/ 180.0f;
     x=x/length; y=y/length; z=z/length;
     ct = cos(length);
     st = sin(length);

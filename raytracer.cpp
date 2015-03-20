@@ -23,6 +23,7 @@
 #define RECURSIVE_DEPTH 1
 #define EPS 0.1
 #define AA true;
+#define AA_LEVEL 10;
 
 
 unsigned char* imageRGBA;
@@ -115,9 +116,16 @@ void generateImage(){
   }
 }
 
+void fillRandom(float* array, size_t num){
+  for(int i = 0; i <)
+  float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+}
+
 int main(int argc, char** argv){
   
   parseInput(argc, argv, &s);
+  if(AA) float* AA_rand = (float*) malloc(pixelsWide*pixelsHigh*AA_LEVEL*sizeof(float));
+  float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
   imageRGBA = (unsigned char*) malloc(pixelsWide * pixelsHigh * 4 * sizeof(unsigned char));
   generateImage();
   std::vector<unsigned char> png;
