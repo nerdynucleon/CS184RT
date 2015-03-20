@@ -25,6 +25,41 @@ should be printed to stderr
 unsupported feature and the program should then ignore the line. 
 */
 
+std::vector<Transformation*> xf;
+
+vec3* apply(vec3 *vin){
+  if(xf.size() == 0){
+    return vin;
+  }
+  Transformation *t;
+  float a = vin->x; float b = vin->y; float c = vin->z;
+  for(int i = 0; i < xf.size(); i++){
+    t=xf[i];
+    float x = t->x; float y = t->y; float z = t->z; float ct = t->ct; float st = t->st;
+    if(t->type == TRANSLATE){
+      /*Translate vector*/
+      a = a + x;
+      b = b + y;
+      c = c + z;
+    } else if(t->type == ROTATE){
+      /* Exponential Map rotation in radians (length of rotation input) */
+      float xout = a*(x*x +((y*y)+(z*z))*ct) + b*(y*x - x*y*ct -z*st) + c*(z*x - x*z*ct + y*st);
+      float yout = a*(y*x -x*y*ct+z*st) + b*(y*y+(x*x+z*z)*ct) + c*(y*z-y*z*ct-x*st);
+      float zout = a*(z*x -x*z*ct-y*st) + b*(z*y -y*z*ct+x*st) + c*(z*z +(x*x+y*y)*ct);
+      a = xout;
+      b = yout;
+      c = zout;
+    } else if(t->type == SCALE) {
+      /* Scaling */
+      a = a * x;
+      b = b * y;
+      c = c * z;
+    }
+  }
+  free(vin);
+  return new vec3(a,b,c);
+}
+
 /* Splits a string by whitespace. */
 std::vector<std::string> split(const std::string &str) {
 	std::vector <std::string> tokens;
@@ -147,7 +182,7 @@ void parseTriangle(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 }
 
 
-void parseObj(std::vector<std::string> tokens) {
+void parseObj(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	OBJ *obj = OBJ::decodeObj(tokens[1], s, mat);
 }
 
@@ -222,16 +257,9 @@ void parseInput(int argc, char** argv, Scene *s) {
 		else if (tokens[0].compare("lta") == 0) { parseAmbientLight(tokens, s); }
 		else if (tokens[0].compare("tri") == 0) { parseTriangle(tokens, s, mat); }
 		else if (tokens[0].compare("obj") == 0) { parseObj(tokens, s, mat); }
-<<<<<<< HEAD
 		else if (tokens[0].compare("xft") == 0) { parseTranslation(tokens); }
 		else if (tokens[0].compare("xfr") == 0) { parseRotation(tokens); }
 		else if (tokens[0].compare("xfs") == 0) { parseScale(tokens); }
 		else if (tokens[0].compare("xfz") == 0) { parseReset(tokens); }
-=======
-		else if (tokens[0].compare("xft") == 0) { parseTranslation(tokens, s); }
-		else if (tokens[0].compare("xfr") == 0) { parseRotation(tokens, s); }
-		else if (tokens[0].compare("xfs") == 0) { parseScale(tokens, s); }
-		else if (tokens[0].compare("xfz") == 0) { parseReset(tokens, s); }
->>>>>>> 999a803d0b73c1bd9534c16142887a56cbd9a57e
 	}
 } 
