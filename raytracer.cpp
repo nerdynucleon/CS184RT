@@ -48,6 +48,7 @@ RGB shading(diffGeom dg, Light* l, ray eyeRay){
   if (brdf->kd > 0) {
     rgb += (*brdf->kd) * (*l->intensity) * mdotln;
   }
+  (*brdf->kd).print(); (*l->intensity).print(); std::cout << mdotln << std::endl;
 
   /* Calculate falloff */
   if (l->falloff == FALLOFF_NONE) { falloff = 1; }

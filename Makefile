@@ -1,5 +1,5 @@
-all: camera.o geometry.o color.o scene.o lodepng.o input.o
-	g++ raytracer.cpp lodepng.o camera.o geometry.o color.o scene.o input.o -o main
+all: camera.o geometry.o color.o scene.o lodepng.o input.o objDecode.o
+	g++ raytracer.cpp lodepng.o camera.o geometry.o color.o scene.o objDecode.o input.o -o main
 camera.o: camera.cpp camera.hpp
 	g++ -c camera.hpp camera.cpp
 geometry.o: geometry.cpp geometry.hpp

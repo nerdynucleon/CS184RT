@@ -50,14 +50,14 @@ std::vector<std::string> split(const std::string &s, char delim) {
 
 void storeVertex(OBJ* decoded, std::vector<std::string> tokens, int type) {
 	if (tokens.size() <= 1) { return; }
-	vec3 v;
+	vec3 *v = new vec3(0, 0, 0);
 	int dimension = 0;
 	for (int i = 1; i < tokens.size(); i++) {
 		if (tokens[i].compare(" ") == 0) { continue; }
 		if ((tokens[i].compare("#") == 0) || (dimension == 3)) { break; }
-		if (dimension == 0) { v.x = std::stof(tokens[i]); dimension += 1; }
-		else if (dimension == 1) { v.y = std::stof(tokens[i]); dimension += 1; }
-		else if (dimension == 2) { v.z = std::stof(tokens[i]); dimension += 1; }
+		if (dimension == 0) { v->x = std::stof(tokens[i]); dimension += 1; }
+		else if (dimension == 1) { v->y = std::stof(tokens[i]); dimension += 1; }
+		else if (dimension == 2) { v->z = std::stof(tokens[i]); dimension += 1; }
 	}
 	if (type == VERTEX_DEFAULT) { decoded->v.push_back(v); }
 	else if (type == VERTEX_NORMAL)  { decoded->vn.push_back(v); }
@@ -65,9 +65,9 @@ void storeVertex(OBJ* decoded, std::vector<std::string> tokens, int type) {
 	else if (type == VERTEX_PARAMETER) { decoded->vp.push_back(v); }
 }
 
-void storeFace(OBJ* decoded, std::vector<std::string> tokens) {
+void storeFace(OBJ* decoded, std::vector<std::string> tokens, Scene *s, BRDF *brdf) {
 	if (tokens.size() <= 1) { return; }
-	vec3 v; vec3 v1; vec3 v2; vec3 v3; vec3 n1; vec3 n2; vec3 n3;
+	vec3 *v; vec3 *v1; vec3 *v2; vec3 *v3; vec3 *n1; vec3 *n2; vec3 *n3;
 	bool normals = false;
 	for (int i = 1; i < tokens.size(); i++) {
 		if (tokens[i].compare(" ") == 0) { continue; }
@@ -112,18 +112,19 @@ void storeFace(OBJ* decoded, std::vector<std::string> tokens) {
 			}
 		} */
 	}
-	triangle f = triangle(v1, v2, v3, NULL);
+	triangle *f = new triangle(v1, v2, v3, brdf);
 	if (normals) {
-		f.n1 = &n1; f.n2 = &n2; f.n3 = &n3;
+		f->n1 = n1; f->n2 = n2; f->n3 = n3;
 	}
-	decoded->faces.push_back(f);
+	f->print();
+	s->add(f);
 }
 
 
-OBJ* OBJ::decodeObj(std::vector<std::string> tokens, Scene* s, BRDF *brdf){
+OBJ* OBJ::decodeObj(std::string filename, Scene *s, BRDF *brdf){
 	OBJ *decoded = new OBJ();
 	std::string line;
-	std::ifstream objIn(filename);
+	std::ifstream objIn((filename));
 	if (objIn.is_open()) {
 		while (getline(objIn, line)) {
 			line = ltrim(line);
@@ -133,7 +134,7 @@ OBJ* OBJ::decodeObj(std::vector<std::string> tokens, Scene* s, BRDF *brdf){
 			else if (tokens[0].compare("vt") == 0) { storeVertex(decoded, tokens, VERTEX_TEXTURE); }
 			else if (tokens[0].compare("vn") == 0) { storeVertex(decoded, tokens, VERTEX_NORMAL); }
 			else if (tokens[0].compare("vp") == 0) { storeVertex(decoded, tokens, VERTEX_PARAMETER); }
-			else if (tokens[0].compare("f") == 0) { storeFace(decoded, tokens); }
+			else if (tokens[0].compare("f") == 0) { storeFace(decoded, tokens, s, brdf); }
 		}
 		objIn.close();
 	}
@@ -144,25 +145,7 @@ OBJ* OBJ::decodeObj(std::vector<std::string> tokens, Scene* s, BRDF *brdf){
 void OBJ::printVertices() {
 	if (v.size() > 0) {
 		for (int i = 0; i < v.size(); i++) {
-			v[i].print();
+			v[i]->print();
 		}
 	}
-}
-
-/*
-void OBJ::printFaces() {
-	// Not supported atm
-	/* if (faces.size() > 0) {
-		for (int i = 0; i < faces.size(); i++) {
-			faces[i].print();
-		}
-	}
-} */
-
-/* Used to test on example */
-int main(int argc, char** argv){
-	OBJ* abc = OBJ::decodeObj("sample/sphere.obj");
-	//abc->printVertices();
-	//abc->printFaces();
-	return 0;
 }

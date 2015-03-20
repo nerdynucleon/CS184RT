@@ -7,6 +7,9 @@
 #ifndef GEOMETRY_H
 #include "geometry.hpp"
 #endif
+#ifndef OBJDECODE_H
+#include "objdecode.hpp"
+#endif
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -138,11 +141,10 @@ void parseTriangle(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	tri->print();
 }
 
-/*
+
 void parseObj(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
-	OBJ *obj = OBJ::decodeObj(tokens[1]);
-	PUT OBJ DATA INTO SCENE
-}*/
+	OBJ *obj = OBJ::decodeObj(tokens[1], s, mat);
+}
 
 void parseTranslation(std::vector<std::string> tokens, Scene *s) {
 	/* Transformations should be applied to all OBJ 
@@ -190,7 +192,7 @@ void parseInput(int argc, char** argv, Scene *s) {
 		else if (tokens[0].compare("ltd") == 0) { parseDirectional(tokens, s); }
 		else if (tokens[0].compare("lta") == 0) { parseAmbientLight(tokens, s); }
 		else if (tokens[0].compare("tri") == 0) { parseTriangle(tokens, s, mat); }
-		//else if (tokens[0].compare("obj") == 0) { parseObj(tokens, s, mat); }
+		else if (tokens[0].compare("obj") == 0) { parseObj(tokens, s, mat); }
 		//else if (tokens[0].compare("xft") == 0) { parseTranslation(tokens, s, mat); }
 		//else if (tokens[0].compare("xfr") == 0) { parseRotation(tokens, s, mat); }
 		//else if (tokens[0].compare("xfs") == 0) { parseScale(tokens, s, mat); }
