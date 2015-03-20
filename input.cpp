@@ -222,16 +222,9 @@ void parseInput(int argc, char** argv, Scene *s) {
 		else if (tokens[0].compare("lta") == 0) { parseAmbientLight(tokens, s); }
 		else if (tokens[0].compare("tri") == 0) { parseTriangle(tokens, s, mat); }
 		else if (tokens[0].compare("obj") == 0) { parseObj(tokens, s, mat); }
-<<<<<<< HEAD
 		else if (tokens[0].compare("xft") == 0) { parseTranslation(tokens); }
 		else if (tokens[0].compare("xfr") == 0) { parseRotation(tokens); }
 		else if (tokens[0].compare("xfs") == 0) { parseScale(tokens); }
 		else if (tokens[0].compare("xfz") == 0) { parseReset(tokens); }
-=======
-		else if (tokens[0].compare("xft") == 0) { parseTranslation(tokens, s); }
-		else if (tokens[0].compare("xfr") == 0) { parseRotation(tokens, s); }
-		else if (tokens[0].compare("xfs") == 0) { parseScale(tokens, s); }
-		else if (tokens[0].compare("xfz") == 0) { parseReset(tokens, s); }
->>>>>>> 999a803d0b73c1bd9534c16142887a56cbd9a57e
 	}
 } 
