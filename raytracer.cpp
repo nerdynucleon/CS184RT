@@ -18,7 +18,7 @@
 #include <cfloat>
 #define CFLOAT_H
 #endif
-#define RECURSIVE_DEPTH 10
+#define RECURSIVE_DEPTH 1
 #define EPS 0.1
 
 
@@ -32,55 +32,37 @@ Scene s;
 RGB shading(diffGeom dg, Light* l, ray eyeRay){
   BRDF *brdf = dg.brdf;
   vec3 normal = normalize(dg.normal);
-  float r = 0; float g = 0; float b = 0;
   vec3 lvec;
+  RGB rgb = RGB(0, 0, 0);
+
   /* Diffuse */
   if(l->type == POINT){
     lvec = normalize(*l->v - dg.pos);
   } else if (l->type == DIR){
     lvec = normalize(-(*l->v));
   } else if(l->type == AMB){
-    return RGB(brdf->ka->r * l->intensity->r, brdf->ka->g * l->intensity->g, brdf->ka->b * l->intensity->b);
+    return (*brdf->ka) * (*l->intensity); 
   }
   float dotln = normal*(lvec); float falloff;
   float mdotln = fmax(dotln, 0);
+  if (brdf->kd > 0) {
+    rgb += (*brdf->kd) * (*l->intensity) * mdotln;
+  }
 
   /* Calculate falloff */
   if (l->falloff == FALLOFF_NONE) { falloff = 1; }
   else if (l->falloff == FALLOFF_LINEAR) { falloff = 1/(dist(dg.pos, *(l->v))); }
   else { falloff = 1/pow(dist(dg.pos, *(l->v)), 2); }
 
-  if (brdf->kd->r > 0) {
-    r += (brdf->kd->r) * (l->intensity->r) * mdotln;
-  }
-  if (brdf->kd->g > 0) {
-    g += (brdf->kd->g) * (l->intensity->g) * mdotln;
-  }
-  if (brdf->kd->b > 0) { 
-    b += (brdf->kd->b) * (l->intensity->b) * mdotln;
+  /* Specular component */
+  if (brdf->ks > 0) {
+    vec3 reflection = normalize(-lvec + normal * (2 * dotln));
+    vec3 viewer = normalize(eyeRay.pos - dg.pos);
+    float dotvr = pow(fmax(viewer * reflection, 0), brdf->s);
+    rgb += (*brdf->ks) * (*l->intensity) * dotvr; 
   }
 
-  vec3 reflection = -lvec;
-  vec3 scalednorm = (dg.normal) * (2 * dotln);
-  reflection = reflection + scalednorm;
-  /* Normalize */
-  reflection = normalize(reflection);
-
-  /* Viewer ray */
-  vec3 viewer = normalize((dg.pos) - (eyeRay.pos));
-  /* Specular */
-  float dotvr = pow(fmax(viewer * reflection, 0), brdf->s);
-  if (brdf->ks->r > 0) {
-    r += (brdf->ks->r) * (l->intensity->r) * dotvr;
-  }
-  if (brdf->ks->g > 0) {
-    g += (brdf->ks->g) * (l->intensity->g) * dotvr;
-  }
-  if (brdf->ks->b > 0) {
-    b += (brdf->ks->b) * (l->intensity->b) * dotvr;
-  }
-  r *= falloff; g *= falloff; b *= falloff;
-  return RGB(r, g, b);
+  return rgb*falloff;
 }
 
 /* Function used to recursively trace rays */

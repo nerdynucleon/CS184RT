@@ -12,6 +12,7 @@ class RGB{
     RGB operator+=(RGB);
     bool operator>(float);
     RGB operator*(RGB);
+    RGB operator*(float);
     RGB(float, float, float);
     RGB();
     void print();

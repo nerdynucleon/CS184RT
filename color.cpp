@@ -12,6 +12,10 @@ RGB RGB::operator*(RGB c1){
   return RGB(r*c1.r, c1.g*g, c1.b*b);
 }
 
+RGB RGB::operator*(float f) {
+  return RGB(r*f, g*f, b*f);
+}
+
 RGB::RGB(){
   r = 0;
   g = 0;
@@ -41,7 +45,8 @@ void RGB::print() {
 }
 
 bool RGB::operator>(float f){
-  return ((r > f) && (b > f) && (g > f));
+  //return ((r > f) && (b > f) && (g > f));
+  return ((r > f) || (b > f) || (g > f));
 }
 
 RGB RGB::operator+=(RGB c1){
