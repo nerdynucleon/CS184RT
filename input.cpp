@@ -100,14 +100,16 @@ void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 }
 
 void parseCam(std::vector<std::string> tokens, Scene *s) {
-	std::vector<float> data = parseLine(tokens, 15, "cam");
-	float cdata[15];
+	float data[15];
 	int depth = 0;
-	for (std::vector<float>::size_type i = 1; i != data.size(); i++) {
-		cdata[depth] = data[i];
-		depth += 1;
+	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
+		if (tokens[i].compare("") != 0) {
+			if (depth == 15) { argumentError("cam", 15); break; }
+			data[depth] = std::stof(tokens[i]);
+			depth += 1;
+		}
 	}
-	s->cam = new camera(cdata);
+	s->cam = new camera(data);
 	s->cam->print();
 }
 
@@ -142,6 +144,7 @@ void parseTriangle(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	s->add(tri);
 	tri->print();
 }
+
 
 
 void parseObj(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
@@ -225,3 +228,5 @@ void parseInput(int argc, char** argv, Scene *s) {
 		else if (tokens[0].compare("xfz") == 0) { parseReset(tokens); }
 	}
 } 
+
+
