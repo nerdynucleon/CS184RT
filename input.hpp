@@ -5,5 +5,6 @@
 #endif
 
 void parseInput(int argc, char** argv, Scene *s);
+std::vector<Transformation*> xf;
 
 #endif
