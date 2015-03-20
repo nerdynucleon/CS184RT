@@ -28,7 +28,7 @@ int pixelsHigh = 800;
 const char* outputFilename;
 Scene s;
 
-/* NOTE: Need to expand Light to -> directional, point, ambient subclasses */
+
 RGB shading(diffGeom dg, Light* l, ray eyeRay){
   BRDF *brdf = dg.brdf;
   vec3 normal = normalize(dg.normal);
@@ -42,7 +42,7 @@ RGB shading(diffGeom dg, Light* l, ray eyeRay){
   } else if(l->type == AMB){
     return RGB(brdf->ka->r * l->intensity->r, brdf->ka->g * l->intensity->g, brdf->ka->b * l->intensity->b);
   }
-  float dotln = (dg.normal)*(lvec); float falloff;
+  float dotln = normal*(lvec); float falloff;
   float mdotln = fmax(dotln, 0);
 
   /* Calculate falloff */
@@ -92,7 +92,13 @@ RGB recursiveRT(ray r, int depth, RGB c){
       /* Calculate Contribution from Light Sources */
       for(int i = 0; i < s.lights.size(); i++){
         Light* l = s.lights[i];
-        ray shadowRay = ray(dg.pos, normalize(*(l->v) - dg.pos), EPS, dist(*l->v,dg.pos));
+        vec3 lvec; float distance;
+        if (l->type == POINT) {
+          lvec = normalize(*(l->v) - dg.pos); distance = dist(*l->v, dg.pos);
+        } else {
+          lvec = normalize(-(*l->v)); distance = FLT_MAX;
+        }
+        ray shadowRay = ray(dg.pos, lvec, EPS, distance);
         if((l->type == AMB) || (!s.trace(shadowRay, NULL))){
           c += shading(dg, l, r);
           //c.print();
