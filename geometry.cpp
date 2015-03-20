@@ -225,3 +225,32 @@ bool sphere::intersect(ray r, diffGeom* dg, float t_max){
   }
   return false;
 }
+
+Transformation::Transformation(float xIn, float yIn, float zIn, int typeIn){
+  x = xIn; y = yIn; z = zIn; type = typeIn;
+  if(type == ROTATE){
+    float length = sqrt(x*x + y*y + z*z);
+    x=x/length; y=y/length; z=z/length;
+    ct = cos(length);
+    st = sin(length);
+  }
+}
+
+vec3 Transformation::apply(vec3 vin){
+  if(type == TRANSLATE){
+    /*Translate vector*/
+    return vec3(vin.x + x, vin.y +y, vin.z + z);
+  } else if(type == ROTATE){
+    /* Exponential Map rotation in radians (length of rotation input) */
+    float a = vin.x;
+    float b = vin.y;
+    float c = vin.z;
+    float xout = a*(x*x +((y*y)+(z*z))*ct) + b*(y*x - x*y*ct -z*st) + c*(z*x - x*z*ct + y*st);
+    float yout = a*(y*x -x*y*ct+z*st) + b*(y*y+(x*x+z*z)*ct) + c*(y*z-y*z*ct-x*st);
+    float zout = a*(z*x -x*z*ct-y*st) + b*(z*y -y*z*ct+x*st) + c*(z*z +(x*x+y*y)*ct);
+    return vec3(xout,yout,zout);
+  } else {
+    /* Scaling */
+    return vec3(vin.x * x, vin.y * y, vin.z * z);
+  }
+}
