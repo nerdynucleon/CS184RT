@@ -9,7 +9,9 @@
 #endif
 #include "lodepng.h"
 #include <cmath>
+#ifndef INPUT_H
 #include "input.hpp"
+#endif
 #ifndef COLOR_H
 #include "color.hpp"
 #endif
@@ -57,7 +59,6 @@ RGB shading(diffGeom dg, Light* l, ray eyeRay){
 
   /* Specular component */
   if (brdf->ks > 0) {
-    normal.print();
     vec3 reflection = normalize(-lvec + normal * (2 * dotln));
     vec3 viewer = normalize(eyeRay.pos - dg.pos);
     float dotvr = pow(fmax(viewer * reflection, 0), brdf->s);
