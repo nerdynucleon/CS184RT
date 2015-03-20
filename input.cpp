@@ -42,16 +42,21 @@ void argumentError(std::string command, int expected) {
 	fprintf(stderr, "%s", err.c_str());
 }
 
-void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
-	float data[4];
+std::vector<float> parseLine(std::vector<std::string> tokens, int expected, std::string command) {
+	std::vector<float> data;
 	int depth = 0;
 	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
-		if (tokens[i].compare("") != 0) { 
-			if (depth == 4) { argumentError("sph", 4); break; }
-			data[depth] = std::stof(tokens[i]);
+		if (tokens[i].compare("") != 0) {
+			if (depth == expected) { argumentError(command, expected); break; }
+			data.push_back(std::stof(tokens[i]));
 			depth += 1;
 		}
 	}
+	return data;
+}
+
+void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
+	std::vector<float> data = parseLine(tokens, 4, "sph");
 	/* Load sphere into scene */
 	sphere* obj = new sphere(data[0], data[1], data[2], data[3]);
 	obj->brdf = mat;
@@ -159,7 +164,7 @@ void parseRotation(std::vector<std::string> tokens) {
 	/* Transformations should be applied to all OBJ 
 	   unless reset by xfz */
 	if(tokens.size() != 4 ){
-		argumentError("xfr", 9);
+		argumentError("xfr", 4);
 	}
 	xf.push_back(new Transformation(std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]),ROTATE));
 }
@@ -168,15 +173,15 @@ void parseScale(std::vector<std::string> tokens) {
 	/* Transformations should be applied to all OBJ 
 	   unless reset by xfz */
 	if(tokens.size() != 4 ){
-		argumentError("xfs", 9);
+		argumentError("xfs", 4);
 	}
 	xf.push_back(new Transformation(std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]),SCALE));
 }
 
 void parseReset(std::vector<std::string> tokens) {
 	/* Reset Transformations */
-	if(tokens.size() > 1){
-		argumentError("xfz", 9);
+	if(tokens.size() != 1){
+		argumentError("xfz", 1);
 	}
 	while(!xf.empty()){
 		free(xf.back());
@@ -217,9 +222,16 @@ void parseInput(int argc, char** argv, Scene *s) {
 		else if (tokens[0].compare("lta") == 0) { parseAmbientLight(tokens, s); }
 		else if (tokens[0].compare("tri") == 0) { parseTriangle(tokens, s, mat); }
 		else if (tokens[0].compare("obj") == 0) { parseObj(tokens, s, mat); }
+<<<<<<< HEAD
 		else if (tokens[0].compare("xft") == 0) { parseTranslation(tokens); }
 		else if (tokens[0].compare("xfr") == 0) { parseRotation(tokens); }
 		else if (tokens[0].compare("xfs") == 0) { parseScale(tokens); }
 		else if (tokens[0].compare("xfz") == 0) { parseReset(tokens); }
+=======
+		else if (tokens[0].compare("xft") == 0) { parseTranslation(tokens, s); }
+		else if (tokens[0].compare("xfr") == 0) { parseRotation(tokens, s); }
+		else if (tokens[0].compare("xfs") == 0) { parseScale(tokens, s); }
+		else if (tokens[0].compare("xfz") == 0) { parseReset(tokens, s); }
+>>>>>>> 999a803d0b73c1bd9534c16142887a56cbd9a57e
 	}
 } 
