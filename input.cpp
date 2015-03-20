@@ -42,16 +42,21 @@ void argumentError(std::string command, int expected) {
 	fprintf(stderr, "%s", err.c_str());
 }
 
-void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
-	float data[4];
+std::vector<float> parseLine(std::vector<std::string> tokens, int expected, std::string command) {
+	std::vector<float> data;
 	int depth = 0;
 	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
-		if (tokens[i].compare("") != 0) { 
-			if (depth == 4) { argumentError("sph", 4); break; }
-			data[depth] = std::stof(tokens[i]);
+		if (tokens[i].compare("") != 0) {
+			if (depth == expected) { argumentError(command, expected); break; }
+			data.push_back(std::stof(tokens[i]));
 			depth += 1;
 		}
 	}
+	return data;
+}
+
+void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
+	std::vector<float> data = parseLine(tokens, 4, "sph");
 	/* Load sphere into scene */
 	sphere* obj = new sphere(data[0], data[1], data[2], data[3]);
 	obj->brdf = mat;
