@@ -4,13 +4,7 @@
 #include "objDecode.hpp"
 #endif
 
-/* http://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring */
-#include <algorithm> 
-#include <functional> 
-#include <cctype>
-#include <locale>
-#include <string>
-#include <sstream>
+
 
 #define VERTEX_DEFAULT		0
 #define VERTEX_NORMAL		1
@@ -22,31 +16,30 @@
 #define FACE_VVTN 2
 #define FACE_VN  	3
 
+/* http://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring */
+#include <algorithm> 
+#include <functional> 
+#include <cctype>
+#include <locale>
+#include <string>
+#include <sstream>
+
 // trim from start
 inline std::string &ltrim(std::string &s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
     return s;
 }
-/*****************/
 
-
-/* http://stackoverflow.com/questions/236129/split-a-string-in-c */
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-    std::stringstream ss(s);
-    std::string item;
-    while (std::getline(ss, item, delim)) {
-        elems.push_back(item);
+/* Split a string by a delimiter */
+std::vector<std::string> split(const std::string &str, char delim) {
+    std::vector<std::string> tokens;
+    std::stringstream stream(str);
+    std::string temp; 
+    while(std::getline(stream, temp, delim)) {
+    	tokens.push_back(temp);
     }
-    return elems;
+    return tokens;
 }
-
-
-std::vector<std::string> split(const std::string &s, char delim) {
-    std::vector<std::string> elems;
-    split(s, delim, elems);
-    return elems;
-}
-/***/
 
 void storeVertex(OBJ* decoded, std::vector<std::string> tokens, int type) {
 	if (tokens.size() <= 1) { return; }
@@ -81,7 +74,7 @@ void storeFace(OBJ* decoded, std::vector<std::string> tokens, Scene *s, BRDF *br
 			//f.v.push_back(v);
 			//f.type = FACE_V;
 		}
-		else if ((find != std::string::npos) && (tokens[i].substr(find, find+1).compare("/") == 0)) {
+		else if ((find != std::string::npos) && (tokens[i].substr(find+1, 1).compare("/") == 0)) {
 			std::vector<std::string> subtokens = split(tokens[i], char(47));
 			v = decoded->v[decoded->v.size() - std::stoi(subtokens[0])];
 			if (i == 1) { v1 = v; }
@@ -89,11 +82,12 @@ void storeFace(OBJ* decoded, std::vector<std::string> tokens, Scene *s, BRDF *br
 			if (i == 3) { v3 = v; }
 			//f.v.push_back(v);
 			//f.type = FACE_VN;
-			v = decoded->vt[decoded->v.size() - std::stoi(subtokens[2])];
+			v = decoded->vn[decoded->v.size() - std::stoi(subtokens[2])];
 			if (i == 1) { n1 = v; }
 			if (i == 2) { n2 = v; }
 			if (i == 3) { n3 = v; }
 			normals = true;
+			v->print();
 			//f.vn.push_back(v);
 		}
 		/* VERTEX TEXTURE PNTS
@@ -112,9 +106,9 @@ void storeFace(OBJ* decoded, std::vector<std::string> tokens, Scene *s, BRDF *br
 			}
 		} */
 	}
-	triangle *f = new triangle(v1, v2, v3, brdf);
+	triangle *f = new triangle(v3, v2, v1, brdf);
 	if (normals) {
-		f->n1 = n1; f->n2 = n2; f->n3 = n3;
+		f->n1 = n3; f->n2 = n2; f->n3 = n1;
 	}
 	f->print();
 	s->add(f);

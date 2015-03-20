@@ -48,7 +48,6 @@ RGB shading(diffGeom dg, Light* l, ray eyeRay){
   if (brdf->kd > 0) {
     rgb += (*brdf->kd) * (*l->intensity) * mdotln;
   }
-  (*brdf->kd).print(); (*l->intensity).print(); std::cout << mdotln << std::endl;
 
   /* Calculate falloff */
   if (l->falloff == FALLOFF_NONE) { falloff = 1; }
@@ -57,6 +56,7 @@ RGB shading(diffGeom dg, Light* l, ray eyeRay){
 
   /* Specular component */
   if (brdf->ks > 0) {
+    normal.print();
     vec3 reflection = normalize(-lvec + normal * (2 * dotln));
     vec3 viewer = normalize(eyeRay.pos - dg.pos);
     float dotvr = pow(fmax(viewer * reflection, 0), brdf->s);
