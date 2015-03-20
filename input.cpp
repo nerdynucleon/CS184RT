@@ -165,15 +165,15 @@ void parseScale(std::vector<std::string> tokens, Scene *s) {
 	/* Transformations should be applied to all OBJ 
 	   unless reset by xfz */
 	if(tokens.size() > 4){
-		argumentError("xfz", 9); break;
+		argumentError("xfz", 9); 
 	}
-	xf.push_back(new Transformation())
+	xf.push_back(new Transformation());
 }
 
 void parseReset(std::vector<std::string> tokens, Scene *s) {
 	/* Reset Transformations */
 	if(tokens.size() > 1){
-		argumentError("xfz", 9); break;
+		argumentError("xfz", 9);
 	}
 	while(!xf.empty()){
 		free(xf.back());
@@ -214,9 +214,9 @@ void parseInput(int argc, char** argv, Scene *s) {
 		else if (tokens[0].compare("lta") == 0) { parseAmbientLight(tokens, s); }
 		else if (tokens[0].compare("tri") == 0) { parseTriangle(tokens, s, mat); }
 		else if (tokens[0].compare("obj") == 0) { parseObj(tokens, s, mat); }
-		else if (tokens[0].compare("xft") == 0) { parseTranslation(tokens, s, mat); }
-		else if (tokens[0].compare("xfr") == 0) { parseRotation(tokens, s, mat); }
-		else if (tokens[0].compare("xfs") == 0) { parseScale(tokens, s, mat); }
-		else if (tokens[0].compare("xfz") == 0) { parseReset(tokens); }
+		else if (tokens[0].compare("xft") == 0) { parseTranslation(tokens, s); }
+		else if (tokens[0].compare("xfr") == 0) { parseRotation(tokens, s); }
+		else if (tokens[0].compare("xfs") == 0) { parseScale(tokens, s); }
+		else if (tokens[0].compare("xfz") == 0) { parseReset(tokens, s); }
 	}
 } 
