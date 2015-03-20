@@ -9,7 +9,9 @@
 #endif
 #include "lodepng.h"
 #include <cmath>
+#ifndef INPUT_H
 #include "input.hpp"
+#endif
 #ifndef COLOR_H
 #include "color.hpp"
 #endif

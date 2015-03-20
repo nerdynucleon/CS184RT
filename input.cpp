@@ -65,78 +65,40 @@ void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 }
 
 void parseCam(std::vector<std::string> tokens, Scene *s) {
-	float data[15];
+	std::vector<float> data = parseLine(tokens, 15, "cam");
+	float cdata[15];
 	int depth = 0;
-	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
-		if (tokens[i].compare("") != 0) {
-			if (depth == 15) { argumentError("cam", 15); break; }
-			data[depth] = std::stof(tokens[i]);
-			depth += 1;
-		}
+	for (std::vector<float>::size_type i = 1; i != data.size(); i++) {
+		cdata[depth] = data[i];
+		depth += 1;
 	}
-	s->cam = new camera(data);
+	s->cam = new camera(cdata);
 	s->cam->print();
 }
 
 void parsePointLight(std::vector<std::string> tokens, Scene *s) {
-	float data[7];
-	int falloff = 0; int depth = 0;
-	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
-		if (tokens[i].compare("") != 0) { 
-			if (depth == 8) { argumentError("ltp", 8); break; }
-			if (depth != 7) {
-				data[depth] = std::stof(tokens[i]);
-			} else {
-				falloff = std::stoi(tokens[i]);
-			}
-			depth += 1;
-		}
-	}
-	Light *light = new Light(data[0], data[1], data[2], data[3], data[4], data[5], POINT, data[6]);
+	std::vector<float> data = parseLine(tokens, 7, "ltp");
+	Light *light = new Light(data[0], data[1], data[2], data[3], data[4], data[5], POINT, (int) data[6]);
 	light->print();
 	s->add(light);
 }
 
 void parseDirectional(std::vector<std::string> tokens, Scene *s) {
-	float data[6];
-	int depth = 0;
-	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
-		if (tokens[i].compare("") != 0) { 
-			if (depth == 6) { argumentError("ltd", 6); break; }
-			data[depth] = std::stof(tokens[i]);
-			depth += 1;
-		}
-	} 
+	std::vector<float> data = parseLine(tokens, 6, "ltd");
 	Light *light = new Light(data[0], data[1], data[2], data[3], data[4], data[5], DIR, FALLOFF_NONE);
 	light->print();
 	s->add(light);
 }
 
 void parseAmbientLight(std::vector<std::string> tokens, Scene *s) {
-	float data[3];
-	int depth = 0;
-	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
-		if (tokens[i].compare("") != 0) {
-			if (depth == 3) { argumentError("lta", 3); break; } 
-			data[depth] = std::stof(tokens[i]);
-			depth += 1;
-		}
-	} 
+	std::vector<float> data = parseLine(tokens, 3, "lta");
 	Light *light = new Light(0, 0, 0, data[0], data[1], data[2], AMB, FALLOFF_NONE);
 	light->print();
 	s->add(light);
 }
 
 void parseTriangle(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
-	float data[9];
-	int depth = 0;
-	for (std::vector<std::string>::size_type i = 1; i != tokens.size(); i++) {
-		if (depth == 9) { argumentError("tri", 9); break; }
-		if (tokens[i].compare("") != 0) { 
-			data[depth] = std::stof(tokens[i]);
-			depth += 1;
-		}
-	} 
+	std::vector<float> data = parseLine(tokens, 9, "tri");
 	/* Load tri into scene */
 	vec3 *v1 = new vec3(data[0], data[1], data[2]);
 	vec3 *v2 = new vec3(data[3], data[4], data[5]);

@@ -4,13 +4,15 @@
 #ifndef COLOR_H
 #include "color.hpp"
 #endif
+#ifndef INPUT_H
+#include "input.hpp"
+#endif 
 
 #ifndef NULL
 #define NULL 0
 #endif
 
 #include <cmath>
-#include "input.hpp"
 
 /* Basic operations to perform on Vectors */
 vec3::vec3(){
