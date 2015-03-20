@@ -41,7 +41,7 @@ class vec3{
 float dist(vec3, vec3);
 vec3 normalize(vec3);
 vec3 cross(vec3,vec3);
-vec3 apply(vec3);
+
 
 /* Light parent class */
 class Light{
