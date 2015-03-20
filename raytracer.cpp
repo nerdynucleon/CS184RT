@@ -20,11 +20,12 @@
 #endif
 #define RECURSIVE_DEPTH 1
 #define EPS 0.1
+#define AA true;
 
 
 unsigned char* imageRGBA;
-int pixelsWide = 800;
-int pixelsHigh = 800;
+int pixelsWide = 1000;
+int pixelsHigh = 1000;
 const char* outputFilename;
 Scene s;
 
@@ -114,6 +115,7 @@ void generateImage(){
 }
 
 int main(int argc, char** argv){
+  
   parseInput(argc, argv, &s);
   imageRGBA = (unsigned char*) malloc(pixelsWide * pixelsHigh * 4 * sizeof(unsigned char));
   generateImage();
