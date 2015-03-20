@@ -41,6 +41,7 @@ class vec3{
 float dist(vec3, vec3);
 vec3 normalize(vec3);
 vec3 cross(vec3,vec3);
+vec3 apply(vec3);
 
 /* Light parent class */
 class Light{
@@ -110,13 +111,13 @@ class sphere: public sceneObject {
 class Transformation{
   public:
     Transformation(float,float,float,int);
+    Transformation();
     int type;
     float x;
     float y;
     float z;
     float ct;
     float st;
-    vec3 apply(vec3);
 };
 
 #endif

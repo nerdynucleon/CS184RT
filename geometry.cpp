@@ -10,6 +10,7 @@
 #endif
 
 #include <cmath>
+#include "input.hpp"
 
 /* Basic operations to perform on Vectors */
 vec3::vec3(){
@@ -236,21 +237,29 @@ Transformation::Transformation(float xIn, float yIn, float zIn, int typeIn){
   }
 }
 
-vec3 Transformation::apply(vec3 vin){
-  if(type == TRANSLATE){
-    /*Translate vector*/
-    return vec3(vin.x + x, vin.y +y, vin.z + z);
-  } else if(type == ROTATE){
-    /* Exponential Map rotation in radians (length of rotation input) */
-    float a = vin.x;
-    float b = vin.y;
-    float c = vin.z;
-    float xout = a*(x*x +((y*y)+(z*z))*ct) + b*(y*x - x*y*ct -z*st) + c*(z*x - x*z*ct + y*st);
-    float yout = a*(y*x -x*y*ct+z*st) + b*(y*y+(x*x+z*z)*ct) + c*(y*z-y*z*ct-x*st);
-    float zout = a*(z*x -x*z*ct-y*st) + b*(z*y -y*z*ct+x*st) + c*(z*z +(x*x+y*y)*ct);
-    return vec3(xout,yout,zout);
-  } else {
-    /* Scaling */
-    return vec3(vin.x * x, vin.y * y, vin.z * z);
+Transformation::Transformation(){
+}
+
+vec3 apply(vec3 vin){
+  Transformation *t;
+  for(int i = 0; i < xf.size(); i++){
+    t=xf[i];
+    float x = t->x; float y = t->y; float z = t->z; float ct = t->ct; float st = t->st;
+    if(t->type == TRANSLATE){
+      /*Translate vector*/
+      return vec3(vin.x + x, vin.y +y, vin.z + z);
+    } else if(t->type == ROTATE){
+      /* Exponential Map rotation in radians (length of rotation input) */
+      float a = vin.x;
+      float b = vin.y;
+      float c = vin.z;
+      float xout = a*(x*x +((y*y)+(z*z))*ct) + b*(y*x - x*y*ct -z*st) + c*(z*x - x*z*ct + y*st);
+      float yout = a*(y*x -x*y*ct+z*st) + b*(y*y+(x*x+z*z)*ct) + c*(y*z-y*z*ct-x*st);
+      float zout = a*(z*x -x*z*ct-y*st) + b*(z*y -y*z*ct+x*st) + c*(z*z +(x*x+y*y)*ct);
+      return vec3(xout,yout,zout);
+    } else if(t->type == SCALE) {
+      /* Scaling */
+      return vec3(vin.x * x, vin.y * y, vin.z * z);
+    }
   }
 }
