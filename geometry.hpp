@@ -15,6 +15,11 @@
 #define FALLOFF_LINEAR  1
 #define FALLOFF_QUAD    2
 
+/* Transformation Definitions */
+#define TRANSLATE 0
+#define ROTATE 1
+#define SCALE 2
+
 
 /* Used as a point in space or as a direction */
 class vec3{
@@ -100,6 +105,18 @@ class sphere: public sceneObject {
     float radius;
     BRDF *brdf;
     void print();
+};
+
+class Transformation{
+  public:
+    Transformation(float,float,float,int);
+    int type;
+    float x;
+    float y;
+    float z;
+    float ct;
+    float st;
+    vec3 apply(vec3);
 };
 
 #endif
