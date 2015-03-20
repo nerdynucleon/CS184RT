@@ -168,6 +168,7 @@ void parseTriangle(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	vec3 *v1 = new vec3(data[0], data[1], data[2]);
 	vec3 *v2 = new vec3(data[3], data[4], data[5]);
 	vec3 *v3 = new vec3(data[6], data[7], data[8]);
+	v1 = apply(v1); v2 = apply(v2); v3 = apply(v3);
 	triangle *tri = new triangle(v1, v2, v3, mat);
 	s->add(tri);
 	tri->print();
