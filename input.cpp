@@ -26,6 +26,8 @@ unsupported feature and the program should then ignore the line.
 */
 
 std::vector<Transformation*> xf;
+Matrix *transform = new Matrix(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1);
+bool applyTransform = false;
 
 vec3* apply(vec3 *vin){
   if(xf.size() == 0){
@@ -126,6 +128,11 @@ void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	obj->brdf = mat;
 	s->add(obj);
 	obj->print();
+	if (applyTransform) {
+		obj->invT = transform->inverse();
+	} else {
+		obj->invT = new Matrix(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1);
+	}
 }
 
 void parseCam(std::vector<std::string> tokens, Scene *s) {
@@ -187,7 +194,11 @@ void parseTranslation(std::vector<std::string> tokens) {
 	if(tokens.size() != 4 ){
 		argumentError("xft", 9);
 	}
-	xf.push_back(new Transformation(std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]),TRANSLATE));
+	float tx = std::stof(tokens[1]); float ty = std::stof(tokens[2]); float tz = std::stof(tokens[3]);
+	Matrix *A = new Matrix(1,0,0,tx, 0,1,0,ty, 0,0,1,tz, 0,0,0,1);
+	transform = (*transform) * (*A);
+	xf.push_back(new Transformation(tx,ty,tz,TRANSLATE));
+	applyTransform = true;
 }
 
 void parseRotation(std::vector<std::string> tokens) {
@@ -197,6 +208,7 @@ void parseRotation(std::vector<std::string> tokens) {
 		argumentError("xfr", 4);
 	}
 	xf.push_back(new Transformation(std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]),ROTATE));
+	applyTransform = true;
 }
 
 void parseScale(std::vector<std::string> tokens) {
@@ -206,6 +218,7 @@ void parseScale(std::vector<std::string> tokens) {
 		argumentError("xfs", 4);
 	}
 	xf.push_back(new Transformation(std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]),SCALE));
+	applyTransform = true;
 }
 
 void parseReset(std::vector<std::string> tokens) {
@@ -217,6 +230,7 @@ void parseReset(std::vector<std::string> tokens) {
 		free(xf.back());
 		xf.pop_back();
 	}
+	applyTransform = false;
 }
 
 BRDF* parseMat(std::vector<std::string> tokens, Scene *s) {

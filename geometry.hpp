@@ -77,6 +77,31 @@ class ray{
     void print();
 };
 
+class vec4 {
+  public:
+    vec4(float x, float y, float z, float w);
+    vec4();
+    float operator*(vec4);
+    vec4 operator*(float f);
+    float x; float y; float z; float w;
+    void print();
+};
+
+class Matrix {
+  public:
+    vec4 *v[4];
+    Matrix(vec4*, vec4*, vec4*, vec4*);
+    Matrix(float, float, float, float, float, float, float, 
+        float, float, float, float, float, float, float, float, float);
+    Matrix();
+    Matrix* operator*(Matrix);
+    Matrix* operator*(float);
+    vec4* column(int);
+    Matrix* inverse();
+    float determinant();
+    void print();
+};
+
 bool checkIntersection(ray*, float, float);
 
 /* Parent class for scene geoemetry */
@@ -99,6 +124,7 @@ class triangle: public sceneObject {
 
 class sphere: public sceneObject {
   public:
+    Matrix *invT;
     sphere(float, float, float, float);
     sphere(vec3*, float);
     bool intersect(ray,diffGeom*,float);
@@ -118,31 +144,6 @@ class Transformation{
     float z;
     float ct;
     float st;
-};
-
-class vec4 {
-  public:
-    vec4(float x, float y, float z, float w);
-    vec4();
-    float operator*(vec4);
-    vec4 operator*(float f);
-    float x; float y; float z; float w;
-    void print();
-};
-
-class Matrix {
-  public:
-    vec4 *v[4];
-    Matrix(vec4*, vec4*, vec4*, vec4*);
-    Matrix(float, float, float, float, float, float, float, 
-        float, float, float, float, float, float, float, float, float);
-    Matrix();
-    Matrix operator*(Matrix);
-    Matrix operator*(float);
-    vec4* column(int);
-    Matrix inverse();
-    float determinant();
-    void print();
 };
 
 #endif
