@@ -106,9 +106,11 @@ void storeFace(OBJ* decoded, std::vector<std::string> tokens, Scene *s, BRDF *br
 			}
 		} */
 	}
-	triangle *f = new triangle(v3, v2, v1, brdf);
+	triangle* f;
 	if (normals) {
-		f->n1 = n1; f->n2 = n2; f->n3 = n3;
+		f = new triangle(v1,v2,v3,n1,n2,n3, brdf);
+	} else {
+		f = new triangle(v1,v2,v3, brdf);
 	}
 	f->print();
 	s->add(f);
@@ -121,6 +123,7 @@ OBJ* OBJ::decodeObj(std::string filename, Scene *s, BRDF *brdf){
 	std::ifstream objIn((filename));
 	if (objIn.is_open()) {
 		while (getline(objIn, line)) {
+			printf("here\n");
 			line = ltrim(line);
 			std::vector<std::string> tokens = split(line, char(32));
 			if (tokens.size() == 0) { continue; }

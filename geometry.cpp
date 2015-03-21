@@ -146,7 +146,7 @@ bool triangle::intersect(ray r, diffGeom* dg, float t_max){
   if(checkIntersection(&r,t_max,t)) { //ray intersection
     /* Interpolate Triangle Normals
     IMPLEMENT LATER */
-    *dg = diffGeom(r.pos + r.dir*t, normalize((*n2)*u + (*n1)*v + (*n3)*(1-u-v)), brdf, t);
+    *dg = diffGeom(r.pos + r.dir*t, normalize((*n2)*u + (*n1)*(1-u-v) + (*n3)*v), brdf, t);
     return true;
   }
   return false;
@@ -184,7 +184,7 @@ vec3 cross(vec3 v1,vec3 v2){
 
 triangle::triangle(vec3* v1in,vec3* v2in,vec3* v3in,BRDF* brdfin){
   v1 = v1in; v2 = v2in; v3 = v3in; brdf = brdfin;
-  n1 = norm2pt(cross(*v2in - *v1in , *v2in - *v1in)); n2 = NULL; n3 = NULL;
+  n1 = norm2pt(cross(*v2in - *v1in , *v3in - *v1in)); n2 = n1; n3 = n1;
 }
 
 triangle::triangle(vec3* v1in,vec3* v2in,vec3* v3in,vec3* n1in,vec3* n2in,vec3* n3in,BRDF* brdfin){
