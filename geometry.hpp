@@ -124,6 +124,7 @@ class triangle: public sceneObject {
 
 class sphere: public sceneObject {
   public:
+    bool transform;
     Matrix *invT;
     sphere(float, float, float, float);
     sphere(vec3*, float);

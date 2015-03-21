@@ -95,10 +95,9 @@ void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	obj->brdf = mat;
 	s->add(obj);
 	obj->print();
+	obj->transform = applyTransform;
 	if (applyTransform) {
 		obj->invT = transform->inverse();
-	} else {
-		obj->invT = new Matrix(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1);
 	}
 }
 
