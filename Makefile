@@ -1,22 +1,22 @@
 all: camera.o geometry.o color.o scene.o lodepng.o input.o objDecode.o
-	g++ raytracer.cpp lodepng.o camera.o geometry.o color.o scene.o objDecode.o input.o -o main
+	g++ -O3 -fopenmp raytracer.cpp lodepng.o camera.o geometry.o color.o scene.o objDecode.o input.o -o main
 camera.o: camera.cpp camera.hpp
-	g++ -c camera.hpp camera.cpp
+	g++ -O3 -c camera.hpp camera.cpp
 geometry.o: geometry.cpp geometry.hpp
-	g++ -c geometry.hpp geometry.cpp
+	g++ -O3 -c geometry.hpp geometry.cpp
 scene.o: scene.hpp scene.cpp
-	g++ -c scene.hpp scene.cpp
+	g++ -O3 -c scene.hpp scene.cpp
 objDecode.o: objDecode.cpp objDecode.hpp
-	g++ -c objDecode.cpp objDecode.hpp
+	g++ -O3 -c objDecode.cpp objDecode.hpp -std=c++11
 objTest.o: 
-	g++ -Wall -I/usr/local/include -c objDecode.cpp
-	g++ -L/usr/local/lib objDecode.o -lm -o objDecode
+	g++ -O3 -Wall -I/usr/local/include -c objDecode.cpp
+	g++ -O3 -L/usr/local/lib objDecode.o -lm -o objDecode
 color.o: color.cpp color.hpp
-	g++ -c color.hpp color.cpp
+	g++ -O3 -c color.hpp color.cpp
 lodepng.o: lodepng.cpp lodepng.h 
-	g++ -c lodepng.cpp lodepng.h
+	g++ -O3 -c lodepng.cpp lodepng.h
 input.o: input.cpp input.hpp
-	g++ -c input.hpp input.cpp
+	g++ -O3 -c input.hpp input.cpp -std=c++11
 debug: camera_g.o geometry_g.o color_g.o scene_g.o lodepng_g.o input_g.o
 	g++ -g raytracer.cpp lodepng.o camera.o geometry.o color.o scene.o input.o -o main
 camera_g.o: camera.cpp camera.hpp

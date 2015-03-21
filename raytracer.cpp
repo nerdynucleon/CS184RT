@@ -24,12 +24,15 @@
 #define EPS 0.1
 #define AA false
 #define AA_LEVEL 1
+#include <omp.h>
 
 unsigned char* imageRGBA;
 int pixelsWide = 1000;
 int pixelsHigh = 1000;
 const char* outputFilename;
 Scene s;
+//struct ray
+//std::vector<rayTrace*> queue;
 
 RGB shading(diffGeom dg, Light* l, ray eyeRay){
   BRDF *brdf = dg.brdf;
@@ -69,7 +72,6 @@ RGB shading(diffGeom dg, Light* l, ray eyeRay){
 
 /* Function used to recursively trace rays */
 RGB recursiveRT(ray r, int depth, RGB c){
-  //r.print();
   if(depth != 0){
     diffGeom dg;
     if(s.trace(r, &dg)){

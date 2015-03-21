@@ -123,7 +123,6 @@ OBJ* OBJ::decodeObj(std::string filename, Scene *s, BRDF *brdf){
 	std::ifstream objIn((filename));
 	if (objIn.is_open()) {
 		while (getline(objIn, line)) {
-			printf("here\n");
 			line = ltrim(line);
 			std::vector<std::string> tokens = split(line, char(32));
 			if (tokens.size() == 0) { continue; }
