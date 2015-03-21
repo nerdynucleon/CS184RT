@@ -121,6 +121,12 @@ void generateImage(){
 } */
 
 int main(int argc, char** argv){
+
+  Matrix A = Matrix(1,3,5,4,1,4,5,6,7,4,2,3,8,1,3,9);
+  A.print();
+  std::cout << A.determinant() << std::endl;
+  Matrix B = A.inverse();
+  B.print();
   
   parseInput(argc, argv, &s);
   /*if(AA) float* AA_rand = (float*) malloc(pixelsWide*pixelsHigh*AA_LEVEL*sizeof(float)); */

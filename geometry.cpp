@@ -241,3 +241,243 @@ Transformation::Transformation(float xIn, float yIn, float zIn, int typeIn){
 
 Transformation::Transformation(){
 }
+
+vec4::vec4() {
+  x = 0; y = 0; z = 0; w = 0;
+}
+
+vec4::vec4(float vx, float vy, float vz, float vw) {
+  x = vx; y = vy; z = vz; w = vw;
+}
+
+/* Dot product */
+float vec4::operator*(vec4 v2) {
+  return v2.x * x + v2.y * y + v2.z * z + v2.w * w;
+}
+
+vec4 vec4::operator*(float f) {
+  return vec4(x * f, y * f, z * f, w * f);
+}
+
+void vec4::print() {
+  std::cout << x << " " << y << " " << z << " " << w << std::endl;
+}
+
+Matrix::Matrix(float a, float b, float c, float d, float e, float f, float g, float h,
+               float i, float j, float k, float l, float m, float n, float o, float p) {
+  v[0] = new vec4(a, b, c, d);
+  v[1] = new vec4(e, f, g, h);
+  v[2] = new vec4(i, j, k, l);
+  v[3] = new vec4(m, n, o, p);
+}
+
+Matrix::Matrix(vec4 *a, vec4 *b, vec4 *c, vec4 *d) {
+  v[0] = a; v[1] = b; v[2] = c; v[3] = d;
+}
+
+Matrix::Matrix() {
+  v[0] = new vec4(0, 0, 0, 0);
+  v[1] = new vec4(0, 0, 0, 0);
+  v[2] = new vec4(0, 0, 0, 0);
+  v[3] = new vec4(0, 0, 0, 0);
+}
+
+vec4* Matrix::column(int n) {
+  if (n == 0) { return new vec4(v[0]->x, v[1]->x, v[2]->x, v[3]->x); }
+  if (n == 1) { return new vec4(v[0]->y, v[1]->y, v[2]->y, v[3]->y); }
+  if (n == 2) { return new vec4(v[0]->z, v[1]->z, v[2]->z, v[3]->z); }
+  return new vec4(v[0]->w, v[1]->w, v[2]->w, v[3]->w);
+}
+
+void Matrix::print() {
+  std::cout << "Matrix (" << this << "): " << std::endl;
+  std::cout << "    "; v[0]->print();
+  std::cout << "    "; v[1]->print();
+  std::cout << "    "; v[2]->print();
+  std::cout << "    "; v[3]->print();
+}
+
+Matrix Matrix::operator*(Matrix m2) {
+  Matrix result;
+  vec4 *c[4];
+  c[0] = m2.column(0); c[1] = m2.column(1); c[2] = m2.column(2); c[3] = m2.column(3);
+  for (int i = 0; i < 4; i++) {
+    result.v[i]->x = *v[i] * (*c[0]);
+    result.v[i]->y = *v[i] * (*c[1]);
+    result.v[i]->z = *v[i] * (*c[2]);
+    result.v[i]->w = *v[i] * (*c[3]);
+  }
+  delete c[0]; delete c[1]; delete c[2]; delete c[3];
+  return result;
+}
+
+Matrix Matrix::operator*(float scalar) {
+  float d[16]; int j = 0;
+  for (int i = 0; i < 4; i++) {
+    d[j] = v[i]->x * scalar;
+    d[j+1] = v[i]->y * scalar;
+    d[j+2] = v[i]->z * scalar;
+    d[j+3] = v[i]->w * scalar;
+    j += 4;
+  }
+  return Matrix(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9], d[10],
+    d[11], d[12], d[13], d[14], d[15]);
+}
+
+float Matrix::determinant() {
+  float sum = 0;
+  sum += v[0]->x * v[1]->y * v[2]->z * v[3]->w;
+  sum += v[0]->x * v[1]->z * v[2]->w * v[3]->y;
+  sum += v[0]->x * v[1]->w * v[2]->y * v[3]->z;
+
+  sum += v[0]->y * v[1]->x * v[2]->w * v[3]->z;
+  sum += v[0]->y * v[1]->z * v[2]->x * v[3]->w;
+  sum += v[0]->y * v[1]->w * v[2]->z * v[3]->x;
+
+  sum += v[0]->z * v[1]->x * v[2]->y * v[3]->w;
+  sum += v[0]->z * v[1]->y * v[2]->w * v[3]->x;
+  sum += v[0]->z * v[1]->w * v[2]->x * v[3]->y;
+
+  sum += v[0]->w * v[1]->x * v[2]->z * v[3]->y;
+  sum += v[0]->w * v[1]->y * v[2]->x * v[3]->z;
+  sum += v[0]->w * v[1]->z * v[2]->y * v[3]->x;
+
+  sum -= v[0]->x * v[1]->y * v[2]->w * v[3]->z;
+  sum -= v[0]->x * v[1]->z * v[2]->y * v[3]->w;
+  sum -= v[0]->x * v[1]->w * v[2]->z * v[3]->y;
+
+  sum -= v[0]->y * v[1]->x * v[2]->z * v[3]->w;
+  sum -= v[0]->y * v[1]->z * v[2]->w * v[3]->x;
+  sum -= v[0]->y * v[1]->w * v[2]->x * v[3]->z;
+
+  sum -= v[0]->z * v[1]->x * v[2]->w * v[3]->y;
+  sum -= v[0]->z * v[1]->y * v[2]->x * v[3]->w;
+  sum -= v[0]->z * v[1]->w * v[2]->y * v[3]->x;
+
+  sum -= v[0]->w * v[1]->x * v[2]->y * v[3]->z;
+  sum -= v[0]->w * v[1]->y * v[2]->z * v[3]->x;
+  sum -= v[0]->w * v[1]->z * v[2]->x * v[3]->y;
+
+  return sum;
+}
+
+Matrix Matrix::inverse() {
+  float det = determinant();
+  if (det == 0) {
+    return *this;
+  }
+  Matrix result;
+  result.v[0]->x = v[1]->y * v[2]->z * v[3]->w + 
+                   v[1]->z * v[2]->w * v[3]->y +
+                   v[1]->w * v[2]->y * v[3]->z -
+                   v[1]->y * v[2]->w * v[3]->z -
+                   v[1]->z * v[2]->y * v[3]->w -
+                   v[1]->w * v[2]->z * v[3]->y;
+
+  result.v[0]->y = v[0]->y * v[2]->w * v[3]->z +
+                   v[0]->z * v[2]->y * v[3]->w +
+                   v[0]->w * v[2]->z * v[3]->y -
+                   v[0]->y * v[2]->z * v[3]->w -
+                   v[0]->z * v[2]->w * v[3]->y -
+                   v[0]->w * v[2]->y * v[3]->z;
+
+  result.v[0]->z = v[0]->y * v[1]->z * v[3]->w +
+                   v[0]->z * v[1]->w * v[3]->y +
+                   v[0]->w * v[1]->y * v[3]->z -
+                   v[0]->y * v[1]->w * v[3]->z -
+                   v[0]->z * v[1]->y * v[3]->w -
+                   v[0]->w * v[1]->z * v[3]->y;
+
+  result.v[0]->w = v[0]->y * v[1]->w * v[2]->z +
+                   v[0]->z * v[1]->y * v[2]->w +
+                   v[0]->w * v[1]->z * v[2]->y -
+                   v[0]->y * v[1]->z * v[2]->w -
+                   v[0]->z * v[1]->w * v[2]->y -
+                   v[0]->w * v[1]->y * v[2]->z;
+
+  result.v[1]->x = v[1]->x * v[2]->w * v[3]->z +
+                   v[1]->z * v[2]->x * v[3]->w +
+                   v[1]->w * v[2]->z * v[3]->x -
+                   v[1]->x * v[2]->z * v[3]->w -
+                   v[1]->z * v[2]->w * v[3]->x -
+                   v[1]->w * v[2]->x * v[3]->z;
+
+  result.v[1]->y = v[0]->x * v[2]->z * v[3]->w +
+                   v[0]->z * v[2]->w * v[3]->x +
+                   v[0]->w * v[2]->x * v[3]->z - 
+                   v[0]->x * v[2]->w * v[3]->z -
+                   v[0]->z * v[2]->x * v[3]->w - 
+                   v[0]->w * v[2]->z * v[3]->x;
+
+  result.v[1]->z = v[0]->x * v[1]->w * v[3]->z +
+                   v[0]->z * v[1]->x * v[3]->w +
+                   v[0]->w * v[1]->z * v[3]->x -
+                   v[0]->x * v[1]->z * v[3]->w -
+                   v[0]->z * v[1]->w * v[3]->x -
+                   v[0]->w * v[1]->x * v[3]->z;
+
+  result.v[1]->w = v[0]->x * v[1]->z * v[2]->w +
+                   v[0]->z * v[1]->w * v[2]->x +
+                   v[0]->w * v[1]->x * v[2]->z - 
+                   v[0]->x * v[1]->w * v[2]->z -
+                   v[0]->z * v[1]->x * v[2]->w - 
+                   v[0]->w * v[1]->z * v[2]->x;
+
+  result.v[2]->x = v[1]->x * v[2]->y * v[3]->w +
+                   v[1]->y * v[2]->w * v[3]->x +
+                   v[1]->w * v[2]->x * v[3]->y -
+                   v[1]->x * v[2]->w * v[3]->y -
+                   v[1]->y * v[2]->x * v[3]->w -
+                   v[1]->w * v[2]->y * v[3]->x;
+
+  result.v[2]->y = v[0]->x * v[2]->w * v[3]->y +
+                   v[0]->y * v[2]->x * v[3]->w +
+                   v[0]->w * v[2]->y * v[3]->x -
+                   v[0]->x * v[2]->y * v[3]->w -
+                   v[0]->y * v[2]->w * v[3]->x -
+                   v[0]->w * v[2]->x * v[3]->y;
+
+  result.v[2]->z = v[0]->x * v[1]->y * v[3]->w +
+                   v[0]->y * v[1]->w * v[3]->x +
+                   v[0]->w * v[1]->x * v[3]->y -
+                   v[0]->x * v[1]->w * v[3]->y -
+                   v[0]->y * v[1]->x * v[3]->w -
+                   v[0]->w * v[1]->y * v[3]->x;
+
+  result.v[2]->w = v[0]->x * v[1]->w * v[2]->y +
+                   v[0]->y * v[1]->x * v[2]->w +
+                   v[0]->w * v[1]->y * v[2]->x -
+                   v[0]->x * v[1]->y * v[2]->w -
+                   v[0]->y * v[1]->w * v[2]->x -
+                   v[0]->w * v[1]->x * v[2]->y;
+
+  result.v[3]->x = v[1]->x * v[2]->z * v[3]->y +
+                   v[1]->y * v[2]->x * v[3]->z +
+                   v[1]->z * v[2]->y * v[3]->x -
+                   v[1]->x * v[2]->y * v[3]->z -
+                   v[1]->y * v[2]->z * v[3]->x -
+                   v[1]->z * v[2]->x * v[3]->y;
+
+  result.v[3]->y = v[0]->x * v[2]->y * v[3]->z +
+                   v[0]->y * v[2]->z * v[3]->x +
+                   v[0]->z * v[2]->x * v[3]->y -
+                   v[0]->x * v[2]->z * v[3]->y -
+                   v[0]->y * v[2]->x * v[3]->z -
+                   v[0]->z * v[2]->y * v[3]->x;
+
+  result.v[3]->z = v[0]->x * v[1]->z * v[3]->y +
+                   v[0]->y * v[1]->x * v[3]->z +
+                   v[0]->z * v[1]->y * v[3]->x -
+                   v[0]->x * v[1]->y * v[3]->z -
+                   v[0]->y * v[1]->z * v[3]->x -
+                   v[0]->z * v[1]->x * v[3]->y;
+
+  result.v[3]->w = v[0]->x * v[1]->y * v[2]->z +
+                   v[0]->y * v[1]->z * v[2]->x +
+                   v[0]->z * v[1]->x * v[2]->y -
+                   v[0]->x * v[1]->z * v[2]->y -
+                   v[0]->y * v[1]->x * v[2]->z -
+                   v[0]->z * v[1]->y * v[2]->x;
+
+  return result * (1/det);
+}
