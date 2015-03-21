@@ -27,65 +27,32 @@ unsupported feature and the program should then ignore the line.
 
 std::vector<Transformation*> xf;
 
-vec3* apply(vec3 *vin){
-  if(xf.size() == 0){
-    return vin;
-  }
-  Transformation *t;
-  float a = vin->x; float b = vin->y; float c = vin->z;
-  for(int i = 0; i < xf.size(); i++){
-    t=xf[i];
-    float x = t->x; float y = t->y; float z = t->z; float ct = t->ct; float st = t->st;
-    if(t->type == TRANSLATE){
-      /*Translate vector*/
-      a = a + x;
-      b = b + y;
-      c = c + z;
-    } else if(t->type == ROTATE){
-      /* Exponential Map rotation in radians (length of rotation input) */
-      float xout = a*(x*x +((y*y)+(z*z))*ct) + b*(y*x - x*y*ct -z*st) + c*(z*x - x*z*ct + y*st);
-      float yout = a*(y*x -x*y*ct+z*st) + b*(y*y+(x*x+z*z)*ct) + c*(y*z-y*z*ct-x*st);
-      float zout = a*(z*x -x*z*ct-y*st) + b*(z*y -y*z*ct+x*st) + c*(z*z +(x*x+y*y)*ct);
-      a = xout;
-      b = yout;
-      c = zout;
-    } else if(t->type == SCALE) {
-      /* Scaling */
-      a = a * x;
-      b = b * y;
-      c = c * z;
-    }
-  }
-  free(vin);
-  return new vec3(a,b,c);
-}
-
-vec3* apply(float a, float b, float c){
+void vec3::apply(std::vector<Transformation*> *xf){
+  if(xf.size() == 0) return;
   Transformation *t;
   for(int i = 0; i < xf.size(); i++){
-    t=xf[i];
-    float x = t->x; float y = t->y; float z = t->z; float ct = t->ct; float st = t->st;
+    t=xf->[i];
+    float xTr = t->x; float yTr = t->y; float zTr = t->z; float ct = t->ct; float st = t->st;
     if(t->type == TRANSLATE){
       /*Translate vector*/
-      a = a + x;
-      b = b + y;
-      c = c + z;
+      x = x + xTr;
+      x = x + yTr;
+      x = x + zTr;
     } else if(t->type == ROTATE){
       /* Exponential Map rotation in radians (length of rotation input) */
-      float xout = a*(x*x +((y*y)+(z*z))*ct) + b*(y*x - x*y*ct -z*st) + c*(z*x - x*z*ct + y*st);
-      float yout = a*(y*x -x*y*ct+z*st) + b*(y*y+(x*x+z*z)*ct) + c*(y*z-y*z*ct-x*st);
-      float zout = a*(z*x -x*z*ct-y*st) + b*(z*y -y*z*ct+x*st) + c*(z*z +(x*x+y*y)*ct);
-      a = xout;
-      b = yout;
-      c = zout;
+      float xout = x*(xTr*xTr +((yTr*yTr)+(zTr*zTr))*ct) + y*(yTr*xTr - xTr*yTr*ct -zTr*st) + z*(zTr*xTr - xTr*zTr*ct + yTr*st);
+      float yout = x*(yTr*xTr -xTr*yTr*ct+zTr*st) + y*(yTr*yTr+(xTr*xTr+zTr*zTr)*ct) + z*(yTr*zTr-yTr*zTr*ct-xTr*st);
+      float zout = x*(zTr*xTr -xTr*zTr*ct-yTr*st) + y*(zTr*yTr -yTr*zTr*ct+xTr*st) + z*(zTr*zTr +(xTr*xTr+yTr*yTr)*ct);
+      x = xout;
+      y = yout;
+      z = zout;
     } else if(t->type == SCALE) {
       /* Scaling */
-      a = a * x;
-      b = b * y;
-      c = c * z;
+      x = x * xTr;
+      y = y * yTr;
+      z = z * zTr;
     }
   }
-  return new vec3(a,b,c);
 }
 
 /* Splits a string by whitespace. */
