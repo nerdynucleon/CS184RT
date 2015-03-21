@@ -26,6 +26,10 @@ should be printed to stderr
 unsupported feature and the program should then ignore the line. 
 */
 
+
+Matrix *transform = new Matrix();
+bool applyTransform = false;
+
 /* Splits a string by whitespace. */
 std::vector<std::string> split(const std::string &str) {
 	std::vector <std::string> tokens;
@@ -60,7 +64,6 @@ void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	std::vector<float> data = parseLine(tokens, 4, "sph");
 	/* Load sphere into scene */
 	sphere* obj = new sphere(data[0], data[1], data[2], data[3]);
-	obj->center = apply(obj->center);
 	obj->brdf = mat;
 	s->add(obj);
 	obj->print();
@@ -111,7 +114,7 @@ void parseTriangle(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	vec3 *v1 = new vec3(data[0], data[1], data[2]);
 	vec3 *v2 = new vec3(data[3], data[4], data[5]);
 	vec3 *v3 = new vec3(data[6], data[7], data[8]);
-	v1 = apply(v1); v2 = apply(v2); v3 = apply(v3);
+	//v1 = apply(v1); v2 = apply(v2); v3 = apply(v3);
 	triangle *tri = new triangle(v1, v2, v3, mat);
 	s->add(tri);
 	tri->print();
@@ -156,7 +159,7 @@ void parseScale(std::vector<std::string> tokens) {
 	if(tokens.size() != 4 ){
 		argumentError("xfs", 4);
 	}
-	xf.push_back(new Transformation(std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]),SCALE));
+	//xf.push_back(new Transformation(std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]),SCALE));
 	applyTransform = true;
 }
 
@@ -166,6 +169,7 @@ void parseReset(std::vector<std::string> tokens) {
 		argumentError("xfz", 1);
 	}
 	applyTransform = false;
+	transform = new Matrix();
 }
 
 BRDF* parseMat(std::vector<std::string> tokens, Scene *s) {
