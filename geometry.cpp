@@ -231,20 +231,6 @@ bool sphere::intersect(ray r, diffGeom* dg, float t_max){
   return false;
 }
 
-Transformation::Transformation(float xIn, float yIn, float zIn, int typeIn){
-  x = xIn; y = yIn; z = zIn; type = typeIn;
-  if(type == ROTATE){
-    float length = sqrt(x*x + y*y + z*z);
-    length = length * M_PI/ 180.0f;
-    x=x/length; y=y/length; z=z/length;
-    ct = cos(length);
-    st = sin(length);
-  }
-}
-
-Transformation::Transformation(){
-}
-
 vec4::vec4() {
   x = 0; y = 0; z = 0; w = 0;
 }

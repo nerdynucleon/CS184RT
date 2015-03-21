@@ -173,7 +173,8 @@ void parseRotation(std::vector<std::string> tokens) {
 	if(tokens.size() != 4 ){
 		argumentError("xfr", 4);
 	}
-	xf.push_back(new Transformation(std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]),ROTATE));
+	float x = std::stof(tokens[1]); float y = std::stof(tokens[2]); float z = std::stof(tokens[3]);
+	Matrix *rx = new Matrix(0 )
 	applyTransform = true;
 }
 
