@@ -25,37 +25,38 @@ should be printed to stderr
 unsupported feature and the program should then ignore the line. 
 */
 
-std::vector<Transformation*> xf;
-Matrix *transform = new Matrix(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1);
+Matrix *transform = new Matrix();
 bool applyTransform = false;
 
-void vec3::apply(){
-  if(xf->size() == 0) return;
-  Transformation *t;
-  for(int i = 0; i < xf.size(); i++){
-    t=xf->[i];
-    float xTr = t->x; float yTr = t->y; float zTr = t->z; float ct = t->ct; float st = t->st;
-    if(t->type == TRANSLATE){
-      /*Translate vector*/
-      x = x + xTr;
-      x = x + yTr;
-      x = x + zTr;
-    } else if(t->type == ROTATE){
-      /* Exponential Map rotation in radians (length of rotation input) */
-      float xout = x*(xTr*xTr +((yTr*yTr)+(zTr*zTr))*ct) + y*(yTr*xTr - xTr*yTr*ct -zTr*st) + z*(zTr*xTr - xTr*zTr*ct + yTr*st);
-      float yout = x*(yTr*xTr -xTr*yTr*ct+zTr*st) + y*(yTr*yTr+(xTr*xTr+zTr*zTr)*ct) + z*(yTr*zTr-yTr*zTr*ct-xTr*st);
-      float zout = x*(zTr*xTr -xTr*zTr*ct-yTr*st) + y*(zTr*yTr -yTr*zTr*ct+xTr*st) + z*(zTr*zTr +(xTr*xTr+yTr*yTr)*ct);
-      x = xout;
-      y = yout;
-      z = zout;
-    } else if(t->type == SCALE) {
-      /* Scaling */
-      x = x * xTr;
-      y = y * yTr;
-      z = z * zTr;
-    }
-  }
-}
+// std::vector<Transformation*> xf;
+
+// void vec3::apply(){
+//   if(xf->size() == 0) return;
+//   Transformation *t;
+//   for(int i = 0; i < xf.size(); i++){
+//     t=xf->[i];
+//     float xTr = t->x; float yTr = t->y; float zTr = t->z; float ct = t->ct; float st = t->st;
+//     if(t->type == TRANSLATE){
+//       /*Translate vector*/
+//       x = x + xTr;
+//       x = x + yTr;
+//       x = x + zTr;
+//     } else if(t->type == ROTATE){
+//       /* Exponential Map rotation in radians (length of rotation input) */
+//       float xout = x*(xTr*xTr +((yTr*yTr)+(zTr*zTr))*ct) + y*(yTr*xTr - xTr*yTr*ct -zTr*st) + z*(zTr*xTr - xTr*zTr*ct + yTr*st);
+//       float yout = x*(yTr*xTr -xTr*yTr*ct+zTr*st) + y*(yTr*yTr+(xTr*xTr+zTr*zTr)*ct) + z*(yTr*zTr-yTr*zTr*ct-xTr*st);
+//       float zout = x*(zTr*xTr -xTr*zTr*ct-yTr*st) + y*(zTr*yTr -yTr*zTr*ct+xTr*st) + z*(zTr*zTr +(xTr*xTr+yTr*yTr)*ct);
+//       x = xout;
+//       y = yout;
+//       z = zout;
+//     } else if(t->type == SCALE) {
+//       /* Scaling */
+//       x = x * xTr;
+//       y = y * yTr;
+//       z = z * zTr;
+//     }
+//   }
+// }
 
 /* Splits a string by whitespace. */
 std::vector<std::string> split(const std::string &str) {
@@ -91,7 +92,6 @@ void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	std::vector<float> data = parseLine(tokens, 4, "sph");
 	/* Load sphere into scene */
 	sphere* obj = new sphere(data[0], data[1], data[2], data[3]);
-	obj->center = apply(obj->center);
 	obj->brdf = mat;
 	s->add(obj);
 	obj->print();
@@ -142,7 +142,7 @@ void parseTriangle(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	vec3 *v1 = new vec3(data[0], data[1], data[2]);
 	vec3 *v2 = new vec3(data[3], data[4], data[5]);
 	vec3 *v3 = new vec3(data[6], data[7], data[8]);
-	v1 = apply(v1); v2 = apply(v2); v3 = apply(v3);
+	//v1 = apply(v1); v2 = apply(v2); v3 = apply(v3);
 	triangle *tri = new triangle(v1, v2, v3, mat);
 	s->add(tri);
 	tri->print();
@@ -163,7 +163,7 @@ void parseTranslation(std::vector<std::string> tokens) {
 	float tx = std::stof(tokens[1]); float ty = std::stof(tokens[2]); float tz = std::stof(tokens[3]);
 	Matrix *A = new Matrix(1,0,0,tx, 0,1,0,ty, 0,0,1,tz, 0,0,0,1);
 	transform = (*transform) * (*A);
-	xf.push_back(new Transformation(tx,ty,tz,TRANSLATE));
+	//xf.push_back(new Transformation(tx,ty,tz,TRANSLATE));
 	applyTransform = true;
 }
 
@@ -174,7 +174,7 @@ void parseRotation(std::vector<std::string> tokens) {
 		argumentError("xfr", 4);
 	}
 	float x = std::stof(tokens[1]); float y = std::stof(tokens[2]); float z = std::stof(tokens[3]);
-	Matrix *rx = new Matrix(0 )
+	//Matrix *rx = new Matrix(0 )
 	applyTransform = true;
 }
 
@@ -184,7 +184,7 @@ void parseScale(std::vector<std::string> tokens) {
 	if(tokens.size() != 4 ){
 		argumentError("xfs", 4);
 	}
-	xf.push_back(new Transformation(std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]),SCALE));
+	//xf.push_back(new Transformation(std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]),SCALE));
 	applyTransform = true;
 }
 
@@ -193,11 +193,12 @@ void parseReset(std::vector<std::string> tokens) {
 	if(tokens.size() != 1){
 		argumentError("xfz", 1);
 	}
-	while(!xf.empty()){
-		free(xf.back());
-		xf.pop_back();
-	}
+	//while(!xf.empty()){
+	//	free(xf.back());
+	//	xf.pop_back();
+	//}
 	applyTransform = false;
+	transform = new Matrix();
 }
 
 BRDF* parseMat(std::vector<std::string> tokens, Scene *s) {

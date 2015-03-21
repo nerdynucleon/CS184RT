@@ -24,7 +24,7 @@
 #define EPS 0.1
 #define AA false
 #define AA_LEVEL 1
-#include <omp.h>
+//#include <omp.h>
 
 unsigned char* imageRGBA;
 int pixelsWide = 1000;
@@ -103,7 +103,7 @@ RGB recursiveRT(ray r, int depth, RGB c){
 
 void generateImage(){
   /* Iterate over all pixels */
-  #pragma omp parallel for
+  //#pragma omp parallel for
   for(int j = 0; j < pixelsHigh; j++){
     for(int i = 0; i < pixelsWide; i++){
       /* Generate eye ray from pixel sample and initialize pixel color */
