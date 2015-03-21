@@ -29,8 +29,8 @@ std::vector<Transformation*> xf;
 Matrix *transform = new Matrix(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1);
 bool applyTransform = false;
 
-void vec3::apply(std::vector<Transformation*> *xf){
-  if(xf.size() == 0) return;
+void vec3::apply(){
+  if(xf->size() == 0) return;
   Transformation *t;
   for(int i = 0; i < xf.size(); i++){
     t=xf->[i];
