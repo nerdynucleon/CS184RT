@@ -4,14 +4,19 @@ REQUIRED:
 ========
 
 Spheres/Ellipsoids:
+image-01.png
 
 Polygons:
+image-02.png
   
 Phong Shading Model:
+image-03.png
 
 Shadows:
+image-04.png
 
 Reflections:
+
 
 Linear Transformations:
 
