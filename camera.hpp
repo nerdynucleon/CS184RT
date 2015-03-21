@@ -6,11 +6,11 @@
 
 /* Scene Primitive used to describe what to render */
 class camera{
-  vec3* eye;
-  vec3* up;
-  vec3* view;
-  vec3* right;
   public:
+  	vec3* eye;
+  	vec3* up;
+  	vec3* view;
+  	vec3* right;
     camera(float[]);
     ray getRay(float,float);
     void print();

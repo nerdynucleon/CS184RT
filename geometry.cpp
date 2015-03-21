@@ -161,15 +161,15 @@ void diffGeom::print(){
 
 /* Get reflected vector around normal */
 vec3 vec3::reflect(vec3 n){
-  return (*this) - n*((*this)*2.0f*n/(pow(dist(n,n),2)));
+  return (*this) - n*((*this)*2.0f*n/(pow(n.length(),2)));
 }
 
 sphere::sphere(float x, float y, float z, float radiusIn){
   radius = radiusIn;
-  center = vec3(x,y,z);
+  center = new vec3(x,y,z);
 }
 
-sphere::sphere(vec3 v1, float radiusIn){
+sphere::sphere(vec3 *v1, float radiusIn){
   center = v1;
   radius = radiusIn;
 }
@@ -194,7 +194,7 @@ triangle::triangle(vec3* v1in,vec3* v2in,vec3* v3in,vec3* n1in,vec3* n2in,vec3* 
 
 void sphere::print() {
   std::cout << "Sphere (" << this << "):" << std::endl;
-  std::cout << "    " << "Center: "; center.print();
+  std::cout << "    " << "Center: "; center->print();
   std::cout << "    " << "Radius: " << radius << std::endl;
   std::cout << "    BRDF: " << brdf << std::endl;
 }
@@ -214,15 +214,15 @@ void triangle::print() {
 bool sphere::intersect(ray r, diffGeom* dg, float t_max){
   float a = r.dir * r.dir;
   if(a == 0) return false;
-  float b = r.dir*(r.pos - center)*2;
-  float c = (r.pos - center)*(r.pos - center) - radius*radius;
+  float b = r.dir*(r.pos - *center)*2;
+  float c = (r.pos - *center)*(r.pos - *center) - radius*radius;
   float t1 = (-b - sqrt(b*b - 4*a*c))/(2*a);
   float t2 = (-b + sqrt(b*b - 4*a*c))/(2*a);
   if(checkIntersection(&r,t_max,t1)){
-    *dg = diffGeom(r.pos + r.dir*t1, normalize(r.pos + r.dir*t1 - center), brdf, t1);
+    *dg = diffGeom(r.pos + r.dir*t1, normalize(r.pos + r.dir*t1 - *center), brdf, t1);
     return true;
   } else if (checkIntersection(&r,t_max,t2)) {
-    *dg = diffGeom(r.pos + r.dir*t2, normalize(r.pos + r.dir*t2 - center), brdf, t2);
+    *dg = diffGeom(r.pos + r.dir*t2, normalize(r.pos + r.dir*t2 - *center), brdf, t2);
     return true;
   }
   return false;
@@ -232,7 +232,7 @@ Transformation::Transformation(float xIn, float yIn, float zIn, int typeIn){
   x = xIn; y = yIn; z = zIn; type = typeIn;
   if(type == ROTATE){
     float length = sqrt(x*x + y*y + z*z);
-    length = length * PI/ 180.0f;
+    length = length * M_PI/ 180.0f;
     x=x/length; y=y/length; z=z/length;
     ct = cos(length);
     st = sin(length);

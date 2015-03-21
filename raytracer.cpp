@@ -20,7 +20,7 @@
 #include <cfloat>
 #define CFLOAT_H
 #endif
-#define RECURSIVE_DEPTH 1
+#define RECURSIVE_DEPTH 10
 #define EPS 0.1
 #define AA true;
 #define AA_LEVEL 10;
@@ -87,7 +87,6 @@ RGB recursiveRT(ray r, int depth, RGB c){
         ray shadowRay = ray(dg.pos, lvec, EPS, distance);
         if((l->type == AMB) || (!s.trace(shadowRay, NULL))){
           c += shading(dg, l, r);
-          //c.print();
         }
       }
       /* Calculate Reflection Rays */
@@ -116,15 +115,15 @@ void generateImage(){
   }
 }
 
-void fillRandom(float* array, size_t num){
+/* void fillRandom(float* array, size_t num){
   for(int i = 0; i <)
   float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-}
+} */
 
 int main(int argc, char** argv){
   
   parseInput(argc, argv, &s);
-  if(AA) float* AA_rand = (float*) malloc(pixelsWide*pixelsHigh*AA_LEVEL*sizeof(float));
+  /*if(AA) float* AA_rand = (float*) malloc(pixelsWide*pixelsHigh*AA_LEVEL*sizeof(float)); */
   float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
   imageRGBA = (unsigned char*) malloc(pixelsWide * pixelsHigh * 4 * sizeof(unsigned char));
   generateImage();

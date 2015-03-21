@@ -100,9 +100,9 @@ class triangle: public sceneObject {
 class sphere: public sceneObject {
   public:
     sphere(float, float, float, float);
-    sphere(vec3, float);
+    sphere(vec3*, float);
     bool intersect(ray,diffGeom*,float);
-    vec3 center;
+    vec3 *center;
     float radius;
     BRDF *brdf;
     void print();
