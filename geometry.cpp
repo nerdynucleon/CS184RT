@@ -212,6 +212,9 @@ void triangle::print() {
 }
 
 bool sphere::intersect(ray r, diffGeom* dg, float t_max){
+  if (transform) {
+    r = ray(*(invT->transform(r.pos, true)), *(invT->transform(r.dir, false)), r.t_min, r.t_max);
+  }
   float a = r.dir * r.dir;
   if(a == 0) return false;
   float b = r.dir*(r.pos - *center)*2;
