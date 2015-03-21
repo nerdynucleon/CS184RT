@@ -22,16 +22,14 @@
 #endif
 #define RECURSIVE_DEPTH 1
 #define EPS 0.1
-#define AA true;
-#define AA_LEVEL 10;
-
+#define AA false
+#define AA_LEVEL 1
 
 unsigned char* imageRGBA;
 int pixelsWide = 1000;
 int pixelsHigh = 1000;
 const char* outputFilename;
 Scene s;
-
 
 RGB shading(diffGeom dg, Light* l, ray eyeRay){
   BRDF *brdf = dg.brdf;
@@ -101,13 +99,30 @@ RGB recursiveRT(ray r, int depth, RGB c){
   return c;
 }
 
+
 void generateImage(){
   /* Iterate over all pixels */
+  #pragma omp parallel for
   for(int j = 0; j < pixelsHigh; j++){
     for(int i = 0; i < pixelsWide; i++){
       /* Generate eye ray from pixel sample and initialize pixel color */
-      ray eyeray = s.cam->getRay((i+0.5)/pixelsWide, (j+0.5)/pixelsHigh);
-      RGB pixelColor = recursiveRT(eyeray, RECURSIVE_DEPTH, RGB(0,0,0));
+      RGB pixelColor =  RGB(0,0,0);
+      if(AA){
+        for(int m = 0; m < AA_LEVEL; m++){
+          for(int n = 0; n < AA_LEVEL; n++){
+            float rand1 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+            rand1 = (2*m + 1)/(AA_LEVEL*2) + rand1/AA_LEVEL;
+            float rand2 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+            rand1 = (2*n + 1)/(AA_LEVEL*2) + rand1/AA_LEVEL;
+            //printf("%f %f\n",rand1-.5, rand2-.5 );
+            ray eyeray = s.cam->getRay((i+rand1)/pixelsWide, (j+rand2)/pixelsHigh);
+            pixelColor += recursiveRT(eyeray, RECURSIVE_DEPTH, RGB(0,0,0))/(AA_LEVEL*AA_LEVEL);
+          }       
+        }
+      } else {
+        ray eyeray = s.cam->getRay((i+0.5)/pixelsWide, (j+0.5)/pixelsHigh);
+        pixelColor += recursiveRT(eyeray, RECURSIVE_DEPTH, RGB(0,0,0));
+      }
       imageRGBA[(pixelsWide * (pixelsHigh - 1 - j) + i)*4] = pixelColor.convert(RED);
       imageRGBA[(pixelsWide * (pixelsHigh - 1 - j) + i)*4 + 1] = pixelColor.convert(GREEN);
       imageRGBA[(pixelsWide * (pixelsHigh - 1 - j) + i)*4 + 2] = pixelColor.convert(BLUE);
@@ -116,16 +131,8 @@ void generateImage(){
   }
 }
 
-void fillRandom(float* array, size_t num){
-  for(int i = 0; i <)
-  float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-}
-
 int main(int argc, char** argv){
-  
   parseInput(argc, argv, &s);
-  if(AA) float* AA_rand = (float*) malloc(pixelsWide*pixelsHigh*AA_LEVEL*sizeof(float));
-  float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
   imageRGBA = (unsigned char*) malloc(pixelsWide * pixelsHigh * 4 * sizeof(unsigned char));
   generateImage();
   std::vector<unsigned char> png;

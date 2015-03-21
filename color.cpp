@@ -16,6 +16,14 @@ RGB RGB::operator*(float f) {
   return RGB(r*f, g*f, b*f);
 }
 
+RGB RGB::operator/(int f) {
+  return RGB(r/f, g/f, b/f);
+}
+
+RGB RGB::operator/=(int f){
+  return RGB(r/f, g/f, b/f);
+}
+
 RGB::RGB(){
   r = 0;
   g = 0;

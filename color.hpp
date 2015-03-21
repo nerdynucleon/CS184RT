@@ -13,6 +13,8 @@ class RGB{
     bool operator>(float);
     RGB operator*(RGB);
     RGB operator*(float);
+    RGB operator/(int); 
+    RGB operator/=(int);
     RGB(float, float, float);
     RGB();
     void print();

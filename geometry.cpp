@@ -141,12 +141,12 @@ bool triangle::intersect(ray r, diffGeom* dg, float t_max){
   vec3 q =  cross(T, e1);
   float v = (r.dir*q) * inv_det;
   //The intersection lies outside of the triangle
-  if(v < 0.f || u + v  > 1.f) return 0;
+  if(v < 0.0f || u + v  > 1.0f) return 0;
   float t = (e2*q) * inv_det; 
   if(checkIntersection(&r,t_max,t)) { //ray intersection
     /* Interpolate Triangle Normals
     IMPLEMENT LATER */
-    *dg = diffGeom(r.pos + r.dir*t, normalize(cross(e1,e2)), brdf, t);
+    *dg = diffGeom(r.pos + r.dir*t, normalize((*n2)*u + (*n1)*v + (*n3)*(1-u-v)), brdf, t);
     return true;
   }
   return false;
@@ -184,7 +184,7 @@ vec3 cross(vec3 v1,vec3 v2){
 
 triangle::triangle(vec3* v1in,vec3* v2in,vec3* v3in,BRDF* brdfin){
   v1 = v1in; v2 = v2in; v3 = v3in; brdf = brdfin;
-  n1 = norm2pt(cross(*v1in, *v2in)); n2 = NULL; n3 = NULL;
+  n1 = norm2pt(cross(*v2in - *v1in , *v2in - *v1in)); n2 = NULL; n3 = NULL;
 }
 
 triangle::triangle(vec3* v1in,vec3* v2in,vec3* v3in,vec3* n1in,vec3* n2in,vec3* n3in,BRDF* brdfin){
@@ -232,7 +232,7 @@ Transformation::Transformation(float xIn, float yIn, float zIn, int typeIn){
   x = xIn; y = yIn; z = zIn; type = typeIn;
   if(type == ROTATE){
     float length = sqrt(x*x + y*y + z*z);
-    length = length * PI/ 180.0f;
+    length = length * M_PI/ 180.0f;
     x=x/length; y=y/length; z=z/length;
     ct = cos(length);
     st = sin(length);
