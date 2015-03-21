@@ -122,6 +122,7 @@ void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	std::vector<float> data = parseLine(tokens, 4, "sph");
 	/* Load sphere into scene */
 	sphere* obj = new sphere(data[0], data[1], data[2], data[3]);
+	obj->center = apply(obj->center);
 	obj->brdf = mat;
 	s->add(obj);
 	obj->print();

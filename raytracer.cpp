@@ -20,7 +20,7 @@
 #include <cfloat>
 #define CFLOAT_H
 #endif
-#define RECURSIVE_DEPTH 1
+#define RECURSIVE_DEPTH 10
 #define EPS 0.1
 #define AA false
 #define AA_LEVEL 1
@@ -85,7 +85,6 @@ RGB recursiveRT(ray r, int depth, RGB c){
         ray shadowRay = ray(dg.pos, lvec, EPS, distance);
         if((l->type == AMB) || (!s.trace(shadowRay, NULL))){
           c += shading(dg, l, r);
-          //c.print();
         }
       }
       /* Calculate Reflection Rays */
