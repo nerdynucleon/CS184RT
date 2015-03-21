@@ -103,6 +103,7 @@ class Matrix {
     vec4* column(int);
     Matrix* inverse();
     float determinant();
+    Matrix* transpose();
     void print();
     Matrix* operator+(Matrix);
 };

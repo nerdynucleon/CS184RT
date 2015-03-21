@@ -370,6 +370,27 @@ Matrix* Matrix::operator*(float scalar) {
     d[11], d[12], d[13], d[14], d[15]);
 }
 
+Matrix* Matrix::transpose(){
+  Matrix *result = new Matrix();
+    result->v[0]->x = v[0]->x;
+    result->v[0]->y = v[1]->x;
+    result->v[0]->z = v[2]->x;
+    result->v[0]->w = v[3]->x;
+    result->v[1]->x = v[0]->y;
+    result->v[1]->y = v[1]->y;
+    result->v[1]->z = v[2]->y;
+    result->v[1]->w = v[3]->y;
+    result->v[2]->x = v[0]->z;
+    result->v[2]->y = v[1]->z;
+    result->v[2]->z = v[2]->z;
+    result->v[2]->w = v[3]->z;
+    result->v[3]->x = v[0]->w;
+    result->v[3]->y = v[1]->w;
+    result->v[3]->z = v[2]->w;
+    result->v[3]->w = v[3]->w;
+  return result;  
+}
+
 float Matrix::determinant() {
   float sum = 0;
   sum += v[0]->x * v[1]->y * v[2]->z * v[3]->w;
