@@ -108,7 +108,7 @@ void storeFace(OBJ* decoded, std::vector<std::string> tokens, Scene *s, BRDF *br
 	}
 	triangle *f = new triangle(v3, v2, v1, brdf);
 	if (normals) {
-		f->n1 = n3; f->n2 = n2; f->n3 = n1;
+		f->n1 = n1; f->n2 = n2; f->n3 = n3;
 	}
 	f->print();
 	s->add(f);
