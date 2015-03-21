@@ -222,10 +222,20 @@ bool sphere::intersect(ray r, diffGeom* dg, float t_max){
   float t1 = (-b - sqrt(b*b - 4*a*c))/(2*a);
   float t2 = (-b + sqrt(b*b - 4*a*c))/(2*a);
   if(checkIntersection(&r,t_max,t1)){
-    *dg = diffGeom(r.pos + r.dir*t1, normalize(r.pos + r.dir*t1 - *center), brdf, t1);
+    vec3 tray = r.pos + r.dir*t1;
+    if (transform) {
+      tray = *(T->transform(tray, true));
+    }
+    //*dg = diffGeom(tray, normalize(r.pos + r.dir*t1 - *center), brdf, t1);
+    *dg = diffGeom(tray, normalize(r.pos + r.dir*t1 - *center), brdf, t1);
     return true;
   } else if (checkIntersection(&r,t_max,t2)) {
-    *dg = diffGeom(r.pos + r.dir*t2, normalize(r.pos + r.dir*t2 - *center), brdf, t2);
+    vec3 tray = r.pos + r.dir*t2;
+    if (transform) {
+      tray = *(T->transform(tray, true));
+    }
+     //*dg = diffGeom(tray, normalize(r.pos + r.dir*t2 - *center), brdf, t2);
+    *dg = diffGeom(tray, normalize(r.pos + r.dir*t2 - *center), brdf, t2);
     return true;
   }
   return false;
@@ -278,6 +288,13 @@ Matrix::Matrix() {
   v[1] = new vec4(0, 1, 0, 0);
   v[2] = new vec4(0, 0, 1, 0);
   v[3] = new vec4(0, 0, 0, 1);
+}
+
+Matrix::Matrix(Matrix *copy) {
+  v[0] = new vec4(copy->v[0]->x, copy->v[0]->y, copy->v[0]->z, copy->v[0]->w);
+  v[1] = new vec4(copy->v[1]->x, copy->v[1]->y, copy->v[1]->z, copy->v[1]->w);
+  v[2] = new vec4(copy->v[2]->x, copy->v[2]->y, copy->v[2]->z, copy->v[2]->w);
+  v[3] = new vec4(copy->v[3]->x, copy->v[3]->y, copy->v[3]->z, copy->v[3]->w);
 }
 
 vec4* Matrix::column(int n) {
