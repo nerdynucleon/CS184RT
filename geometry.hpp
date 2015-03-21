@@ -103,6 +103,7 @@ class Matrix {
     Matrix* inverse();
     float determinant();
     void print();
+    Matrix* operator+(Matrix);
 };
 
 bool checkIntersection(ray*, float, float);

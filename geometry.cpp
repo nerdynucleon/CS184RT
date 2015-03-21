@@ -329,6 +329,17 @@ Matrix* Matrix::operator*(Matrix m2) {
   return result;
 }
 
+Matrix* Matrix::operator+(Matrix m2) {
+  Matrix *result = new Matrix();
+  for(int i = 0; i < 4; i++){
+    result->v[i]->x = v[i]->x + m2.v[i]->x;
+    result->v[i]->y = v[i]->y + m2.v[i]->y;
+    result->v[i]->z = v[i]->z + m2.v[i]->z;
+    result->v[i]->w = v[i]->w + m2.v[i]->w;
+  }
+  return result;
+}
+
 Matrix* Matrix::operator*(float scalar) {
   float d[16]; int j = 0;
   for (int i = 0; i < 4; i++) {

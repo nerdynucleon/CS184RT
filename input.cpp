@@ -145,11 +145,13 @@ void parseRotation(std::vector<std::string> tokens) {
 		argumentError("xfr", 4);
 	}
 	float x = std::stof(tokens[1]); float y = std::stof(tokens[2]); float z = std::stof(tokens[3]);
-	float angle = M_PI/180.0 *length;
 	float length = sqrt(x*x + y*y + z*z); x /= length; y /= length; z /= length;
-	Matrix *rx = new Matrix(0,-z,y,0, z,0,-x,0 -y,x,0,0, 0,0,0,1);
-	Matrix *r = new Matrix(x*x, y*x, z*x, 0, y*x, y*y, y*z, 0, z*x,z*y,z*z,0,0,0,0,0) ;
-	transform = (*transform) * (r + rx*sin(angle)+rx*rx*cos(angle)*(-1));
+	float angle = M_PI/180.0 *length;
+	float sinA = sin(angle);
+	float cosA = cos(angle);
+	Matrix *rx = new Matrix(0.0f,-z,y,0.0f, z,0.0f,-x,0.0f, -y,x,0.0f,0.0f, 0.0f,0.0f,0.0f,1.0f);
+	Matrix *r = new Matrix(x*x, y*x, z*x, 0.0f, y*x, y*y, y*z, 0.0f, z*x,z*y,z*z,0.0f,0.0f,0.0f,0.0f,0.0f) ;
+	transform = (*transform) * (*(*((*r) + *((*rx)*sinA)) + *(*((*rx)*(*rx))*(-cosA))));
 	applyTransform = true;
 }
 
