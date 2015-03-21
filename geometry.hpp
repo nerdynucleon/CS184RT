@@ -138,16 +138,4 @@ class sphere: public sceneObject {
     void print();
 };
 
-class Transformation{
-  public:
-    Transformation(float,float,float,int);
-    Transformation();
-    int type;
-    float x;
-    float y;
-    float z;
-    float ct;
-    float st;
-};
-
 #endif
