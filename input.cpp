@@ -16,6 +16,7 @@
 #include <sstream>
 #include <cstdio>
 #include <iterator>
+#include <cmath>
 
 /* TODO: 
 	• If a line has extra parameters then those parameters should be ignored and a warning message
@@ -24,38 +25,6 @@ should be printed to stderr
 	• Lines with an unrecognized type should result in a warning message to stderr indicating an
 unsupported feature and the program should then ignore the line. 
 */
-
-std::vector<Transformation*> xf;
-Matrix *transform = new Matrix(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1);
-bool applyTransform = false;
-
-void vec3::apply(std::vector<Transformation*> *xf){
-  if(xf.size() == 0) return;
-  Transformation *t;
-  for(int i = 0; i < xf.size(); i++){
-    t=xf->[i];
-    float xTr = t->x; float yTr = t->y; float zTr = t->z; float ct = t->ct; float st = t->st;
-    if(t->type == TRANSLATE){
-      /*Translate vector*/
-      x = x + xTr;
-      x = x + yTr;
-      x = x + zTr;
-    } else if(t->type == ROTATE){
-      /* Exponential Map rotation in radians (length of rotation input) */
-      float xout = x*(xTr*xTr +((yTr*yTr)+(zTr*zTr))*ct) + y*(yTr*xTr - xTr*yTr*ct -zTr*st) + z*(zTr*xTr - xTr*zTr*ct + yTr*st);
-      float yout = x*(yTr*xTr -xTr*yTr*ct+zTr*st) + y*(yTr*yTr+(xTr*xTr+zTr*zTr)*ct) + z*(yTr*zTr-yTr*zTr*ct-xTr*st);
-      float zout = x*(zTr*xTr -xTr*zTr*ct-yTr*st) + y*(zTr*yTr -yTr*zTr*ct+xTr*st) + z*(zTr*zTr +(xTr*xTr+yTr*yTr)*ct);
-      x = xout;
-      y = yout;
-      z = zout;
-    } else if(t->type == SCALE) {
-      /* Scaling */
-      x = x * xTr;
-      y = y * yTr;
-      z = z * zTr;
-    }
-  }
-}
 
 /* Splits a string by whitespace. */
 std::vector<std::string> split(const std::string &str) {
@@ -163,7 +132,6 @@ void parseTranslation(std::vector<std::string> tokens) {
 	float tx = std::stof(tokens[1]); float ty = std::stof(tokens[2]); float tz = std::stof(tokens[3]);
 	Matrix *A = new Matrix(1,0,0,tx, 0,1,0,ty, 0,0,1,tz, 0,0,0,1);
 	transform = (*transform) * (*A);
-	xf.push_back(new Transformation(tx,ty,tz,TRANSLATE));
 	applyTransform = true;
 }
 
@@ -174,7 +142,11 @@ void parseRotation(std::vector<std::string> tokens) {
 		argumentError("xfr", 4);
 	}
 	float x = std::stof(tokens[1]); float y = std::stof(tokens[2]); float z = std::stof(tokens[3]);
-	Matrix *rx = new Matrix(0 )
+	float angle = M_PI/180.0 *length;
+	float length = sqrt(x*x + y*y + z*z); x /= length; y /= length; z /= length;
+	Matrix *rx = new Matrix(0,-z,y,0, z,0,-x,0 -y,x,0,0, 0,0,0,1);
+	Matrix *r = new Matrix(x*x, y*x, z*x, 0, y*x, y*y, y*z, 0, z*x,z*y,z*z,0,0,0,0,0) ;
+	transform = (*transform) * (r + rx*sin(angle)+rx*rx*cos(angle)*(-1));
 	applyTransform = true;
 }
 
@@ -192,10 +164,6 @@ void parseReset(std::vector<std::string> tokens) {
 	/* Reset Transformations */
 	if(tokens.size() != 1){
 		argumentError("xfz", 1);
-	}
-	while(!xf.empty()){
-		free(xf.back());
-		xf.pop_back();
 	}
 	applyTransform = false;
 }
