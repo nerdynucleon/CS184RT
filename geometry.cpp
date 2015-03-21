@@ -248,8 +248,11 @@ vec4::vec4() {
 
 vec4::vec4(vec3 v1, bool pos){
 x = v1.x; y = v1.y; z = v1.z;
-if(bool) w = 1;
-else w = 0;
+  if(pos){
+    w = 1; 
+  }else{
+    w = 0; 
+  } 
 }
 
 vec4::vec4(float vx, float vy, float vz, float vw) {
@@ -296,21 +299,21 @@ vec4* Matrix::column(int n) {
 }
 
 vec3* Matrix::operator*(vec4 vin){
-  float w =v[3]*vin;
+  float w =(*v[3])*vin;
   float x; float y; float z;
   if(w == 0){
-    x = v[0]*vin;
-    y = v[1]*vin;
-    z = v[2]*vin;
+    x = (*v[0])*vin;
+    y = (*v[1])*vin;
+    z = (*v[2])*vin;
   } else {
-    x = v[0]*vin /w;
-    y = v[1]*vin /w;
-    z = v[2]*vin /w;
+    x = (*v[0])*vin /w;
+    y = (*v[1])*vin /w;
+    z = (*v[2])*vin /w;
   }
   return new vec3(x,y,z);
 }
 
-vec3* Matrix::operator*(vec3 vin, bool pos){
+vec3* Matrix::transform(vec3 vin, bool pos){
   vec4 out = vec4(vin,pos);
   return (*this)*out;
 }
