@@ -81,6 +81,7 @@ class vec4 {
   public:
     vec4(float x, float y, float z, float w);
     vec4();
+    vec4(vec3 v1, bool pos);
     float operator*(vec4);
     vec4 operator*(float f);
     float x; float y; float z; float w;
@@ -96,6 +97,8 @@ class Matrix {
     Matrix();
     Matrix* operator*(Matrix);
     Matrix* operator*(float);
+    vec3* operator*(vec4 vin);
+    vec3* transform(vec3 vin, bool pos);
     vec4* column(int);
     Matrix* inverse();
     float determinant();
