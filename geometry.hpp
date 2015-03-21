@@ -95,6 +95,7 @@ class Matrix {
     Matrix(float, float, float, float, float, float, float, 
         float, float, float, float, float, float, float, float, float);
     Matrix();
+    Matrix(Matrix *m);
     Matrix* operator*(Matrix);
     Matrix* operator*(float);
     vec3* operator*(vec4 vin);
@@ -128,6 +129,7 @@ class triangle: public sceneObject {
 class sphere: public sceneObject {
   public:
     bool transform;
+    Matrix *T;
     Matrix *invT;
     sphere(float, float, float, float);
     sphere(vec3*, float);

@@ -94,11 +94,12 @@ void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	sphere* obj = new sphere(data[0], data[1], data[2], data[3]);
 	obj->brdf = mat;
 	s->add(obj);
-	obj->print();
 	obj->transform = applyTransform;
 	if (applyTransform) {
+		obj->T = new Matrix(transform);
 		obj->invT = transform->inverse();
 	}
+	obj->print();
 }
 
 void parseCam(std::vector<std::string> tokens, Scene *s) {
@@ -184,7 +185,10 @@ void parseScale(std::vector<std::string> tokens) {
 	if(tokens.size() != 4 ){
 		argumentError("xfs", 4);
 	}
+	float x = std::stof(tokens[1]); float y = std::stof(tokens[2]); float z = std::stof(tokens[3]);
 	//xf.push_back(new Transformation(std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]),SCALE));
+	Matrix *A = new Matrix(x,0,0,0, 0,y,0,0, 0,0,z,0, 0,0,0,1);
+	transform = (*transform) * (*A);
 	applyTransform = true;
 }
 
@@ -198,6 +202,7 @@ void parseReset(std::vector<std::string> tokens) {
 	//	xf.pop_back();
 	//}
 	applyTransform = false;
+	delete transform;
 	transform = new Matrix();
 }
 
