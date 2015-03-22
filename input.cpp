@@ -147,6 +147,8 @@ void parseRotation(std::vector<std::string> tokens) {
 	}
 	float x = std::stof(tokens[1]); float y = std::stof(tokens[2]); float z = std::stof(tokens[3]);
 	float length = sqrt(x*x + y*y + z*z); x /= length; y /= length; z /= length;
+	if (length == 0) { return; }
+	
 	float angle = M_PI/180.0 *length;
 	float sA = sin(angle);
 	float cA = cos(angle);
