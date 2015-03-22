@@ -133,6 +133,8 @@ OBJ* OBJ::decodeObj(std::string filename, Scene *s, BRDF *brdf, Matrix *m, bool 
 			else if (tokens[0].compare("f") == 0) { storeFace(decoded, tokens, s, brdf, m, trans); }
 		}
 		objIn.close();
+	} else {
+		printf("failed to open obj file: %s\n",filename);
 	}
 
 	return decoded;

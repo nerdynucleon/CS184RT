@@ -90,22 +90,22 @@ class vec4 {
 
 class Matrix {
   public:
-    vec4 *v[4];
-    Matrix(vec4*, vec4*, vec4*, vec4*);
+    vec4 v[4];
+    Matrix(vec4, vec4, vec4, vec4);
     Matrix(float, float, float, float, float, float, float, 
         float, float, float, float, float, float, float, float, float);
     Matrix();
     Matrix(Matrix *m);
-    Matrix* operator*(Matrix);
-    Matrix* operator*(float);
-    vec3* operator*(vec4 vin);
-    vec3* transform(vec3 vin, bool pos);
-    vec4* column(int);
-    Matrix* inverse();
+    Matrix operator*(Matrix);
+    Matrix operator*(float);
+    vec3 operator*(vec4 vin);
+    vec3 transform(vec3 vin, bool pos);
+    vec4 column(int);
+    Matrix inverse();
     float determinant();
-    Matrix* transpose();
+    Matrix transpose();
     void print();
-    Matrix* operator+(Matrix);
+    Matrix operator+(Matrix);
 };
 
 bool checkIntersection(ray*, float, float);
