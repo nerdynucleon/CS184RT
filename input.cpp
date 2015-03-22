@@ -123,8 +123,8 @@ void parseTriangle(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 
 
 
-void parseObj(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
-	OBJ *obj = OBJ::decodeObj(tokens[1], s, mat);
+void parseObj(std::vector<std::string> tokens, Scene *s, BRDF *mat, Matrix* m, bool b) {
+	OBJ *obj = OBJ::decodeObj(tokens[1], s, mat, m, b);
 }
 
 void parseTranslation(std::vector<std::string> tokens) {
@@ -148,11 +148,13 @@ void parseRotation(std::vector<std::string> tokens) {
 	float x = std::stof(tokens[1]); float y = std::stof(tokens[2]); float z = std::stof(tokens[3]);
 	float length = sqrt(x*x + y*y + z*z); x /= length; y /= length; z /= length;
 	float angle = M_PI/180.0 *length;
-	float sinA = sin(angle);
-	float cosA = cos(angle);
-	Matrix *rx = new Matrix(0.0f,-z,y,0.0f, z,0.0f,-x,0.0f, -y,x,0.0f,0.0f, 0.0f,0.0f,0.0f,1.0f);
-	Matrix *r = new Matrix(x*x, y*x, z*x, 0.0f, y*x, y*y, y*z, 0.0f, z*x,z*y,z*z,0.0f,0.0f,0.0f,0.0f,0.0f) ;
-	transform = (*transform) * (*(*((*r) + *((*rx)*sinA)) + *(*((*rx)*(*rx))*(-cosA))));
+	float sA = sin(angle);
+	float cA = cos(angle);
+	Matrix* rx = new Matrix(cA+x*x*(1-cA), x*y*(1-cA)-z*sA, y*sA+x*z*(1-cA), 0,
+		z*sA+x*y*(1-cA), cA + y*y*(1-cA), -x*sA +y*z*(1-cA), 0,
+		-y*sA+x*z*(1-cA), x*sA + y*z*(1-cA), cA + z*z*(1-cA), 0,
+		0, 0, 0, 1);
+	transform = (*transform) * (*rx);
 	applyTransform = true;
 }
 
@@ -211,7 +213,7 @@ void parseInput(int argc, char** argv, Scene *s) {
 		else if (tokens[0].compare("ltd") == 0) { parseDirectional(tokens, s); }
 		else if (tokens[0].compare("lta") == 0) { parseAmbientLight(tokens, s); }
 		else if (tokens[0].compare("tri") == 0) { parseTriangle(tokens, s, mat); }
-		else if (tokens[0].compare("obj") == 0) { parseObj(tokens, s, mat); }
+		else if (tokens[0].compare("obj") == 0) { parseObj(tokens, s, mat, transform, applyTransform); }
 		else if (tokens[0].compare("xft") == 0) { parseTranslation(tokens); }
 		else if (tokens[0].compare("xfr") == 0) { parseRotation(tokens); }
 		else if (tokens[0].compare("xfs") == 0) { parseScale(tokens); }

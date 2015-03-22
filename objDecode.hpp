@@ -17,7 +17,7 @@ public:
 	std::vector<vec3*> vp;
 	std::vector<triangle*> faces;
 
-	static OBJ* decodeObj(std::string filename, Scene* s, BRDF *brdf);
+	static OBJ* decodeObj(std::string filename, Scene* s, BRDF *brdf, Matrix* m, bool);
 	void printVertices();
 	void printFaces();
 };
