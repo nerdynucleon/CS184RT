@@ -1,0 +1,9 @@
+Change AA in raytracer.cpp to be true
+Change AA_Level in raytracer.cpp to be 8
+
+make all
+time ./main < input-08.txt
+
+run time: 0m24.855s
+
+Demonstrates anti-aliasing on a scene. Refer to image-05 for a comparison.

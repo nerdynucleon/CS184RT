@@ -1,0 +1,6 @@
+make all
+time ./main < input-03.txt
+
+run time: 0m0.316s
+
+Demonstrates the Phong shading model applied to two spheres and a triangle (below the spheres).

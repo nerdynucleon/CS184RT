@@ -4,8 +4,6 @@
 #include "objDecode.hpp"
 #endif
 
-
-
 #define VERTEX_DEFAULT		0
 #define VERTEX_NORMAL		1
 #define VERTEX_TEXTURE		2
@@ -16,7 +14,7 @@
 #define FACE_VVTN 2
 #define FACE_VN  	3
 
-/* http://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring */
+/* Trim */
 #include <algorithm> 
 #include <functional> 
 #include <cctype>
@@ -24,7 +22,7 @@
 #include <string>
 #include <sstream>
 
-// trim from start
+
 inline std::string &ltrim(std::string &s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
     return s;
@@ -71,8 +69,6 @@ void storeFace(OBJ* decoded, std::vector<std::string> tokens, Scene *s, BRDF *br
 			if (i == 1) { v1 = trans ? (m.transform(*v, true)) : *v; }
 			if (i == 2) { v2 = trans ? (m.transform(*v, true)) : *v; }
 			if (i == 3) { v3 = trans ? (m.transform(*v, true)) : *v; }
-			//f.v.push_back(v);
-			//f.type = FACE_V;
 		}
 		else if ((find != std::string::npos) && (tokens[i].substr(find+1, 1).compare("/") == 0)) {
 			std::vector<std::string> subtokens = split(tokens[i], char(47));
@@ -80,31 +76,12 @@ void storeFace(OBJ* decoded, std::vector<std::string> tokens, Scene *s, BRDF *br
 			if (i == 1) { v1 = trans ? (m.transform(*v, true)) : *v; }
 			if (i == 2) { v2 = trans ? (m.transform(*v, true)) : *v; }
 			if (i == 3) { v3 = trans ? (m.transform(*v, true)) : *v; }
-			//f.v.push_back(v);
-			//f.type = FACE_VN;
 			v = decoded->vn[decoded->v.size() - std::stoi(subtokens[2])];
 			if (i == 1) { n1 = trans ? (m.inverse().transpose().transform(*v, false)) : *v; }
 			if (i == 2) { n2 = trans ? (m.inverse().transpose().transform(*v, false)) : *v; }
 			if (i == 3) { n3 = trans ? (m.inverse().transpose().transform(*v, false)) : *v; }
 			normals = true;
-			v->print();
-			//f.vn.push_back(v);
 		}
-		/* VERTEX TEXTURE PNTS
-		else if (find != std::string::npos) {
-			std::vector<std::string> subtokens = split(tokens[i], char(47));
-			v = decoded->v[decoded->v.size() - std::stoi(subtokens[0])];
-			f.v.push_back(v);
-			f.type = FACE_V;
-			if (subtokens.size() >= 2) {
-				v = decoded->vt[decoded->v.size() - std::stoi(subtokens[1])];
-				f.vt.push_back(v); f.type = FACE_VVT; 
-			}
-			if (subtokens.size() >= 3) { 
-				v = decoded->vt[decoded->v.size() - std::stoi(subtokens[2])];
-				f.vn.push_back(v); f.type = FACE_VVTN;
-			}
-		} */
 	}
 	triangle* f;
 	if (normals) {
@@ -112,7 +89,6 @@ void storeFace(OBJ* decoded, std::vector<std::string> tokens, Scene *s, BRDF *br
 	} else {
 		f = new triangle(v3,v2,v1, brdf);
 	}
-	f->print();
 	s->add(f);
 }
 

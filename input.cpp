@@ -18,14 +18,6 @@
 #include <iterator>
 #include <cmath>
 
-/* TODO: 
-	• If a line has extra parameters then those parameters should be ignored and a warning message
-should be printed to stderr
-	• Any number of tabs and spaces is equivalent to a single space.
-	• Lines with an unrecognized type should result in a warning message to stderr indicating an
-unsupported feature and the program should then ignore the line. 
-*/
-
 
 Matrix *transform = new Matrix();
 bool applyTransform = false;
@@ -71,7 +63,6 @@ void parseSphere(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 		obj->T = new Matrix(transform);
 		obj->invT = transform->inverse();
 	}
-	obj->print();
 }
 
 void parseCam(std::vector<std::string> tokens, Scene *s) {
@@ -85,27 +76,23 @@ void parseCam(std::vector<std::string> tokens, Scene *s) {
 		}
 	}
 	s->cam = new camera(data);
-	s->cam->print();
 }
 
 void parsePointLight(std::vector<std::string> tokens, Scene *s) {
 	std::vector<float> data = parseLine(tokens, 7, "ltp");
 	Light *light = new Light(data[0], data[1], data[2], data[3], data[4], data[5], POINT, (int) data[6]);
-	light->print();
 	s->add(light);
 }
 
 void parseDirectional(std::vector<std::string> tokens, Scene *s) {
 	std::vector<float> data = parseLine(tokens, 6, "ltd");
 	Light *light = new Light(data[0], data[1], data[2], data[3], data[4], data[5], DIR, FALLOFF_NONE);
-	light->print();
 	s->add(light);
 }
 
 void parseAmbientLight(std::vector<std::string> tokens, Scene *s) {
 	std::vector<float> data = parseLine(tokens, 3, "lta");
 	Light *light = new Light(0, 0, 0, data[0], data[1], data[2], AMB, FALLOFF_NONE);
-	light->print();
 	s->add(light);
 }
 
@@ -115,10 +102,8 @@ void parseTriangle(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	vec3 v1 = vec3(data[0], data[1], data[2]);
 	vec3 v2 = vec3(data[3], data[4], data[5]);
 	vec3 v3 = vec3(data[6], data[7], data[8]);
-	//v1 = apply(v1); v2 = apply(v2); v3 = apply(v3);
 	triangle *tri = new triangle(v1, v2, v3, mat);
 	s->add(tri);
-	tri->print();
 }
 
 
@@ -167,7 +152,6 @@ void parseScale(std::vector<std::string> tokens) {
 		argumentError("xfs", 4);
 	}
 	float x = std::stof(tokens[1]); float y = std::stof(tokens[2]); float z = std::stof(tokens[3]);
-	//xf.push_back(new Transformation(std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]),SCALE));
 	Matrix A = Matrix(x,0,0,0, 0,y,0,0, 0,0,z,0, 0,0,0,1);
 	*transform = (*transform) * A;
 	applyTransform = true;
@@ -196,7 +180,6 @@ BRDF* parseMat(std::vector<std::string> tokens, Scene *s) {
 	RGB *ks = new RGB(data[6], data[7], data[8]);
 	RGB *kr = new RGB(data[10], data[11], data[12]);
 	BRDF *mat = new BRDF(ka, kd, ks, kr, data[9]);
-	mat->print(); 
 	return mat;
 }
 

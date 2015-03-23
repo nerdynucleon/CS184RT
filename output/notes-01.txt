@@ -1,0 +1,6 @@
+make all
+time ./main < input-01.txt
+
+run time: 0m0.452s
+
+Demonstrates spheres and their reflections.

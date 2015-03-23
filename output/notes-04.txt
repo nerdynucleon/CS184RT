@@ -1,0 +1,6 @@
+make all
+time ./main < input-04.txt
+
+run time: 0m0.374s
+
+Demonstrates shadows (the two spheres cast shadows on the triangle, and the triangle casts a shadow on the red sphere).

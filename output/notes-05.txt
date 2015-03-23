@@ -1,0 +1,6 @@
+make all
+time ./main < input-05.txt
+
+run time: 0m0.442s
+
+Demonstrates reflections among a triangle and several spheres.

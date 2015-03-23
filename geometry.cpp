@@ -140,12 +140,10 @@ bool triangle::intersect(ray r, diffGeom* dg, float t_max){
   if(u < 0.0 || u > 1.0) return 0;
   vec3 q =  cross(T, e1);
   float v = (r.dir*q) * inv_det;
-  //The intersection lies outside of the triangle
+  /* The intersection lies outside of the triangle */
   if(v < 0.0f || u + v  > 1.0f) return 0;
   float t = (e2*q) * inv_det; 
   if(checkIntersection(&r,t_max,t)) { //ray intersection
-    /* Interpolate Triangle Normals
-    IMPLEMENT LATER */
     *dg = diffGeom(r.pos + r.dir*t, normalize(n2*u + n1*(1-u-v) + n3*v), brdf, t);
     return true;
   }

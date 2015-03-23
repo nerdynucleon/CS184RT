@@ -1,0 +1,23 @@
+cam   0 0 2   -1 -1 1   1 -1 1   -1 1 1   1 1 1
+ltp   1 1 1   1 1 1    0
+lta   0.1 0.1 0.1
+
+mat   1 1 1   0.6 0 0   0 1 0   64   0.8 0.8 0.8
+xfr 20 0 0
+xfs 0.5 0.5 0.5
+obj sample/octahedron_1.obj
+
+xfz
+
+mat  1 1 1   0 0.6 0   0 0 1   64    0.8 0.8 0.8
+xft -2 0 -4
+xfr 20 5 0
+obj sample/octahedron_1.obj
+
+xfz
+
+mat  1 1 1   1 0.5 0   1 1 1   64   1 1 1
+sph  -1 -0.5 0  0.3
+
+mat  1 1 1   0 0 1    1 1 1   64   1 1 1
+sph  0.5 1 -1    0.3

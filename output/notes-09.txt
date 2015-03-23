@@ -1,0 +1,6 @@
+make all
+time ./main < input-09.txt
+
+run time: 0m0.263s
+
+Demonstrates a sphere which has been scaled down on the X/Y axis and stretched out on the Z axis, and rotated 90 degrees (to form an ellipsoid).

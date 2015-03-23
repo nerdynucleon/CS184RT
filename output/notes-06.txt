@@ -1,0 +1,9 @@
+For anti-aliasing, go to raytracer.cpp and set AA to true and AA_LEVEL to 4.
+
+make all
+time ./main < input-06.txt
+
+run time: 0m0.721s
+run time with anti-aliasing: 0m10.545s
+
+Demonstrates reading an obj file and performing a translation/rotation on it. There are two obj files rendered, and the file is located under sample/octahedron_1.obj in the source code directory. Credits to Baruch Sterin for the object file!

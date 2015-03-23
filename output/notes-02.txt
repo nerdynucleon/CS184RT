@@ -1,0 +1,6 @@
+make all
+time ./main < input-02.txt
+
+run time: 0m0.405s
+
+Demonstrates drawing triangles, with materials applied. And a sphere, for fun.

@@ -1,0 +1,6 @@
+make all
+time ./main < input-07.txt
+
+run time: 0m0.393s
+
+The same picture as image-02, but with a LINEAR falloff applied for the point light (falloff = 1).

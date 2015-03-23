@@ -1,0 +1,6 @@
+make all
+time ./main < input-12.txt
+
+run time: 0m0.402s
+
+The same as image-07 and image-02, except that the falloff is QUADRATIC for the point light (falloff = 2).

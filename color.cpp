@@ -53,7 +53,6 @@ void RGB::print() {
 }
 
 bool RGB::operator>(float f){
-  //return ((r > f) && (b > f) && (g > f));
   return ((r > f) || (b > f) || (g > f));
 }
 

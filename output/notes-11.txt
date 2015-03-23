@@ -1,0 +1,6 @@
+make all
+time ./main < input-11.txt
+
+run time: 0m0.358s
+
+Demonstrates a directional light towards (-1, -1, -1), hitting three spheres and a triangle (the spheres and triangle are in front of the sphere). These shadows are crisp and smaller due to the behavior of directional lights.

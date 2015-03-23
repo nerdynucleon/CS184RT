@@ -1,0 +1,6 @@
+make all
+time ./main < input-10.txt
+
+run time: 0m0.463s
+
+Demonstrates a point light at (1, 1, 1) aiming towards the origin, hitting three spheres and a triangle (the spheres and triangle are in front of the sphere). Note the shadows that the point light generates in comparison to the next test (directional light).
