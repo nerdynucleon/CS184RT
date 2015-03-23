@@ -234,7 +234,7 @@ bool sphere::intersect(ray r, diffGeom* dg, float t_max){
     }
     //*dg = diffGeom(tray, normalize(r.pos + r.dir*t1 - *center), brdf, t1);
     *dg = diffGeom(tray, normal, brdf, t1);
->>>>>>> 24a2fae5a2fc86f8d3ee35ef22eaeac5396440b5
+>>>>>>> 24a2
     return true;
   } else if (checkIntersection(&r,t_max,t2)) {
     vec3 tray = r.pos + r.dir*t2;
@@ -251,7 +251,7 @@ bool sphere::intersect(ray r, diffGeom* dg, float t_max){
     }
      //*dg = diffGeom(tray, normalize(r.pos + r.dir*t2 - *center), brdf, t2);
     *dg = diffGeom(tray, normal, brdf, t2);
->>>>>>> 24a2fae5a2fc86f8d3ee35ef22eaeac5396440b5
+>>>>>>> 24a2
     return true;
   }
   return false;
