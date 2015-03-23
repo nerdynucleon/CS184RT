@@ -226,7 +226,6 @@ bool sphere::intersect(ray r, diffGeom* dg, float t_max){
     if (transform) {
       normal = normalize(T.inverse().transpose().transform(tray-center,false));
       tray = (T.transform(tray, true));
-      
     } 
     *dg = diffGeom(tray, normal, brdf, t1);
     return true;
