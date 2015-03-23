@@ -210,6 +210,7 @@ void triangle::print() {
 }
 
 bool sphere::intersect(ray r, diffGeom* dg, float t_max){
+  ray original = r;
   if (transform) {
     r = ray(invT.transform(r.pos, true), invT.transform(r.dir, false), r.t_min, r.t_max);
   }
@@ -223,20 +224,20 @@ bool sphere::intersect(ray r, diffGeom* dg, float t_max){
     vec3 tray = r.pos + r.dir*t1;
     vec3 normal = normalize(tray - center);
     if (transform) {
+      normal = normalize(T.inverse().transpose().transform(tray-center,false));
       tray = (T.transform(tray, true));
-      normal = (invT.transform(normal, false));
-    }
-    //*dg = diffGeom(tray, normalize(r.pos + r.dir*t1 - *center), brdf, t1);
+      
+    } 
     *dg = diffGeom(tray, normal, brdf, t1);
     return true;
   } else if (checkIntersection(&r,t_max,t2)) {
     vec3 tray = r.pos + r.dir*t2;
     vec3 normal = normalize(tray - center);
-    if (transform) {
+    if (transform){
+      normal = normalize(T.inverse().transpose().transform(tray-center,false));
       tray = (T.transform(tray, true));
-      normal = (invT.transform(normal, false));
+      
     }
-     //*dg = diffGeom(tray, normalize(r.pos + r.dir*t2 - *center), brdf, t2);
     *dg = diffGeom(tray, normal, brdf, t2);
     return true;
   }
