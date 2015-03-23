@@ -134,7 +134,7 @@ OBJ* OBJ::decodeObj(std::string filename, Scene *s, BRDF *brdf, Matrix m, bool t
 		}
 		objIn.close();
 	} else {
-		printf("failed to open obj file: %s\n",filename);
+		printf("failed to open obj file: %s\n",filename.c_str());
 	}
 
 	return decoded;

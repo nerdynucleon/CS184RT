@@ -221,37 +221,23 @@ bool sphere::intersect(ray r, diffGeom* dg, float t_max){
   float t2 = (-b + sqrt(b*b - 4*a*c))/(2*a);
   if(checkIntersection(&r,t_max,t1)){
     vec3 tray = r.pos + r.dir*t1;
-    vec3 normal = normalize(tray - *center);
+    vec3 normal = normalize(tray - center);
     if (transform) {
-<<<<<<< HEAD
-      tray = T.transform(tray, true);
-    }
-    //*dg = diffGeom(tray, normalize(r.pos + r.dir*t1 - *center), brdf, t1);
-    *dg = diffGeom(tray, invT.transform(normalize(r.pos + r.dir*t1 - center), true), brdf, t1);
-=======
-      tray = *(T->transform(tray, true));
-      normal = *(invT->transform(normal, false));
+      tray = (T.transform(tray, true));
+      normal = (invT.transform(normal, false));
     }
     //*dg = diffGeom(tray, normalize(r.pos + r.dir*t1 - *center), brdf, t1);
     *dg = diffGeom(tray, normal, brdf, t1);
->>>>>>> 24a2
     return true;
   } else if (checkIntersection(&r,t_max,t2)) {
     vec3 tray = r.pos + r.dir*t2;
-    vec3 normal = normalize(tray - *center);
+    vec3 normal = normalize(tray - center);
     if (transform) {
-<<<<<<< HEAD
-      tray = T.transform(tray, true);
-    }
-     //*dg = diffGeom(tray, normalize(r.pos + r.dir*t2 - *center), brdf, t2);
-    *dg = diffGeom(tray, invT.transform(normalize(r.pos + r.dir*t2 - center), true), brdf, t2);
-=======
-      tray = *(T->transform(tray, true));
-      normal = *(invT->transform(normal, false));
+      tray = (T.transform(tray, true));
+      normal = (invT.transform(normal, false));
     }
      //*dg = diffGeom(tray, normalize(r.pos + r.dir*t2 - *center), brdf, t2);
     *dg = diffGeom(tray, normal, brdf, t2);
->>>>>>> 24a2
     return true;
   }
   return false;
