@@ -83,9 +83,9 @@ void storeFace(OBJ* decoded, std::vector<std::string> tokens, Scene *s, BRDF *br
 			//f.v.push_back(v);
 			//f.type = FACE_VN;
 			v = decoded->vn[decoded->v.size() - std::stoi(subtokens[2])];
-			if (i == 1) { n1 = trans ? (m.inverse().transform(*v, false)) : *v; }
-			if (i == 2) { n2 = trans ? (m.inverse().transform(*v, false)) : *v; }
-			if (i == 3) { n3 = trans ? (m.inverse().transform(*v, false)) : *v; }
+			if (i == 1) { n1 = trans ? (m.inverse().transpose().transform(*v, false)) : *v; }
+			if (i == 2) { n2 = trans ? (m.inverse().transpose().transform(*v, false)) : *v; }
+			if (i == 3) { n3 = trans ? (m.inverse().transpose().transform(*v, false)) : *v; }
 			normals = true;
 			v->print();
 			//f.vn.push_back(v);

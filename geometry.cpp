@@ -184,7 +184,7 @@ vec3 cross(vec3 v1,vec3 v2){
 
 triangle::triangle(vec3 v1in,vec3 v2in,vec3 v3in,BRDF* brdfin){
   v1 = v1in; v2 = v2in; v3 = v3in; brdf = brdfin;
-  n1 = normalize(cross(v2in - v1in , v3in - v1in)); n2 = n1; n3 = n1;
+  n1 = normalize(cross(v3in - v1in , v2in - v1in)); n2 = n1; n3 = n1;
 }
 
 triangle::triangle(vec3 v1in,vec3 v2in,vec3 v3in,vec3 n1in,vec3 n2in,vec3 n3in,BRDF* brdfin){

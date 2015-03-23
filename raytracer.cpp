@@ -141,4 +141,5 @@ int main(int argc, char** argv){
   } else {
     fprintf(stderr, "Failed to encode file.\n");
   }
+  exit(0);
 }
