@@ -127,14 +127,14 @@ bool checkIntersection(ray *r, float t_max, float t_calculated){
 
 /* Ray triangle intersection */
 bool triangle::intersect(ray r, diffGeom* dg, float t_max){
-  vec3 e1 = *v2 - *v1;
-  vec3 e2 = *v3 - *v1;
+  vec3 e1 = v2 - v1;
+  vec3 e2 = v3 - v1;
   vec3 p = cross(r.dir,e2);
   float det = e1 * p;
   /* check divide by zero condition */ 
   if(det > -0.000001 && det < 0.000001) return false;
   float inv_det = 1.0f/det;
-  vec3 T = r.pos - (*v1);
+  vec3 T = r.pos - v1;
   /* Test u parameter */
   float u = (T*p) * inv_det;
   if(u < 0.0 || u > 1.0) return 0;
@@ -146,7 +146,7 @@ bool triangle::intersect(ray r, diffGeom* dg, float t_max){
   if(checkIntersection(&r,t_max,t)) { //ray intersection
     /* Interpolate Triangle Normals
     IMPLEMENT LATER */
-    *dg = diffGeom(r.pos + r.dir*t, normalize((*n2)*u + (*n1)*(1-u-v) + (*n3)*v), brdf, t);
+    *dg = diffGeom(r.pos + r.dir*t, normalize(n2*u + n1*(1-u-v) + n3*v), brdf, t);
     return true;
   }
   return false;
@@ -166,10 +166,10 @@ vec3 vec3::reflect(vec3 n){
 
 sphere::sphere(float x, float y, float z, float radiusIn){
   radius = radiusIn;
-  center = new vec3(x,y,z);
+  center = vec3(x,y,z);
 }
 
-sphere::sphere(vec3 *v1, float radiusIn){
+sphere::sphere(vec3 v1, float radiusIn){
   center = v1;
   radius = radiusIn;
 }
@@ -182,60 +182,58 @@ vec3 cross(vec3 v1,vec3 v2){
   return vec3(v1.y*v2.z - v1.z*v2.y, v1.z*v2.x - v1.x*v2.z, v1.x*v2.y - v1.y*v2.x);
 }
 
-triangle::triangle(vec3* v1in,vec3* v2in,vec3* v3in,BRDF* brdfin){
+triangle::triangle(vec3 v1in,vec3 v2in,vec3 v3in,BRDF* brdfin){
   v1 = v1in; v2 = v2in; v3 = v3in; brdf = brdfin;
-  n1 = norm2pt(cross(*v2in - *v1in , *v3in - *v1in)); n2 = n1; n3 = n1;
+  n1 = normalize(cross(v2in - v1in , v3in - v1in)); n2 = n1; n3 = n1;
 }
 
-triangle::triangle(vec3* v1in,vec3* v2in,vec3* v3in,vec3* n1in,vec3* n2in,vec3* n3in,BRDF* brdfin){
+triangle::triangle(vec3 v1in,vec3 v2in,vec3 v3in,vec3 n1in,vec3 n2in,vec3 n3in,BRDF* brdfin){
   v1 = v1in; v2 = v2in; v3 = v3in; brdf = brdfin;
   n1 = n1in; n2 = n2in; n3 = n3in;
 }
 
 void sphere::print() {
   std::cout << "Sphere (" << this << "):" << std::endl;
-  std::cout << "    " << "Center: "; center->print();
+  std::cout << "    " << "Center: "; center.print();
   std::cout << "    " << "Radius: " << radius << std::endl;
   std::cout << "    BRDF: " << brdf << std::endl;
 }
 
 void triangle::print() {
   std::cout << "Triangle (" << this << "):" << std::endl;
-  std::cout << "    "; v1->print();
-  std::cout << "    "; v2->print(); 
-  std::cout << "    "; v3->print();
-  std::cout << "    "; n1->print();
-  if (n2 != NULL) {
-    std::cout << "    "; n2->print(); std::cout << "    "; n3->print();
-  }
+  std::cout << "    "; v1.print();
+  std::cout << "    "; v2.print(); 
+  std::cout << "    "; v3.print();
+  std::cout << "    "; n1.print();
+  std::cout << "    "; n2.print(); std::cout << "    "; n3.print();
   std::cout << "    BRDF: " << brdf << std::endl;
 }
 
 bool sphere::intersect(ray r, diffGeom* dg, float t_max){
   if (transform) {
-    r = ray(*(invT->transform(r.pos, true)), *(invT->transform(r.dir, false)), r.t_min, r.t_max);
+    r = ray(invT.transform(r.pos, true), invT.transform(r.dir, false), r.t_min, r.t_max);
   }
   float a = r.dir * r.dir;
   if(a == 0) return false;
-  float b = r.dir*(r.pos - *center)*2;
-  float c = (r.pos - *center)*(r.pos - *center) - radius*radius;
+  float b = r.dir*(r.pos - center)*2;
+  float c = (r.pos - center)*(r.pos - center) - radius*radius;
   float t1 = (-b - sqrt(b*b - 4*a*c))/(2*a);
   float t2 = (-b + sqrt(b*b - 4*a*c))/(2*a);
   if(checkIntersection(&r,t_max,t1)){
     vec3 tray = r.pos + r.dir*t1;
     if (transform) {
-      tray = *(T->transform(tray, true));
+      tray = T.transform(tray, true);
     }
     //*dg = diffGeom(tray, normalize(r.pos + r.dir*t1 - *center), brdf, t1);
-    *dg = diffGeom(tray, *(invT->transform(normalize(r.pos + r.dir*t1 - *center), true)), brdf, t1);
+    *dg = diffGeom(tray, invT.transform(normalize(r.pos + r.dir*t1 - center), true), brdf, t1);
     return true;
   } else if (checkIntersection(&r,t_max,t2)) {
     vec3 tray = r.pos + r.dir*t2;
     if (transform) {
-      tray = *(T->transform(tray, true));
+      tray = T.transform(tray, true);
     }
      //*dg = diffGeom(tray, normalize(r.pos + r.dir*t2 - *center), brdf, t2);
-    *dg = diffGeom(tray, *(invT->transform(normalize(r.pos + r.dir*t2 - *center), true)), brdf, t2);
+    *dg = diffGeom(tray, invT.transform(normalize(r.pos + r.dir*t2 - center), true), brdf, t2);
     return true;
   }
   return false;
@@ -291,17 +289,17 @@ Matrix::Matrix() {
 }
 
 Matrix::Matrix(Matrix *copy) {
-  v[0] = vec4(copy->v[0]->x, copy->v[0]->y, copy->v[0]->z, copy->v[0]->w);
-  v[1] = vec4(copy->v[1]->x, copy->v[1]->y, copy->v[1]->z, copy->v[1]->w);
-  v[2] = vec4(copy->v[2]->x, copy->v[2]->y, copy->v[2]->z, copy->v[2]->w);
-  v[3] = vec4(copy->v[3]->x, copy->v[3]->y, copy->v[3]->z, copy->v[3]->w);
+  v[0] = vec4(copy->v[0].x, copy->v[0].y, copy->v[0].z, copy->v[0].w);
+  v[1] = vec4(copy->v[1].x, copy->v[1].y, copy->v[1].z, copy->v[1].w);
+  v[2] = vec4(copy->v[2].x, copy->v[2].y, copy->v[2].z, copy->v[2].w);
+  v[3] = vec4(copy->v[3].x, copy->v[3].y, copy->v[3].z, copy->v[3].w);
 }
 
 vec4 Matrix::column(int n) {
-  if (n == 0) { return vec4(v[0]->x, v[1]->x, v[2]->x, v[3]->x); }
-  if (n == 1) { return vec4(v[0]->y, v[1]->y, v[2]->y, v[3]->y); }
-  if (n == 2) { return vec4(v[0]->z, v[1]->z, v[2]->z, v[3]->z); }
-  return vec4(v[0]->w, v[1]->w, v[2]->w, v[3]->w);
+  if (n == 0) { return vec4(v[0].x, v[1].x, v[2].x, v[3].x); }
+  if (n == 1) { return vec4(v[0].y, v[1].y, v[2].y, v[3].y); }
+  if (n == 2) { return vec4(v[0].z, v[1].z, v[2].z, v[3].z); }
+  return vec4(v[0].w, v[1].w, v[2].w, v[3].w);
 }
 
 vec3 Matrix::operator*(vec4 vin){
@@ -326,10 +324,10 @@ vec3 Matrix::transform(vec3 vin, bool pos){
 
 void Matrix::print() {
   std::cout << "Matrix (" << this << "): " << std::endl;
-  std::cout << "    "; v[0]->print();
-  std::cout << "    "; v[1]->print();
-  std::cout << "    "; v[2]->print();
-  std::cout << "    "; v[3]->print();
+  std::cout << "    "; v[0].print();
+  std::cout << "    "; v[1].print();
+  std::cout << "    "; v[2].print();
+  std::cout << "    "; v[3].print();
 }
 
 Matrix Matrix::operator*(Matrix m2) {
@@ -371,22 +369,22 @@ Matrix Matrix::operator*(float scalar) {
 
 Matrix Matrix::transpose(){
   Matrix result = Matrix();
-    result.v[0]->x = v[0].x;
-    result.v[0]->y = v[1].x;
-    result.v[0]->z = v[2].x;
-    result.v[0]->w = v[3].x;
-    result.v[1]->x = v[0].y;
-    result.v[1]->y = v[1].y;
-    result.v[1]->z = v[2].y;
-    result.v[1]->w = v[3].y;
-    result.v[2]->x = v[0].z;
-    result.v[2]->y = v[1].z;
-    result.v[2]->z = v[2].z;
-    result.v[2]->w = v[3].z;
-    result.v[3]->x = v[0].w;
-    result.v[3]->y = v[1].w;
-    result.v[3]->z = v[2].w;
-    result.v[3]->w = v[3].w;
+    result.v[0].x = v[0].x;
+    result.v[0].y = v[1].x;
+    result.v[0].z = v[2].x;
+    result.v[0].w = v[3].x;
+    result.v[1].x = v[0].y;
+    result.v[1].y = v[1].y;
+    result.v[1].z = v[2].y;
+    result.v[1].w = v[3].y;
+    result.v[2].x = v[0].z;
+    result.v[2].y = v[1].z;
+    result.v[2].z = v[2].z;
+    result.v[2].w = v[3].z;
+    result.v[3].x = v[0].w;
+    result.v[3].y = v[1].w;
+    result.v[3].z = v[2].w;
+    result.v[3].w = v[3].w;
   return result;  
 }
 

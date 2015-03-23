@@ -58,9 +58,9 @@ void storeVertex(OBJ* decoded, std::vector<std::string> tokens, int type) {
 	else if (type == VERTEX_PARAMETER) { decoded->vp.push_back(v); }
 }
 
-void storeFace(OBJ* decoded, std::vector<std::string> tokens, Scene *s, BRDF *brdf, Matrix *m, bool trans) {
+void storeFace(OBJ* decoded, std::vector<std::string> tokens, Scene *s, BRDF *brdf, Matrix m, bool trans) {
 	if (tokens.size() <= 1) { return; }
-	vec3 *v; vec3 *v1; vec3 *v2; vec3 *v3; vec3 *n1; vec3 *n2; vec3 *n3;
+	vec3 *v; vec3 v1; vec3 v2; vec3 v3; vec3 n1; vec3 n2; vec3 n3;
 	bool normals = false;
 	for (int i = 1; i < tokens.size(); i++) {
 		if (tokens[i].compare(" ") == 0) { continue; }
@@ -68,24 +68,24 @@ void storeFace(OBJ* decoded, std::vector<std::string> tokens, Scene *s, BRDF *br
 		size_t find = tokens[i].find('/');
 		if (find == std::string::npos) {
 			v = decoded->v[decoded->v.size() - std::stoi(tokens[i])];
-			if (i == 1) { v1 = trans ? (m->transform(*v, true)) : v; }
-			if (i == 2) { v2 = trans ? (m->transform(*v, true)) : v; }
-			if (i == 3) { v3 = trans ? (m->transform(*v, true)) : v; }
+			if (i == 1) { v1 = trans ? (m.transform(*v, true)) : *v; }
+			if (i == 2) { v2 = trans ? (m.transform(*v, true)) : *v; }
+			if (i == 3) { v3 = trans ? (m.transform(*v, true)) : *v; }
 			//f.v.push_back(v);
 			//f.type = FACE_V;
 		}
 		else if ((find != std::string::npos) && (tokens[i].substr(find+1, 1).compare("/") == 0)) {
 			std::vector<std::string> subtokens = split(tokens[i], char(47));
 			v = decoded->v[decoded->v.size() - std::stoi(subtokens[0])];
-			if (i == 1) { v1 = trans ? (m->transform(*v, true)) : v; }
-			if (i == 2) { v2 = trans ? (m->transform(*v, true)) : v; }
-			if (i == 3) { v3 = trans ? (m->transform(*v, true)) : v; }
+			if (i == 1) { v1 = trans ? (m.transform(*v, true)) : *v; }
+			if (i == 2) { v2 = trans ? (m.transform(*v, true)) : *v; }
+			if (i == 3) { v3 = trans ? (m.transform(*v, true)) : *v; }
 			//f.v.push_back(v);
 			//f.type = FACE_VN;
 			v = decoded->vn[decoded->v.size() - std::stoi(subtokens[2])];
-			if (i == 1) { n1 = trans ? (m->inverse()->transform(*v, false)) : v; }
-			if (i == 2) { n2 = trans ? (m->inverse()->transform(*v, false)) : v; }
-			if (i == 3) { n3 = trans ? (m->inverse()->transform(*v, false)) : v; }
+			if (i == 1) { n1 = trans ? (m.inverse().transform(*v, false)) : *v; }
+			if (i == 2) { n2 = trans ? (m.inverse().transform(*v, false)) : *v; }
+			if (i == 3) { n3 = trans ? (m.inverse().transform(*v, false)) : *v; }
 			normals = true;
 			v->print();
 			//f.vn.push_back(v);
@@ -117,7 +117,7 @@ void storeFace(OBJ* decoded, std::vector<std::string> tokens, Scene *s, BRDF *br
 }
 
 
-OBJ* OBJ::decodeObj(std::string filename, Scene *s, BRDF *brdf, Matrix *m, bool trans){
+OBJ* OBJ::decodeObj(std::string filename, Scene *s, BRDF *brdf, Matrix m, bool trans){
 	OBJ *decoded = new OBJ();
 	std::string line;
 	std::ifstream objIn((filename));

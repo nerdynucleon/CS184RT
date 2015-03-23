@@ -112,9 +112,9 @@ void parseAmbientLight(std::vector<std::string> tokens, Scene *s) {
 void parseTriangle(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 	std::vector<float> data = parseLine(tokens, 9, "tri");
 	/* Load tri into scene */
-	vec3 *v1 = new vec3(data[0], data[1], data[2]);
-	vec3 *v2 = new vec3(data[3], data[4], data[5]);
-	vec3 *v3 = new vec3(data[6], data[7], data[8]);
+	vec3 v1 = vec3(data[0], data[1], data[2]);
+	vec3 v2 = vec3(data[3], data[4], data[5]);
+	vec3 v3 = vec3(data[6], data[7], data[8]);
 	//v1 = apply(v1); v2 = apply(v2); v3 = apply(v3);
 	triangle *tri = new triangle(v1, v2, v3, mat);
 	s->add(tri);
@@ -123,7 +123,7 @@ void parseTriangle(std::vector<std::string> tokens, Scene *s, BRDF *mat) {
 
 
 
-void parseObj(std::vector<std::string> tokens, Scene *s, BRDF *mat, Matrix* m, bool b) {
+void parseObj(std::vector<std::string> tokens, Scene *s, BRDF *mat, Matrix m, bool b) {
 	OBJ *obj = OBJ::decodeObj(tokens[1], s, mat, m, b);
 }
 
@@ -134,8 +134,8 @@ void parseTranslation(std::vector<std::string> tokens) {
 		argumentError("xft", 9);
 	}
 	float tx = std::stof(tokens[1]); float ty = std::stof(tokens[2]); float tz = std::stof(tokens[3]);
-	Matrix *A = new Matrix(1,0,0,tx, 0,1,0,ty, 0,0,1,tz, 0,0,0,1);
-	transform = (*transform) * (*A);
+	Matrix A = Matrix(1,0,0,tx, 0,1,0,ty, 0,0,1,tz, 0,0,0,1);
+	*transform = (*transform) * A;
 	applyTransform = true;
 }
 
@@ -150,11 +150,11 @@ void parseRotation(std::vector<std::string> tokens) {
 	float angle = M_PI/180.0 *length;
 	float sA = sin(angle);
 	float cA = cos(angle);
-	Matrix* rx = new Matrix(cA+x*x*(1-cA), x*y*(1-cA)-z*sA, y*sA+x*z*(1-cA), 0,
+	Matrix rx = Matrix(cA+x*x*(1-cA), x*y*(1-cA)-z*sA, y*sA+x*z*(1-cA), 0,
 		z*sA+x*y*(1-cA), cA + y*y*(1-cA), -x*sA +y*z*(1-cA), 0,
 		-y*sA+x*z*(1-cA), x*sA + y*z*(1-cA), cA + z*z*(1-cA), 0,
 		0, 0, 0, 1);
-	transform = (*transform) * (*rx);
+	*transform = (*transform) * rx;
 	applyTransform = true;
 }
 
@@ -166,8 +166,8 @@ void parseScale(std::vector<std::string> tokens) {
 	}
 	float x = std::stof(tokens[1]); float y = std::stof(tokens[2]); float z = std::stof(tokens[3]);
 	//xf.push_back(new Transformation(std::stof(tokens[1]),std::stof(tokens[2]),std::stof(tokens[3]),SCALE));
-	Matrix *A = new Matrix(x,0,0,0, 0,y,0,0, 0,0,z,0, 0,0,0,1);
-	transform = (*transform) * (*A);
+	Matrix A = Matrix(x,0,0,0, 0,y,0,0, 0,0,z,0, 0,0,0,1);
+	*transform = (*transform) * A;
 	applyTransform = true;
 }
 
@@ -177,8 +177,7 @@ void parseReset(std::vector<std::string> tokens) {
 		argumentError("xfz", 1);
 	}
 	applyTransform = false;
-	delete transform;
-	transform = new Matrix();
+	*transform = Matrix();
 }
 
 BRDF* parseMat(std::vector<std::string> tokens, Scene *s) {

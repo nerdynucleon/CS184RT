@@ -119,24 +119,24 @@ class sceneObject{
 /* Geometry Primitive */
 class triangle: public sceneObject {
   public:
-    vec3 *v1; vec3 *v2; vec3 *v3;
-    vec3 *n1; vec3 *n2; vec3 *n3;
+    vec3 v1; vec3 v2; vec3 v3;
+    vec3 n1; vec3 n2; vec3 n3;
     BRDF *brdf;
     bool intersect(ray,diffGeom*,float);
-    triangle(vec3*,vec3*,vec3*,BRDF*);
-    triangle(vec3*,vec3*,vec3*,vec3*,vec3*,vec3*,BRDF*);
+    triangle(vec3,vec3,vec3,BRDF*);
+    triangle(vec3,vec3,vec3,vec3,vec3,vec3,BRDF*);
     void print();
 };
 
 class sphere: public sceneObject {
   public:
     bool transform;
-    Matrix *T;
-    Matrix *invT;
+    Matrix T;
+    Matrix invT;
     sphere(float, float, float, float);
-    sphere(vec3*, float);
+    sphere(vec3, float);
     bool intersect(ray,diffGeom*,float);
-    vec3 *center;
+    vec3 center;
     float radius;
     BRDF *brdf;
     void print();
